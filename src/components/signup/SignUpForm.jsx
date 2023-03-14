@@ -37,8 +37,7 @@ const SignUpForm=()=>{
     });
   const checkEmail = (e) => {
     e.stopPropagation();
-    if (!e.target.value.trim()) return;
-    checkEmailMutation.mutate(e.target.value);
+    checkEmailMutation.mutate(e.target.value)
   };
   const EmailChange = (e) => {
     const emailvalue = e.target.value;
@@ -161,7 +160,11 @@ const SignUpForm=()=>{
                 placeholder="비밀번호를 적어주세요"
                 onChange={passwordchange}
               />
-              {isPasswordMsg && <Errormsg>{passwordMsg}</Errormsg>}
+              {isPasswordMsg && (
+                <Errormsg>
+                  "영어,숫자,특수문자를 포함한 8자이상입력해주세요"
+                </Errormsg>
+              )}
               {!isPasswordMsg && password && (
                 <Successmsg>사용 가능한 비밀번호입니다</Successmsg>
               )}
@@ -178,7 +181,9 @@ const SignUpForm=()=>{
                 placeholder="비밀번호확인"
                 onChange={passwordCmChange}
               />
-              {isPasswordCmMsg && <Errormsg>{passwordCmMsg}</Errormsg>}
+              {isPasswordCmMsg && (
+                <Errormsg>비밀번호가 일치하지 않습니다.</Errormsg>
+              )}
               {!isPasswordCmMsg && passwordCm && (
                 <Successmsg>비밀번호가 일치합니다.</Successmsg>
               )}
