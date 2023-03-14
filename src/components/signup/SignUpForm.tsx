@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import styled from 'styled-components';
-import { LoginAPI } from "api/index";
-const SignUpForm=()=>{
+import styled from "styled-components";
+import { useMutation } from "react-query";
+import { LoginAPI } from "api";
+
+const SignUpForm = () => {
   //회사, 직급, 이름, 이메일, 비밀번호
   const [company, setCompany] = useState("");
   const [position, setPosition] = useState("");
-  const [member_name, setMember_name] = useState("");
+  const [memberName, setMemberName] = useState("");
   const [email, setEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(false);
 
@@ -13,7 +15,7 @@ const SignUpForm=()=>{
   const [passwordCm, setPasswordCm] = useState("");
   //오류메시지 상태저장
   const [passwordMsg, setPasswordMsg] = useState("");
-  const [passwordCmMsg, setPasswordCmMsg] = useState(false);
+  const [passwordCmMsg, setPasswordCmMsg] = useState("");
   //유효성 검사
   const [isPasswordMsg, setIsPasswordMsg] = useState(false);
   const [isPasswordCmMsg, setIsPasswordCmMsg] = useState(false);
@@ -21,57 +23,54 @@ const SignUpForm=()=>{
   //이메일 정규표현식
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   //이메일 확인
-  const checkEmailMutation =
-    (LoginAPI.CheckEmail,
-    {
-      onSuccess: (response) => {
-        response ? setEmail(true) : setEmail(false);
-        if (response) {
-          setEmail(true);
-          alert("사용가능한 이메일입니다.");
-        } else {
-          setEmail(false);
-          alert("이미 사용중인 이메일입니다.");
-        }
-      },
-    });
-  const checkEmail = (e) => {
+  const checkEmailMutation = useMutation("checkEmail", LoginAPI.checkEmail, {
+    onSuccess: (response) => {
+      if (response) {
+        alert("인증이 성공하였습니다.");
+      } else {
+        alert("인증이 실패하였습니다.");
+      }
+    },
+  });
+  const checkEmail = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    if (!e.target.value.trim()) return;
-    checkEmailMutation.mutate(e.target.value);
+    checkEmailMutation.mutate(email);
   };
-  const EmailChange = (e) => {
-    const emailvalue = e.target.value;
-    setEmail(emailvalue);
+
+  const emailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
     emailRegex.test(e.target.value)
       ? setIsValidEmail(true)
       : setIsValidEmail(false);
   };
 
-  //비밀번호 정규표현식
+  //비밀번호 정규표현식 8자~15자 영어 특문 숫자 포함
   const passwordRegex =
-    /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+    /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
   //비밀번호 유효성검사
-  const passwordchange = (e) => {
+  const passwordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const passwordValue = e.target.value;
     setPassword(passwordValue);
+
     if (passwordValue.length === 0) {
       setIsPasswordMsg(false);
       setPasswordMsg(" ");
-    } else if (passwordValue.length < 8 || !passwordRegex.test(passwordValue)) {
+    } else if (!passwordRegex.test(passwordValue)) {
       setIsPasswordMsg(true);
-      setPasswordMsg("영어,숫자,특수문자를 포함한 8자이상입력해주세요");
+      setPasswordMsg(
+        "영어,숫자,특수문자를 포함한 8자~15자 이내로 입력해주세요"
+      );
     } else {
       setIsPasswordMsg(false);
       setPasswordMsg("사용 가능한 비밀번호입니다");
     }
   };
   //비밀번호 확인 유효성검사
-  const passwordCmChange = (e) => {
+  const passwordCmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const passwordCmValue = e.target.value;
     setPasswordCm(passwordCmValue);
     if (passwordCmValue.length === 0) {
-      setIsPasswordCmMsg(false);
+      setIsPasswordCmMsg(true);
       setPasswordCmMsg(" ");
     } else if (password !== passwordCmValue) {
       setIsPasswordCmMsg(true);
@@ -82,31 +81,32 @@ const SignUpForm=()=>{
     }
   };
 
-  const signupSubmit = (e) => {
+  const signupSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
+
   return (
-    <SignWrap>
-      <Signform onSubmit={signupSubmit}>
-        <SignTitle>회원가입</SignTitle>
-        <Signul>
-          <Signli>
-            <SignLeft>회사명</SignLeft>
-            <SignRight>
-              <SignInput
+    <StSignWrap>
+      <StSignForm onSubmit={signupSubmit}>
+        <StSignTitle>회원가입</StSignTitle>
+        <StSignUl>
+          <StSignLi>
+            <StSignLeft>회사명</StSignLeft>
+            <StSignRight>
+              <StSignInput
                 type="text"
                 name="company"
                 value={company}
                 placeholder="회사명을 적어주세요"
                 onChange={(e) => setCompany(e.target.value)}
               />
-            </SignRight>
-          </Signli>
+            </StSignRight>
+          </StSignLi>
           {/* //확인요망 직급*/}
-          <Signli>
-            <SignLeft>직급</SignLeft>
-            <SignRight>
-              <SignSelect
+          <StSignLi>
+            <StSignLeft>직급</StSignLeft>
+            <StSignRight>
+              <StSignSelect
                 name="position"
                 onChange={(e) => setPosition(e.target.value)}
                 value={position}
@@ -114,97 +114,95 @@ const SignUpForm=()=>{
                 <option value="member">member </option>
                 <option value="manager">manager</option>
                 <option value="owner ">owner</option>
-              </SignSelect>
-            </SignRight>
-          </Signli>
-          <Signli>
-            <SignLeft>회원명</SignLeft>
-            <SignRight>
-              <SignInput
+              </StSignSelect>
+            </StSignRight>
+          </StSignLi>
+          <StSignLi>
+            <StSignLeft>회원명</StSignLeft>
+            <StSignRight>
+              <StSignInput
                 type="text"
                 name="company"
-                value={member_name}
+                value={memberName}
                 placeholder="회원명을 적어주세요"
-                onChange={(e) => setMember_name(e.target.value)}
+                onChange={(e) => setMemberName(e.target.value)}
               />
-            </SignRight>
-          </Signli>
+            </StSignRight>
+          </StSignLi>
           {/* //확인요망 이메일*/}
-          <Signli>
-            <SignLeft>이메일 인증</SignLeft>
-            <SignRight>
-              <SignInput
+          <StSignLi>
+            <StSignLeft>이메일 인증</StSignLeft>
+            <StSignRight>
+              <StSignInput
                 type="text"
                 name="email"
                 value={email}
                 placeholder="이메일 주소를 적어주세요"
-                onChange={EmailChange}
+                onChange={emailChange}
               />
-              <CheckBtn
+              <StCheckBtn
                 type="button"
                 disabled={!isValidEmail}
                 value={email}
-                onclick={checkEmail}
+                onClick={checkEmail}
               >
                 중복확인
-              </CheckBtn>
-            </SignRight>
-          </Signli>
+              </StCheckBtn>
+            </StSignRight>
+          </StSignLi>
           {/* 비밀번호 */}
-          <Signli>
-            <SignLeft>비밀번호</SignLeft>
-            <SignRight>
-              <SignInput
+          <StSignLi>
+            <StSignLeft>비밀번호</StSignLeft>
+            <StSignRight>
+              <StSignInput
                 type="password"
                 name="password"
                 value={password}
                 placeholder="비밀번호를 적어주세요"
-                onChange={passwordchange}
+                onChange={passwordChange}
               />
-              {isPasswordMsg && <Errormsg>{passwordMsg}</Errormsg>}
+              {isPasswordMsg && <StErrorMsg>{passwordMsg}</StErrorMsg>}
               {!isPasswordMsg && password && (
-                <Successmsg>사용 가능한 비밀번호입니다</Successmsg>
+                <StSuccessMsg>사용 가능한 비밀번호입니다</StSuccessMsg>
               )}
-            </SignRight>
-          </Signli>
+            </StSignRight>
+          </StSignLi>
           {/* 비밀번호 확인*/}
-          <Signli>
-            <SignLeft>비밀번호 확인</SignLeft>
-            <SignRight>
-              <SignInput
+          <StSignLi>
+            <StSignLeft>비밀번호 확인</StSignLeft>
+            <StSignRight>
+              <StSignInput
                 type="password"
                 name="passwordCm"
                 value={passwordCm}
                 placeholder="비밀번호확인"
                 onChange={passwordCmChange}
               />
-              {isPasswordCmMsg && <Errormsg>{passwordCmMsg}</Errormsg>}
+              {isPasswordCmMsg && <StErrorMsg>{passwordCmMsg}</StErrorMsg>}
               {!isPasswordCmMsg && passwordCm && (
-                <Successmsg>비밀번호가 일치합니다.</Successmsg>
+                <StSuccessMsg>비밀번호가 일치합니다.</StSuccessMsg>
               )}
-            </SignRight>
-          </Signli>
-        </Signul>
-      </Signform>
-    </SignWrap>
+            </StSignRight>
+          </StSignLi>
+        </StSignUl>
+      </StSignForm>
+    </StSignWrap>
   );
-}
+};
 
-export default SignUpForm
+export default SignUpForm;
 
-
-
-const SignWrap = styled.div`
+const StSignWrap = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
-const Signform = styled.form`
+const StSignForm = styled.form`
   width: 500px;
 `;
-const SignTitle = styled.h3`
+const StSignTitle = styled.h3`
   font-size: 36px;
   font-weight: 700;
   line-height: 1;
@@ -213,8 +211,8 @@ const SignTitle = styled.h3`
   text-align: center;
   border-bottom: 1px solid #ececec;
 `;
-const Signul = styled.div``;
-const Signli = styled.div`
+const StSignUl = styled.div``;
+const StSignLi = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -223,13 +221,13 @@ const Signli = styled.div`
     margin-top: 0;
   }
 `;
-const SignLeft = styled.div`
+const StSignLeft = styled.div`
   width: 100px;
 `;
-const SignRight = styled.div`
+const StSignRight = styled.div`
   width: calc(100% - 130px);
 `;
-const SignInput = styled.input`
+const StSignInput = styled.input`
   width: 100%;
   height: 50px;
   border: 0;
@@ -243,7 +241,7 @@ const SignInput = styled.input`
     color: #22cb88;
   }
 `;
-const SignSelect = styled.select`
+const StSignSelect = styled.select`
   width: 100%;
   height: 50px;
   border: 0;
@@ -254,12 +252,10 @@ const SignSelect = styled.select`
     color: #22cb88;
   }
 `;
-const CheckBtn = styled.button``;
-const Errormsg = styled.p`
+const StCheckBtn = styled.button``;
+const StErrorMsg = styled.p`
   color: #ff0000;
 `;
-const Successmsg = styled.p`
+const StSuccessMsg = styled.p`
   color: #22cb88;
 `;
-
-

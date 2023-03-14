@@ -1,8 +1,5 @@
-import React from "react";
-
 const Loginform = () => {
-  return <p>s</p>;
+  return <p>login</p>;
 };
 
 export default Loginform;
-
