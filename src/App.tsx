@@ -4,15 +4,16 @@ import { ThemeProvider } from "styled-components";
 import { isDarkState } from "store/atoms";
 import { GlobalStyle, defaultTheme, darkTheme } from "styles/theme";
 import SignUp from "routes/SignUp";
-
+import Login from "./routes/Login";
 const App = () => {
   const isLight = useRecoilValue(isDarkState);
   return (
     <>
-      <ThemeProvider theme={isLight ? defaultTheme : darkTheme}>
+      <ThemeProvider theme={isLight ? darkTheme : defaultTheme}>
         <GlobalStyle />
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
           </Routes>
         </BrowserRouter>

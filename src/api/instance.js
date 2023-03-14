@@ -1,0 +1,20 @@
+import axios from "axios";
+import { getCookie } from "./cookies.js";
+export const instance = axios.create({
+  baseURL: `${process.env.React_APP_CL_SERVER_URL}`,
+  headers: {
+    "Access-Control-Allow-Origin": "*",
+  },
+});
+
+instance.interceptors.request.use(
+  (config) => {
+    if (config.headers === undefined) return;
+    const access_token = getCookie("access_token");
+    config.headers["Authorization"] = `Bearer ${access_token}`;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
