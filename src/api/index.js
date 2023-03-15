@@ -1,7 +1,11 @@
 import { instance } from "./instance";
+
+
 export const LoginAPI = {
-  Login: (loginRespose) => instance.post("/api/members/login", loginRespose),
-  Signup: (payload) => instance.post("/api/members/signup", payload),
-  CheckEmail: (payload) =>
-    instance.get("/api/members", { params: { email: payload } }),
+  login: (loginData) => instance.post("/login", loginData),
 };
+export const Admin ={
+  signUp: (signupData) => instance.post("/signup", signupData),
+  checkEmail: (email) => instance.get(`/check/email/${email}`),
+  checkName: (member) => instance.get(`/check/name/${member}`),
+}

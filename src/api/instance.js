@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getCookie } from "./cookies.js";
+import { getCookie } from "./cookies";
 export const instance = axios.create({
   baseURL: `${process.env.React_APP_CL_SERVER_URL}`,
   headers: {
@@ -9,9 +9,11 @@ export const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    if (config.headers === undefined) return;
+    //요청해더 반환안함.
+    if (config.headers === undefined) return config
+    
     const access_token = getCookie("access_token");
-    config.headers["Authorization"] = `Bearer ${access_token}`;
+    config.headers["Authorization"] = `Bearer ${access_token}`
     return config;
   },
   (error) => {
