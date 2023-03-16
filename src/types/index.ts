@@ -1,3 +1,13 @@
+export interface LoginReq {
+  email: string;
+  password: string;
+}
+
+export interface SignUpReq extends LoginReq {
+  position: string;
+  memberName: string;
+}
+
 export interface NavItem {
   itemValue: string;
   handler: () => void;
