@@ -6,10 +6,10 @@ import { GlobalStyle, defaultTheme, darkTheme } from "styles/theme";
 import SignUp from "routes/SignUp";
 
 const App = () => {
-  const isDark = useRecoilValue(isDarkState);
+  const isLight = useRecoilValue(isDarkState);
   return (
     <>
-      <ThemeProvider theme={isDark ? darkTheme : defaultTheme}>
+      <ThemeProvider theme={isLight ? defaultTheme : darkTheme}>
         <GlobalStyle />
         <BrowserRouter>
           <Routes>
