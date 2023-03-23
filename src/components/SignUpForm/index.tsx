@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation } from "react-query";
 import styled from "styled-components";
-import { Admin } from "api";
+import { ADMIN } from "api";
 
 const SignUpForm = () => {
   // 이름, 이메일
@@ -24,14 +24,14 @@ const SignUpForm = () => {
   const [isValidEmail, setIsValidEmailBoolean] = useState(false);
 
   // 가입
-  const signUpMutation = useMutation("signUp", Admin.signUp, {
+  const signUpMutation = useMutation("signUp", ADMIN.signUp, {
     onSuccess: (response) => {
       return response.data;
     },
   });
 
   //이메일 중복확인
-  const checkEmailMutation = useMutation("checkEmail", Admin.checkEmail, {
+  const checkEmailMutation = useMutation("checkEmail", ADMIN.checkEmail, {
     onSuccess: (response) => {
       if (response) {
         alert("사용가능한 이메일 입니다.");
@@ -42,7 +42,7 @@ const SignUpForm = () => {
   });
 
   //이름 중복확인
-  const checkNameMutation = useMutation("checkName", Admin.checkName, {
+  const checkNameMutation = useMutation("checkName", ADMIN.checkName, {
     onSuccess: (response) => {
       if (response) {
         alert("사용가능한 이름 입니다.");

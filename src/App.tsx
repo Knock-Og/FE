@@ -5,7 +5,7 @@ import { isDarkState } from "store/atoms";
 import { GlobalStyle, defaultTheme, darkTheme } from "styles/theme";
 import SignUp from "routes/SignUp";
 import Login from "routes/Login";
-import Temp from "routes/Temp";
+import Searched from "routes/Searched";
 
 const App = () => {
   const isDark = useRecoilValue(isDarkState);
@@ -15,7 +15,7 @@ const App = () => {
         <GlobalStyle />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Temp />} />
+            <Route path="/search" element={<Searched />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
           </Routes>
