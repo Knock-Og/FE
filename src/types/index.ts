@@ -23,3 +23,8 @@ export interface Post {
   keywords: string[];
   commentCount: number;
 }
+
+export interface Category {
+  id: number;
+  categoryName: string;
+}

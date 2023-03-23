@@ -22,6 +22,7 @@ const Nav = ({ navItems, isBookMarkNav }: Props) => {
             {item.itemValue}
           </StLi>
         ))}
+        {isBookMarkNav && <input />}
       </StUl>
     </StContainer>
   );
@@ -36,7 +37,7 @@ const StContainer = styled.div`
   align-items: center;
   border: 1px solid gainsboro;
   padding: 30px;
-  width: 30%;
+  width: 300px;
   height: 100vh;
 `;
 

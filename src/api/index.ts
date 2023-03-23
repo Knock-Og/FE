@@ -1,12 +1,30 @@
-import { instance } from "./instance";
+import { baseAxios, reqWithAccessToken } from "./instance";
 import { LoginReq, SignUpReq } from "types";
 
-export const LoginAPI = {
-  login: (loginReq: LoginReq) => instance.post("/login", loginReq),
+export const LOGIN = {
+  login: (loginReq: LoginReq) => baseAxios.post("/login", loginReq),
 };
 
-export const Admin = {
-  signUp: (signUpReq: SignUpReq) => instance.post("/signup", signUpReq),
-  checkEmail: (email: string) => instance.get(`/check?email=${email}`),
-  checkName: (name: string) => instance.get(`/check?name=${name}`),
+export const ADMIN = {
+  signUp: (signUpReq: SignUpReq) =>
+    reqWithAccessToken.post("/signup", signUpReq),
+  checkEmail: (email: string) =>
+    reqWithAccessToken.get(`/check?email=${email}`),
+  checkName: (name: string) => reqWithAccessToken.get(`/check?name=${name}`),
+};
+
+export const CATEGORY = {
+  getCategories: () =>
+    reqWithAccessToken.get("/categories").then((res) => res.data),
+  addCategory: (categoryName: string) =>
+    reqWithAccessToken.post("/categories", categoryName),
+  editCategory: (categoryName: string, categoryId: number) =>
+    reqWithAccessToken.put(`/categories/${categoryId}`, categoryName),
+  removeCategory: (categoryId: number) =>
+    reqWithAccessToken.delete(`/categories/${categoryId}`),
+};
+
+export const SEARCH = {
+  getSearchedData: (keyword: string) =>
+    reqWithAccessToken.get(`/search?k=${keyword}`),
 };

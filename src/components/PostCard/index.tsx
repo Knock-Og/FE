@@ -7,7 +7,7 @@ const PostCard = (post: Post) => {
     <StPostCardBox>
       <StKeyWordsWrapper>
         {post.keywords.map((keyword) => (
-          <StKeyWord>{keyword}</StKeyWord>
+          <StKeyWord key={keyword}>{keyword}</StKeyWord>
         ))}
       </StKeyWordsWrapper>
       <StTitle>
@@ -21,6 +21,7 @@ const PostCard = (post: Post) => {
       <StPostCardFooter>
         <div>{post.createdAt}</div>
         <div>{post.commentCount}개의 댓글</div>
+        {/* TODO: post.isEdit &&  <CircularProgress size={13} /> */}
         {true && <CircularProgress size={13} />}
       </StPostCardFooter>
     </StPostCardBox>

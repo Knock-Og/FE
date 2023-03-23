@@ -20,6 +20,6 @@
     "noImplicitThis": true,
     "strictNullChecks": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "src"],
+  "include": ["**/*.ts", "**/*.tsx", "src", "src/assets/custom.d.ts"],
   "exclude": ["node_modules"]
 }

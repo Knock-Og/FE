@@ -1,19 +1,19 @@
-import { useState } from "react";
-import styled from "styled-components";
-import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
-import { useMutation } from "react-query";
-import { setCookie } from "api/cookies";
-import { LoginAPI } from "api";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
+import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
+import styled from "styled-components";
+import { setCookie, removeCookie } from "api/cookies";
+import { LOGIN } from "api";
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
-  const loginMutation = useMutation("login", LoginAPI.login, {
+  const loginMutation = useMutation("login", LOGIN.login, {
     onSuccess: (response) => {
-      setCookie("access_token", response.headers.authorization);
+      setCookie("access_token", response.headers.authorization.substr(7));
       navigate("/");
     },
   });
@@ -30,6 +30,10 @@ const LoginForm = () => {
     setEmail("");
     setPassword("");
   };
+
+  useEffect(() => {
+    removeCookie("access_token");
+  }, []);
 
   return (
     <StLoginBg>
