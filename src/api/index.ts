@@ -27,4 +27,6 @@ export const CATEGORY = {
 export const SEARCH = {
   getSearchedData: (keyword: string) =>
     reqWithAccessToken.get(`/search?k=${keyword}`),
+  getCategoryData: (category: string) =>
+    reqWithAccessToken.get(`/category?c=${category}`),
 };
