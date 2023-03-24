@@ -30,3 +30,8 @@ export const SEARCH = {
   getCategoryData: (category: string) =>
     reqWithAccessToken.get(`/category?c=${category}`),
 };
+
+export const MYPAGE = {
+  getMyPosts: () =>
+    reqWithAccessToken.get("/mypage/posts").then((res) => res.data),
+};
