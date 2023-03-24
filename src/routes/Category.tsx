@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
 import { CATEGORY, SEARCH } from "api";
 import { PostCard, Layout, NoSearched } from "components";
 import { searchedPostsState } from "store/atoms";
 import { Category as ICategory, NavItem, Post } from "types";
 
-const Searched = () => {
+const Category = () => {
   const navigate = useNavigate();
+  const params = useParams();
   const [searchedPosts, setSearchedPosts] = useRecoilState(searchedPostsState);
   const [navItems, setNavItems] = useState<NavItem[]>();
 
@@ -37,6 +39,7 @@ const Searched = () => {
 
   return (
     <Layout navItems={navItems}>
+      <StBreadCrumb>{params.categoryName}</StBreadCrumb>
       {searchedPosts ? (
         searchedPosts.map((post) => <PostCard key={post.id} {...post} />)
       ) : (
@@ -46,4 +49,8 @@ const Searched = () => {
   );
 };
 
-export default Searched;
+export default Category;
+
+const StBreadCrumb = styled.div`
+  font-size: 1.5rem;
+`;

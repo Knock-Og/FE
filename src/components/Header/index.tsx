@@ -20,7 +20,10 @@ const Header = () => {
     onSuccess: (res) => setSearchedPosts(res.data as Post[]),
   });
 
-  const handleClickSearchBtn = () => mutate(`${searchInputRef.current?.value}`);
+  const handleClickSearchBtn = () => {
+    mutate(`${searchInputRef.current?.value}`);
+    navigate(`/search?k=${searchInputRef.current?.value}`);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {

@@ -1,10 +1,13 @@
 import { CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Post } from "types";
 
 const PostCard = (post: Post) => {
+  const navigate = useNavigate();
+
   return (
-    <StPostCardBox>
+    <StPostCardBox onClick={() => navigate(`/post/${post.id}`)}>
       <StKeyWordsWrapper>
         {post.keywords.map((keyword) => (
           <StKeyWord key={keyword}>{keyword}</StKeyWord>
@@ -36,6 +39,7 @@ const StPostCardBox = styled.div`
   gap: 10px;
   padding: 10px;
   border: 1px solid gainsboro;
+  cursor: pointer;
 `;
 
 const StKeyWordsWrapper = styled.div`
