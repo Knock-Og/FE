@@ -7,6 +7,7 @@ import SignUp from "routes/SignUp";
 import Login from "routes/Login";
 import Searched from "routes/Searched";
 import Category from "routes/Category";
+import MyPost from "routes/MyPost";
 
 const App = () => {
   const isDark = useRecoilValue(isDarkState);
@@ -16,6 +17,7 @@ const App = () => {
         <GlobalStyle />
         <BrowserRouter>
           <Routes>
+            <Route path="/mypage/posts" element={<MyPost />} />
             <Route path="/category/:categoryName" element={<Category />} />
             <Route path="/search" element={<Searched />} />
             <Route path="/login" element={<Login />} />

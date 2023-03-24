@@ -36,7 +36,7 @@ const Header = () => {
 
   const handleClickMyPost = () => {
     setAnchorEl(null);
-    navigate("/mypost");
+    navigate("/mypage/posts");
   };
   const handleClickBookMark = () => {
     setAnchorEl(null);
