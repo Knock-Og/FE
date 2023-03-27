@@ -3,12 +3,13 @@ import { useRecoilValue } from "recoil";
 import { ThemeProvider } from "styled-components";
 import { isDarkState } from "store/atoms";
 import { GlobalStyle, defaultTheme, darkTheme } from "styles/theme";
-import SignUp from "routes/SignUp";
 import Login from "routes/Login";
 import Searched from "routes/Searched";
 import Category from "routes/Category";
 import MyPost from "routes/MyPost";
 import Bookmark from "routes/Bookmark";
+import Admin from "routes/Admin";
+import AdminCategory from "routes/AdminCategory";
 
 const App = () => {
   const isDark = useRecoilValue(isDarkState);
@@ -25,7 +26,8 @@ const App = () => {
             <Route path="/category/:categoryName" element={<Category />} />
             <Route path="/search" element={<Searched />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admincategory" element={<AdminCategory />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

@@ -43,3 +43,31 @@ export interface PostToBookmark {
   folderId: number;
   postId: number;
 }
+
+export interface SignItem {
+  id: number;
+  memberName: string;
+  email: string;
+  position: string;
+}
+export interface PositionItem {
+  positionID: number;
+  position: string;
+}
+
+export interface CategoryItem {
+  categoryName: string;
+  id: number;
+}
+
+export interface AdminCategory {
+  categoryName: string;
+}
+
+export interface Categoriesput {
+  categoryName: string;
+  id: number;
+}
+export interface CategoryDel {
+  id: number;
+}

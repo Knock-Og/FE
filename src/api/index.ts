@@ -1,5 +1,14 @@
 import { baseAxios, reqWithAccessToken } from "./instance";
-import { EditBookmark, LoginReq, PostToBookmark, SignUpReq } from "types";
+import {
+  LoginReq,
+  SignUpReq,
+  PositionItem,
+  AdminCategory,
+  Categoriesput,
+  CategoryDel,
+  EditBookmark,
+  PostToBookmark,
+} from "types";
 
 export const LOGIN = {
   login: (loginReq: LoginReq) => baseAxios.post("/login", loginReq),
@@ -9,8 +18,25 @@ export const ADMIN = {
   signUp: (signUpReq: SignUpReq) =>
     reqWithAccessToken.post("/signup", signUpReq),
   checkEmail: (email: string) =>
-    reqWithAccessToken.get(`/check?email=${email}`),
-  checkName: (name: string) => reqWithAccessToken.get(`/check?name=${name}`),
+    reqWithAccessToken.get(`/check/email/${email}`),
+  checkName: (memberName: string) =>
+    reqWithAccessToken.get(`/check/name/${memberName}`),
+  member: () => reqWithAccessToken.get(`/members`),
+  position: (positionItem: PositionItem) =>
+    reqWithAccessToken.put(
+      `/position/members/${positionItem.positionID}`,
+      positionItem
+    ),
+};
+
+export const ADMINCATEGORI = {
+  categoryAdd: (category: AdminCategory) =>
+    reqWithAccessToken.post(`/categories`, category), //메소드확인
+  categories: () => reqWithAccessToken.get(`/categories`),
+  categoryPut: (categoriesput: Categoriesput) =>
+    reqWithAccessToken.put(`/categories/${categoriesput.id}`, categoriesput),
+  categoryDel: (categoryDel: CategoryDel) =>
+    reqWithAccessToken.delete(`/categories/${categoryDel.id}`),
 };
 
 export const CATEGORY = {

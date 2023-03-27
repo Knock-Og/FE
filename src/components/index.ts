@@ -3,5 +3,8 @@ export { default as Nav } from "./Nav";
 export { default as PostCard } from "./PostCard";
 export { default as SignUpForm } from "./SignUpForm";
 export { default as Loginform } from "./LoginForm";
+export { default as AdminForm } from "./AdminForm";
+export { default as CategoryForm } from "./CategoryForm";
+export { default as AdminNav } from "./Adminnav";
 export { default as Layout } from "./Layout";
 export { default as NoSearched } from "./NoSearched";

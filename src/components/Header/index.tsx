@@ -7,6 +7,7 @@ import { isDarkState, searchedPostsState } from "store/atoms";
 import { useMutation } from "react-query";
 import { SEARCH } from "api";
 import { Post } from "types";
+import { removeCookie } from "api/cookies";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ const Header = () => {
   const handleClickLogOut = () => {
     setAnchorEl(null);
     navigate("/login");
+    removeCookie("access_token");
   };
 
   return (
