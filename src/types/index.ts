@@ -23,3 +23,30 @@ export interface Post {
   keywords: string[];
   commentCount: number;
 }
+
+export interface signItem {
+  id: number;
+  memberName: string;
+  email: string;
+  position: string;
+}
+export interface positionItem {
+  positionID: number;
+  position: string;
+}
+
+export interface categoryItem {
+  categoryName: string;
+  id: number;
+}
+
+export interface category {
+  categoryName: string;
+}
+export interface categoriesput {
+  categoryName: string;
+  id: number;
+}
+export interface categoryDel {
+  id: number;
+}

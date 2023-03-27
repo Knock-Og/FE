@@ -3,10 +3,10 @@ import { useRecoilValue } from "recoil";
 import { ThemeProvider } from "styled-components";
 import { isDarkState } from "store/atoms";
 import { GlobalStyle, defaultTheme, darkTheme } from "styles/theme";
-import SignUp from "routes/SignUp";
 import Login from "routes/Login";
 import Temp from "routes/Temp";
-
+import Admin from "routes/Admin"
+import Category from "routes/Category";
 const App = () => {
   const isDark = useRecoilValue(isDarkState);
   return (
@@ -15,9 +15,10 @@ const App = () => {
         <GlobalStyle />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Temp />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route path="/temp" element={<Temp />} />
+            <Route path="/" element={<Login />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/category" element={<Category />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

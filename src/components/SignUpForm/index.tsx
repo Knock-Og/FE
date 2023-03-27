@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import styled from "styled-components";
-import { Admin } from "api";
+import { adminApi } from "api";
 
 const SignUpForm = () => {
   // 이름, 이메일
@@ -24,36 +24,46 @@ const SignUpForm = () => {
   const [isValidEmail, setIsValidEmailBoolean] = useState(false);
 
   // 가입
-  const signUpMutation = useMutation("signUp", Admin.signUp, {
+  const queryClient = useQueryClient();
+  const signUpMutation = useMutation("signUp", adminApi.signUp, {
     onSuccess: (response) => {
       return response.data;
     },
   });
 
   //이메일 중복확인
-  const checkEmailMutation = useMutation("checkEmail", Admin.checkEmail, {
+  const checkEmailMutation = useMutation(adminApi.checkEmail, {
     onSuccess: (response) => {
       if (response) {
+        queryClient.invalidateQueries("email");
         alert("사용가능한 이메일 입니다.");
       } else {
         alert("중복된 이메일 입니다.");
       }
     },
+    onError: (response) => {
+      if (response) {
+        queryClient.invalidateQueries("email");
+        alert("실패했습니다.");
+      }
+    },
   });
 
   //이름 중복확인
-  const checkNameMutation = useMutation("checkName", Admin.checkName, {
+  const checkNameMutation = useMutation(adminApi.checkName, {
     onSuccess: (response) => {
       if (response) {
+        queryClient.invalidateQueries("name");
         alert("사용가능한 이름 입니다.");
       } else {
+        queryClient.invalidateQueries("name");
         alert("중복된 이름 입니다.");
       }
     },
   });
 
   // CONST
-  const POSITION_LIST = ["직급을 선택해주세요", "member", "manager", "owner"];
+  const POSITION_LIST = ["직급을 선택해주세요", "Member", "Manager", "Owner"];
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const passwordRegex =
     /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
@@ -87,6 +97,7 @@ const SignUpForm = () => {
   //이메일을 서버로 전송..
   const checkEmail = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+
     checkEmailMutation.mutate(email);
   };
 
@@ -115,7 +126,7 @@ const SignUpForm = () => {
   };
 
   const signupSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    // e.preventDefault();
     if (memberName.trim() === "") return alert("이름을 입력해주세요!");
     if (position.trim() === "") return alert("직급을 선택해주세요!");
     if (password.trim() === "") return alert("비밀번호를 입력해주세요!");
@@ -245,21 +256,28 @@ export default SignUpForm;
 const StSignWrap = styled.div`
   width: 100%;
   height: 100vh;
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: center;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background:rgba(0,0,0,0.6);
 `;
 const StSignForm = styled.form`
-  width: 700px;
+  width: 500px;
+  background:#fff;
+  padding:60px;
 `;
 const StSignTitle = styled.h3`
-  font-size: 36px;
+  font-size: 35px;
   font-weight: 700;
   line-height: 1;
-  margin-bottom: 70px;
-  padding-bottom: 50px;
+  margin-bottom: 40px;
   text-align: center;
-  border-bottom: 1px solid #ececec;
 `;
 const StSignUl = styled.div``;
 const StSignLi = styled.div`
@@ -272,10 +290,10 @@ const StSignLi = styled.div`
   }
 `;
 const StSignLeft = styled.div`
-  width: 100px;
+  width: 110px;
 `;
 const StSignRight = styled.div`
-  width: calc(100% - 130px);
+  width: calc(100% - 140px);
   position: relative;
 `;
 const StSignInput = styled.input`
@@ -287,6 +305,7 @@ const StSignInput = styled.input`
   &::placeholder {
     color: #bdbdbd;
   }
+  margin-bottom:5px;
 `;
 const StSignSelect = styled.select`
   width: 100%;
@@ -298,6 +317,7 @@ const StSignSelect = styled.select`
 const StCheckBtn = styled.button`
   position: absolute;
   right: 0;
+  top: 10px;
 `;
 const StErrorMsg = styled.p`
   color: #ff0000;
