@@ -40,7 +40,7 @@ const Header = () => {
   };
   const handleClickBookMark = () => {
     setAnchorEl(null);
-    navigate("/book-mark");
+    navigate("/bookmark");
   };
   const handleClickLogOut = () => {
     setAnchorEl(null);

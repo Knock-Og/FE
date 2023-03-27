@@ -28,3 +28,18 @@ export interface Category {
   id: number;
   categoryName: string;
 }
+
+export interface Bookmark {
+  id: number;
+  bookMarkFolderName: string;
+}
+
+export interface EditBookmark {
+  folderId: number;
+  bookMarkFolderName: string;
+}
+
+export interface PostToBookmark {
+  folderId: number;
+  postId: number;
+}

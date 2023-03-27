@@ -1,5 +1,5 @@
 import { baseAxios, reqWithAccessToken } from "./instance";
-import { LoginReq, SignUpReq } from "types";
+import { EditBookmark, LoginReq, PostToBookmark, SignUpReq } from "types";
 
 export const LOGIN = {
   login: (loginReq: LoginReq) => baseAxios.post("/login", loginReq),
@@ -34,4 +34,23 @@ export const SEARCH = {
 export const MYPAGE = {
   getMyPosts: () =>
     reqWithAccessToken.get("/mypage/posts").then((res) => res.data),
+};
+
+export const BOOKMARK = {
+  getBookmarks: () =>
+    reqWithAccessToken.get("/bookmark/folders").then((res) => res.data),
+  getBookmark: (folderId: number) =>
+    reqWithAccessToken
+      .get(`/bookmark/folder/${folderId}/bookmarks`)
+      .then((res) => res.data),
+  addBookmark: (bookMarkFolderName: string) =>
+    reqWithAccessToken.post("/bookmark/folder", { bookMarkFolderName }),
+  addPostToBookmark: ({ folderId, postId }: PostToBookmark) =>
+    reqWithAccessToken.post(`/bookmark/folder/${folderId}/post/${postId}`),
+  editBookmark: ({ folderId, bookMarkFolderName }: EditBookmark) =>
+    reqWithAccessToken.put(`/bookmark/folder/${folderId}`, bookMarkFolderName),
+  deleteBookmark: (folderId: number) =>
+    reqWithAccessToken.delete(`/bookmark/folder/${folderId}`),
+  deletePostToBookmark: ({ folderId, postId }: PostToBookmark) =>
+    reqWithAccessToken.delete(`/bookmark/folder/${folderId}/post/${postId}`),
 };

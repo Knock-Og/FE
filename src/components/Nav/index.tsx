@@ -1,13 +1,22 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { NavItem } from "types";
 
 interface Props {
   navItems: NavItem[];
   isBookMarkNav?: boolean;
+  addBookmarkHandler?: (addBookmarkInput: string) => void;
 }
 
-const Nav = ({ navItems, isBookMarkNav }: Props) => {
-  const handleClickBookMarkAddBtn = () => console.log("add book mark");
+const Nav = ({ navItems, isBookMarkNav, addBookmarkHandler }: Props) => {
+  const [addBookmarkInput, setAddBookmarkInput] = useState("");
+
+  const handleChangeAddBookmarkInput = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => setAddBookmarkInput(e.target.value);
+
+  const handleClickBookMarkAddBtn = () =>
+    addBookmarkHandler && addBookmarkHandler(addBookmarkInput);
 
   return (
     <StContainer>
@@ -22,7 +31,7 @@ const Nav = ({ navItems, isBookMarkNav }: Props) => {
             {item.itemValue}
           </StLi>
         ))}
-        {isBookMarkNav && <input />}
+        {isBookMarkNav && <input onChange={handleChangeAddBookmarkInput} />}
       </StUl>
     </StContainer>
   );

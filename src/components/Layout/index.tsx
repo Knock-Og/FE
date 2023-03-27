@@ -7,15 +7,26 @@ interface Props {
   children: React.ReactNode;
   isBookMarkNav?: boolean;
   isNavHidden?: boolean;
+  addBookmarkHandler?: (addBookmarkInput: string) => void;
 }
 
-const Layout = ({ navItems, children, isBookMarkNav, isNavHidden }: Props) => {
+const Layout = ({
+  navItems,
+  children,
+  isBookMarkNav,
+  isNavHidden,
+  addBookmarkHandler,
+}: Props) => {
   return (
     <>
       <Header />
       <StContainer>
         {navItems && !isNavHidden && (
-          <Nav navItems={navItems} isBookMarkNav={isBookMarkNav} />
+          <Nav
+            navItems={navItems}
+            isBookMarkNav={isBookMarkNav}
+            addBookmarkHandler={addBookmarkHandler}
+          />
         )}
         <StPostCardContainer>{children}</StPostCardContainer>
       </StContainer>
