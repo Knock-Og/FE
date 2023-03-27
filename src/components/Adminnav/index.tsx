@@ -1,11 +1,11 @@
 import styled from "styled-components";
 const AdminNav = () => {
-  const pathname= window.location.pathname;
+  const pathname = window.location.pathname;
   return (
     <StAdminNavWrap>
       <StLogo>
         <svg width="140" height="37">
-          <g clip-path="url(#clip0_357_96)">
+          <g clipPath="url(#clip0_357_96)">
             <path
               d="M24.9383 22.1615L35.7534 36.9035H29.0924L21.2138 26.1291L16.4151 31.3651V36.9238H10.9717V10.9397H16.4151V23.4298L28.2674 10.8711H35.6234L24.9383 22.1615Z"
               fill="#007FFF"
@@ -66,8 +66,8 @@ const AdminNav = () => {
         <StNavLink href="/admin">
           <StNavButton active={pathname === "/admin"}>사용자관리</StNavButton>
         </StNavLink>
-        <StNavLink href="/category">
-          <StNavButton active={pathname === "/category"}>
+        <StNavLink href="/admin/category">
+          <StNavButton active={pathname === "/admin/category"}>
             카테고리관리
           </StNavButton>
         </StNavLink>
@@ -91,8 +91,8 @@ const StLogo = styled.div`
   padding-left: 10%;
   margin-bottom: 50px;
 `;
-const StNav = styled.div``
-const StNavLink = styled.a``
+const StNav = styled.div``;
+const StNavLink = styled.a``;
 const StNavButton = styled.button<{ active?: boolean }>`
   width: 100%;
   height: 60px;
@@ -105,5 +105,5 @@ const StNavButton = styled.button<{ active?: boolean }>`
   border: 0;
   text-align: left;
   cursor: pointer;
-  border-left:${({active})=>(active ? "5px solid #007FFF":"")}
+  border-left: ${({ active }) => (active ? "5px solid #007FFF" : "")};
 `;

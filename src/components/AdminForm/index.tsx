@@ -43,7 +43,6 @@ const AdminForm = () => {
   const { isLoading, isError, data } = useQuery("member", ADMIN.member);
   if (isLoading) return <h1>"성공했습니다.!"</h1>;
   if (isError) return <h1>"실패했습니다.!"</h1>;
-  //console.log(data)
 
   return (
     <>

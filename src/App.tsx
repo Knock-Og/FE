@@ -26,8 +26,9 @@ const App = () => {
             <Route path="/category/:categoryName" element={<Category />} />
             <Route path="/search" element={<Searched />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/admincategory" element={<AdminCategory />} />
+            <Route path="/admin" element={<Admin />}>
+              <Route path="category" element={<AdminCategory />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
