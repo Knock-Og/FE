@@ -3,7 +3,7 @@ import ModalPortal from "api/portal";
 import { SignUpForm } from "components";
 import {useState} from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import {adminApi} from "api"
+import { ADMIN } from "api";
 import { signItem } from "types";
 const AdminForm=()=>{
   const [modalOpen, setModalOpen] = useState(false);
@@ -11,17 +11,15 @@ const AdminForm=()=>{
     setModalOpen(!modalOpen);
   };
   const queryClient = useQueryClient()
-  const positionMutation = useMutation(adminApi.position, {
+  const positionMutation = useMutation(ADMIN.position, {
     onSuccess: (response) => {
       if (response) {
         queryClient.invalidateQueries("position");
-        
       }
     },
     onError: (response) => {
       if (response) {
         queryClient.invalidateQueries("position");
-        
       }
     },
   });
@@ -39,7 +37,7 @@ const AdminForm=()=>{
 
     positionMutation.mutate({ position, positionID });
   };
-  const { isLoading, isError, data } = useQuery("sign", adminApi.member);
+  const { isLoading, isError, data } = useQuery("member", ADMIN.member);
   if(isLoading) return <h1>"성공했습니다.!"</h1>
   if (isError) return <h1>"실패했습니다.!"</h1>
   //console.log(data)

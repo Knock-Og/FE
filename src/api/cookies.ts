@@ -5,28 +5,24 @@ const cookie = new Cookies();
 
 
 export const SetCookie = (
-  access_token: string,
+  cookieName: string,
   value: string,
   option?: { expires?: Date }
 ) => {
-  
   //쿠키 만료시간 1시간 지정
-  // const expires = option?.expires ?? new Date(Date.now() + 60 * 60 * 24);
-  // cookie.set(access_token, value,  {
-  //   expires: option?.expires ?? new Date(Date.now() + 8640000),
-  // });
-  cookie.set(access_token, value, option);
-   
+  const expires = option?.expires ?? new Date(Date.now() + 60 * 60 * 24);
+  cookie.set(cookieName, value, { expires });
+  //cookie.set(cookieName, value, option);
+
   // 활동이 없으면 쿠키 삭제
-  const inactivityTime = 30 * 60 
+  const inactivityTime = 30 * 60 * 60;
   let timer: NodeJS.Timeout;
   let debouncedResetTimer: () => void;
   const Navigate = useNavigate();
   const resetTimer = () => {
-    
     clearTimeout(timer);
     timer = setTimeout(() => {
-      removeCookie(access_token);
+      removeCookie(cookieName);
       alert("활동을 하지않아 자동 로그아웃되었습니다.");
       Navigate("/");
     }, inactivityTime);
@@ -47,24 +43,19 @@ export const SetCookie = (
   // 이벤트 발생시 타이머 초기화
   window.addEventListener(
     "mousemove",
-    debouncedResetTimer.bind(null, access_token)
+    debouncedResetTimer.bind(null, cookieName)
   );
   window.addEventListener(
     "keydown",
-    debouncedResetTimer.bind(null, access_token)
+    debouncedResetTimer.bind(null, cookieName)
   );
-  window.addEventListener(
-    "scroll",
-    debouncedResetTimer.bind(null, access_token)
-  );
+  window.addEventListener("scroll", debouncedResetTimer.bind(null, cookieName));
 
   return;
 };
-
-
-export const getCookie = (access_token: string) => {
-  return cookie.get(access_token);
+export const getCookie = (cookieName: string) => {
+  return cookie.get(cookieName);
 };
-export const removeCookie = (access_token: string) => {
-  return cookie.remove(access_token);
+export const removeCookie = (cookieName: string) => {
+  return cookie.remove(cookieName);
 };

@@ -24,6 +24,12 @@ export interface Post {
   commentCount: number;
 }
 
+export interface Category {
+  id: number;
+  categoryName: string;
+}
+
+
 export interface signItem {
   id: number;
   memberName: string;

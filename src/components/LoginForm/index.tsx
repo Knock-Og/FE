@@ -1,24 +1,24 @@
-import { useState } from "react";
-import styled from "styled-components";
-//import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
-import { useMutation } from "react-query";
-import { SetCookie } from "api/cookies";
-import { loginApi } from "api";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
+import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
+import styled from "styled-components";
+import { SetCookie, removeCookie } from "api/cookies";
+import { LOGIN } from "api";
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //const [showPw, setShowPw] = useState(false);
-  const loginMutation = useMutation("login", loginApi.login, {
+  const [showPw, setShowPw] = useState(false);
+  const loginMutation = useMutation("login", LOGIN.login, {
     onSuccess: (response) => {
-      SetCookie("access_token", response.headers.authorization);
-      navigate("/temp");
+      SetCookie("access_token", response.headers.authorization.substr(7));
+      navigate("/search");
     },
   });
 
-  //const onChangePw = () => setShowPw(!showPw);
+  const onChangePw = () => setShowPw(!showPw);
 
   const loginHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,6 +30,10 @@ const LoginForm = () => {
     setEmail("");
     setPassword("");
   };
+
+  // useEffect(() => {
+  //   removeCookie("access_token");
+  // }, []);
 
   return (
     <StLoginBg>
@@ -43,7 +47,7 @@ const LoginForm = () => {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <g clip-path="url(#clip0_108_152)">
+              <g clipPath="url(#clip0_108_152)">
                 <path
                   d="M29.0008 25.1561L41.361 41.8904H33.7484L24.7444 29.66L19.26 35.6035V41.9134H13.039V12.4179H19.26V26.5959L32.8056 12.34H41.2124L29.0008 25.1561Z"
                   fill="#007FFF"
@@ -108,19 +112,19 @@ const LoginForm = () => {
               </StLoginLi>
               <StLoginLi>
                 <StInput
-                  // type={showPw ? "text" : "password"}
-                  type="password"
+                  type={showPw ? "text" : "password"}
+                  //type="password"
                   placeholder="password"
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
                 />
-                {/* <StLoginLabel htmlFor="password">
-                {showPw ? (
-                  <AiOutlineEye onClick={onChangePw} />
-                ) : (
-                  <AiOutlineEyeInvisible onClick={onChangePw} />
-                )}
-              </StLoginLabel> */}
+                <StLoginLabel htmlFor="password">
+                  {showPw ? (
+                    <AiOutlineEye onClick={onChangePw} />
+                  ) : (
+                    <AiOutlineEyeInvisible onClick={onChangePw} />
+                  )}
+                </StLoginLabel>
               </StLoginLi>
             </StLoginUl>
             <StLoginBtn>로그인</StLoginBtn>
@@ -194,12 +198,12 @@ const StInput = styled.input`
     border: 1px solid #007fff;
   }
 `;
-// const StLoginLabel = styled.label`
-//   position: absolute;
-//   right: 24px;
-//   top: 50%;
-//   transform: translateY(-50%);
-// `;
+const StLoginLabel = styled.label`
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+`;
 const StLoginBtn = styled.button`
   width: 100%;
   background: #007fff;

@@ -1,19 +1,42 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { Menu, MenuItem } from "@mui/material";
 import styled from "styled-components";
-import { isDarkState } from "store/atoms";
+import { isDarkState, searchedPostsState } from "store/atoms";
+import { useMutation } from "react-query";
+import { SEARCH } from "api";
+import { Post } from "types";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const setSearchedPosts = useSetRecoilState(searchedPostsState);
   const [isDark, setIsDark] = useRecoilState(isDarkState);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const navigate = useNavigate();
+
+  const { mutate } = useMutation(SEARCH.getSearchedData, {
+    onSuccess: (res) => setSearchedPosts(res.data as Post[]),
+  });
+
+  const handleClickSearchBtn = () => {
+    mutate(`${searchInputRef.current?.value}`);
+    navigate(`/search?k=${searchInputRef.current?.value}`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleClickSearchBtn();
+    }
+  };
+
   const handleClickAccountBtn = (e: React.MouseEvent<HTMLButtonElement>) =>
     setAnchorEl(e.currentTarget);
+
   const handleClickMyPost = () => {
     setAnchorEl(null);
-    navigate("/mypost");
+    navigate("/mypage/posts");
   };
   const handleClickBookMark = () => {
     setAnchorEl(null);
@@ -28,7 +51,8 @@ const Header = () => {
     <StContainer>
       <StHeaderLeftWrapper>
         <StLogo>KNOCK</StLogo>
-        <StSearch />
+        <StSearch ref={searchInputRef} onKeyDown={handleKeyDown} />
+        <button onClick={handleClickSearchBtn}>찾기</button>
       </StHeaderLeftWrapper>
       <StHeaderRightWrapper>
         <StCreatePostBtn onClick={() => navigate("/create")}>
@@ -55,6 +79,8 @@ const Header = () => {
 export default Header;
 
 const StContainer = styled.div`
+  /* position: fixed; */
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;

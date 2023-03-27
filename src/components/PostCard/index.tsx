@@ -1,13 +1,16 @@
 import { CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Post } from "types";
 
 const PostCard = (post: Post) => {
+  const navigate = useNavigate();
+
   return (
-    <StPostCardBox>
+    <StPostCardBox onClick={() => navigate(`/post/${post.id}`)}>
       <StKeyWordsWrapper>
         {post.keywords.map((keyword) => (
-          <StKeyWord>{keyword}</StKeyWord>
+          <StKeyWord key={keyword}>{keyword}</StKeyWord>
         ))}
       </StKeyWordsWrapper>
       <StTitle>
@@ -21,6 +24,7 @@ const PostCard = (post: Post) => {
       <StPostCardFooter>
         <div>{post.createdAt}</div>
         <div>{post.commentCount}개의 댓글</div>
+        {/* TODO: post.isEdit &&  <CircularProgress size={13} /> */}
         {true && <CircularProgress size={13} />}
       </StPostCardFooter>
     </StPostCardBox>
@@ -35,6 +39,7 @@ const StPostCardBox = styled.div`
   gap: 10px;
   padding: 10px;
   border: 1px solid gainsboro;
+  cursor: pointer;
 `;
 
 const StKeyWordsWrapper = styled.div`

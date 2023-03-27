@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import styled from "styled-components";
-import { adminApi } from "api";
+import { ADMIN } from "api";
 
 const SignUpForm = () => {
   // 이름, 이메일
@@ -25,14 +25,14 @@ const SignUpForm = () => {
 
   // 가입
   const queryClient = useQueryClient();
-  const signUpMutation = useMutation("signUp", adminApi.signUp, {
+  const signUpMutation = useMutation("signUp", ADMIN.signUp, {
     onSuccess: (response) => {
       return response.data;
     },
   });
 
   //이메일 중복확인
-  const checkEmailMutation = useMutation(adminApi.checkEmail, {
+  const checkEmailMutation = useMutation("checkEmail", ADMIN.checkEmail, {
     onSuccess: (response) => {
       if (response) {
         queryClient.invalidateQueries("email");
@@ -50,7 +50,7 @@ const SignUpForm = () => {
   });
 
   //이름 중복확인
-  const checkNameMutation = useMutation(adminApi.checkName, {
+  const checkNameMutation = useMutation("checkName", ADMIN.checkName, {
     onSuccess: (response) => {
       if (response) {
         queryClient.invalidateQueries("name");

@@ -6,3 +6,5 @@ export { default as Loginform } from "./LoginForm";
 export { default as AdminForm } from "./AdminForm";
 export { default as CategoryForm } from "./CategoryForm";
 export { default as AdminNav } from "./Adminnav";
+export { default as Layout } from "./Layout";
+export { default as NoSearched } from "./NoSearched";

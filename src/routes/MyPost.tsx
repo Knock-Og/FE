@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { useRecoilState } from "recoil";
-import styled from "styled-components";
-import { CATEGORY, SEARCH } from "api";
+import { CATEGORY, SEARCH, MYPAGE } from "api";
 import { PostCard, Layout, NoSearched } from "components";
 import { searchedPostsState } from "store/atoms";
 import { Category as ICategory, NavItem, Post } from "types";
 
-
-
-const Category = () => {
+const MyPost = () => {
   const navigate = useNavigate();
-  const params = useParams();
   const [searchedPosts, setSearchedPosts] = useRecoilState(searchedPostsState);
   const [navItems, setNavItems] = useState<NavItem[]>();
 
   const { data: categoryData } = useQuery<ICategory[]>(
     "getCategories",
     CATEGORY.getCategories
+  );
+  const { data: myPostsData } = useQuery<Post[]>(
+    "getMyPosts",
+    MYPAGE.getMyPosts
   );
   const { mutate } = useMutation(SEARCH.getCategoryData, {
     onSuccess: (res) => setSearchedPosts(res.data as Post[]),
@@ -39,9 +39,14 @@ const Category = () => {
     }
   }, [categoryData, navigate, mutate]);
 
+  useEffect(() => {
+    if (myPostsData) {
+      setSearchedPosts(myPostsData);
+    }
+  }, [myPostsData, setSearchedPosts]);
+
   return (
     <Layout navItems={navItems}>
-      <StBreadCrumb>{params.categoryName}</StBreadCrumb>
       {searchedPosts ? (
         searchedPosts.map((post) => <PostCard key={post.id} {...post} />)
       ) : (
@@ -51,8 +56,4 @@ const Category = () => {
   );
 };
 
-export default Category;
-
-const StBreadCrumb = styled.div`
-  font-size: 1.5rem;
-`;
+export default MyPost;
