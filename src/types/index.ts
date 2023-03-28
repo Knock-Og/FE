@@ -13,6 +13,11 @@ export interface NavItem {
   handler: () => void;
 }
 
+export interface CreateBoard {
+  title: string;
+  content: string;
+}
+
 export interface Post {
   id: number;
   memberName: string;

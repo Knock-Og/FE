@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import styled from "styled-components";
-import { SetCookie } from "api/cookies";
+import { setCookie } from "api/cookies";
 import { LOGIN } from "api";
 
 const LoginForm = () => {
@@ -13,7 +13,7 @@ const LoginForm = () => {
   const [showPw, setShowPw] = useState(false);
   const loginMutation = useMutation("login", LOGIN.login, {
     onSuccess: (response) => {
-      SetCookie("access_token", response.headers.authorization.substr(7));
+      setCookie("access_token", response.headers.authorization.substr(7));
       navigate("/search");
     },
   });

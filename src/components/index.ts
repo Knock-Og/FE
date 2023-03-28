@@ -8,3 +8,5 @@ export { default as CategoryForm } from "./CategoryForm";
 export { default as AdminNav } from "./Adminnav";
 export { default as Layout } from "./Layout";
 export { default as NoSearched } from "./NoSearched";
+export { default as WriteBoard } from "./WriteBoard";
+export { default as DetailBoard } from "./DetailBoard";

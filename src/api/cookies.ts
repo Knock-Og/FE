@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const cookie = new Cookies();
 
-export const SetCookie = (
+export const setCookie = (
   cookieName: string,
   value: string,
   option?: { expires?: Date }
@@ -17,13 +17,11 @@ export const SetCookie = (
   const inactivityTime = 30 * 60 * 60;
   let timer: NodeJS.Timeout;
   let debouncedResetTimer: () => void;
-  const Navigate = useNavigate();
   const resetTimer = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       removeCookie(cookieName);
       alert("활동을 하지않아 자동 로그아웃되었습니다.");
-      Navigate("/");
     }, inactivityTime);
   };
 

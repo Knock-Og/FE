@@ -8,13 +8,12 @@ export const baseURL = axios.create({
   },
 });
 
-
 export const baseAxios = axios.create({
-  baseURL: `${process.env.React_APP_SERVER_URL}`,
+  baseURL: `${process.env.REACT_APP_SERVER_URL}`,
 });
 
 export const reqWithAccessToken = axios.create({
-  baseURL: `${process.env.React_APP_SERVER_URL}`,
+  baseURL: `${process.env.REACT_APP_SERVER_URL}`,
 });
 
 reqWithAccessToken.interceptors.request.use(
