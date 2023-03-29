@@ -12,6 +12,7 @@ import Admin from "routes/Admin";
 import AdminCategory from "routes/AdminCategory";
 import Write from "routes/Write";
 import Deatil from "routes/Detail";
+import { ModifyBoard } from "components";
 
 const App = () => {
   const isDark = useRecoilValue(isDarkState);
@@ -29,7 +30,8 @@ const App = () => {
             <Route path="/search" element={<Searched />} />
             <Route path="/login" element={<Login />} />
             <Route path="/write" element={<Write />} />
-            <Route path="/detail" element={<Deatil />} />
+            <Route path="/post/:id" element={<Deatil />} />
+            <Route path="/modify" element={<ModifyBoard />} />
             <Route path="/admin" element={<Admin />}>
               <Route path="category" element={<AdminCategory />} />
             </Route>

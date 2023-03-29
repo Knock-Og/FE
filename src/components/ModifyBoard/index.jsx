@@ -1,18 +1,23 @@
 import { getCookie } from "api/cookies";
 import axios from "axios";
 import { useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-function WriteBoard() {
+function ModifyBoard() {
+  const location = useLocation();
+  console.log("location", location.state.PostData);
+
+  const modifyData = location.state.PostData;
+  const modifyDataId = location.state.PostData.id;
+
   const [bordContent, setBordContent] = useState({
-    title: "",
-    content: "",
-    keywords: ["키워드1"],
+    title: modifyData.title,
+    content: modifyData.content,
+    keywords: modifyData.keywords,
     editingStatus: "false",
-    category: "공지사항",
-    modifyPermission: "member",
-    readablePosition: "member",
+    category: modifyData.category,
   });
 
   const onChangeHandler = (event) => {
@@ -21,9 +26,9 @@ function WriteBoard() {
   };
 
   //통신
-  const createReview = async (data, accessToken) => {
-    const response = await axios.post(
-      `http://43.201.3.8:8080/post`,
+  const modifyBoard = async (data, accessToken) => {
+    const response = await axios.put(
+      `http://43.201.3.8:8080/post/${modifyDataId}`,
       bordContent,
       {
         headers: {
@@ -34,13 +39,22 @@ function WriteBoard() {
     return response;
   };
 
-  const mutationCreate = useMutation(() =>
-    createReview(bordContent, getCookie("access_token"))
+  const queryClient = useQueryClient();
+  const mutationCreate = useMutation(
+    () => modifyBoard(bordContent, getCookie("access_token")),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("getPost");
+      },
+    }
   );
+
+  const navigate = useNavigate();
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
     mutationCreate.mutate(bordContent, getCookie("accessToken"));
+    navigate(`/post/${modifyDataId}`);
   };
 
   const categoryOptions = [
@@ -102,12 +116,12 @@ function WriteBoard() {
           ))}
         </StAddSelect>
       </StInputGroup>
-      <StAddButton>추가하기</StAddButton>
+      <StAddButton>수정하기</StAddButton>
     </StAddForm>
   );
 }
 
-export default WriteBoard;
+export default ModifyBoard;
 
 const StInputGroup = styled.div`
   display: flex;
