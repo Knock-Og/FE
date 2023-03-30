@@ -10,3 +10,7 @@ export { default as Layout } from "./Layout";
 export { default as NoSearched } from "./NoSearched";
 export { default as WriteBoard } from "./WriteBoard";
 export { default as DetailBoard } from "./DetailBoard";
+export { default as CommentsBoard } from "./CommentsBoard";
+export { default as LogBoard } from "./LogBoard";
+export { default as BookmarksBoard } from "./BookmarksBoard";
+export { default as ModifyBoard } from "./ModifyBoard";
