@@ -7,13 +7,10 @@ export const setCookie = (
   value: string,
   option?: { expires?: Date }
 ) => {
-  //쿠키 만료시간 1시간 지정
-  // const expires = option?.expires ?? new Date(Date.now() + 60 * 60 * 24);
-  // cookie.set(cookieName, value, { expires });
   cookie.set(cookieName, value, option);
 
   // 활동이 없으면 쿠키 삭제
-  const inactivityTime = 30 * 60 * 60;
+  const inactivityTime = 60 * 60 * 24;
   let timer: NodeJS.Timeout;
   let debouncedResetTimer: () => void;
   const resetTimer = () => {

@@ -72,7 +72,7 @@ const Header = () => {
           open={anchorEl !== null}
           onClick={() => setAnchorEl(null)}
         >
-          <MenuItem onClick={() => navigate("/create")}>새 글 작성</MenuItem>
+          <MenuItem onClick={() => navigate("/write")}>새 글 작성</MenuItem>
           <MenuItem onClick={handleClickMyPost}>내 포스트</MenuItem>
           <MenuItem onClick={handleClickBookMark}>즐겨찾기</MenuItem>
           <MenuItem onClick={handleClickLogOut}>

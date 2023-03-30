@@ -3,40 +3,59 @@ import { useRecoilValue } from "recoil";
 import { ThemeProvider } from "styled-components";
 import { isDarkState } from "store/atoms";
 import { GlobalStyle, defaultTheme, darkTheme } from "styles/theme";
-import Login from "routes/Login";
-import Searched from "routes/Searched";
-import Category from "routes/Category";
-import MyPost from "routes/MyPost";
-import Bookmark from "routes/Bookmark";
-import Admin from "routes/Admin";
-import AdminCategory from "routes/AdminCategory";
-import Main from "routes/Main";
-import Write from "routes/Write";
-import Detail from "routes/Detail";
-import { ModifyBoard } from "components";
+import * as ROUTE from "routes";
 
 const App = () => {
   const isDark = useRecoilValue(isDarkState);
+
   return (
     <>
       <ThemeProvider theme={isDark ? darkTheme : defaultTheme}>
         <GlobalStyle />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="/bookmark" element={<Bookmark />}>
-              <Route path=":folderName" element={<Bookmark />} />
+            {/* Admin */}
+            <Route path="/admin" element={<ROUTE.Admin />}>
+              <Route path="category" element={<ROUTE.AdminCategory />} />
+              <Route path="login" element={<ROUTE.AdminLogin />} />
             </Route>
-            <Route path="/mypage/posts" element={<MyPost />} />
-            <Route path="/category/:categoryName" element={<Category />} />
-            <Route path="/search" element={<Searched />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/write" element={<Write />} />
-            <Route path="/post/:id" element={<Detail />} />
-            <Route path="/modify" element={<ModifyBoard />} />
-            <Route path="/admin" element={<Admin />}>
-              <Route path="category" element={<AdminCategory />} />
+
+            {/* Main */}
+            <Route path="/" element={<ROUTE.Main />} />
+
+            {/* Bookmark */}
+            <Route path="/bookmark" element={<ROUTE.Bookmark />}>
+              <Route path=":folderName" element={<ROUTE.Bookmark />} />
             </Route>
+
+            {/* Category */}
+            <Route
+              path="/category/:categoryName"
+              element={<ROUTE.Category />}
+            />
+
+            {/* Detail */}
+            <Route path="/post/:id" element={<ROUTE.Detail />} />
+
+            {/* Login */}
+            <Route path="/login" element={<ROUTE.Login />}>
+              <Route path="findid" element={<ROUTE.FindId />} />
+              <Route path="findid/code" element={<ROUTE.FindIdCode />} />
+              <Route path="findpw" element={<ROUTE.FindPw />} />
+              <Route path="findpw/code" element={<ROUTE.FindPwCode />} />
+            </Route>
+
+            {/* Modify */}
+            <Route path="/modify" element={<ROUTE.Modify />} />
+
+            {/* Mypage */}
+            <Route path="/mypage/posts" element={<ROUTE.MyPost />} />
+
+            {/* Searched */}
+            <Route path="/search" element={<ROUTE.Searched />} />
+
+            {/* Write */}
+            <Route path="/write" element={<ROUTE.Write />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

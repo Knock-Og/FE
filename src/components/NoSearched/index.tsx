@@ -8,7 +8,7 @@ const NoSearched = () => {
     <StContainer>
       <StLogo />
       <StLabel>검색된 게시물이 없습니다</StLabel>
-      <StCreateBtn onClick={() => navigate("/create")}>게시글 작성</StCreateBtn>
+      <StCreateBtn onClick={() => navigate("/write")}>게시글 작성</StCreateBtn>
     </StContainer>
   );
 };

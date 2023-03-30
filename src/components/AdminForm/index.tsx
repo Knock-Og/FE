@@ -1,25 +1,39 @@
 import styled from "styled-components";
 import ModalPortal from "api/portal";
 import { SignUpForm } from "components";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ADMIN } from "api";
 import { SignItem } from "types";
 const AdminForm = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const modalBtn = () => {
-    setModalOpen(!modalOpen);
+    setModalOpen(false);
   };
+  useEffect(() => {
+    if (modalOpen) {
+      document.body.style.cssText = `
+    position: fixed; 
+    top: -${window.scrollY}px;
+    overflow-y: scroll;
+    width: 100%;`;
+      return () => {
+        const scrollY = document.body.style.top;
+        document.body.style.cssText = "";
+        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+      };
+    }
+  }, [modalOpen]);
   const queryClient = useQueryClient();
-  const positionMutation = useMutation(ADMIN.position, {
+  const positionMutation = useMutation("position", ADMIN.position, {
     onSuccess: (response) => {
       if (response) {
-        queryClient.invalidateQueries("position");
+        queryClient.invalidateQueries("member");
       }
     },
     onError: (response) => {
       if (response) {
-        queryClient.invalidateQueries("position");
+        queryClient.invalidateQueries("member");
       }
     },
   });
@@ -43,7 +57,8 @@ const AdminForm = () => {
   const { isLoading, isError, data } = useQuery("member", ADMIN.member);
   if (isLoading) return <h1>"성공했습니다.!"</h1>;
   if (isError) return <h1>"실패했습니다.!"</h1>;
-
+  
+  // console.log(data)
   return (
     <>
       <StAdminWrap>
@@ -51,27 +66,28 @@ const AdminForm = () => {
           <StTitle>
             사용자관리
             <StUser>
-              전체사용자 <StUserSpan>{data?.data.length}</StUserSpan>명
+              전체사용자 <StUserSpan>{/* {data?.data.length} */}</StUserSpan>명
             </StUser>
           </StTitle>
-          <button onClick={() => modalBtn()}>인원추가</button>
+          <StButton onClick={() => setModalOpen(true)}>인원추가 +</StButton>
         </StTop>
         <StContent>
           <StContentTop>
             <StName>이름</StName>
             <Stemail>이메일</Stemail>
-            <StPosition>현재직급</StPosition>
+            <StNumber>전화번호</StNumber>
+            <StPosition>직급</StPosition>
             <Stpositionchange>직급변경</Stpositionchange>
             <StChange>직급수정</StChange>
           </StContentTop>
-
-          {data?.data.map((item: SignItem) => {
+           {data?.data.map((item: SignItem) => {
             return (
               <StContentform onSubmit={positionSubmit} key={item.id}>
                 <StContentBottom>
-                  <StName>{item.memberName}</StName>
-                  <Stemail>{item.email}</Stemail>
-                  <StPosition>{item.position}</StPosition>
+                  <StNameBottom>{item.memberName}</StNameBottom>
+                  <StemailBottom>{item.email}</StemailBottom>
+                  <StNumberBottom>{item.phoneNum}</StNumberBottom>
+                  <StPositionBottom>{item.position}</StPositionBottom>
                   <StPositionchangeWrap>
                     <StPositionchangeDiv>
                       <StPositionInput
@@ -79,7 +95,6 @@ const AdminForm = () => {
                         id={`Member${item.id}`}
                         name="position"
                         value="MEMBER"
-                        key={item.id}
                         onChange={(e) => positionHandler(e, item.id)}
                       />
                       <StPositionLabel htmlFor={`Member${item.id}`}>
@@ -117,12 +132,12 @@ const AdminForm = () => {
                 </StContentBottom>
               </StContentform>
             );
-          })}
+          })} 
         </StContent>
       </StAdminWrap>
       {modalOpen && (
         <ModalPortal>
-          <SignUpForm />
+          <SignUpForm onClose={modalBtn} modalOpen={modalOpen} />
         </ModalPortal>
       )}
     </>
@@ -131,13 +146,12 @@ const AdminForm = () => {
 export default AdminForm;
 
 const StAdminWrap = styled.div`
-  width: calc(100% - 15.63%);
-  padding: 85px 6.37% 0;
-  height: 100vh;
-  box-sizing: border-box;
+  width: calc(100% - 20.21%);
+  margin-left: 20.21%;
+  padding: 95px 3.7%;
 `;
 const StTop = styled.div`
-  margin-bottom: 38px;
+  margin-bottom: 40px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -145,16 +159,58 @@ const StTop = styled.div`
 `;
 const StTitle = styled.h3`
   display: flex;
-  font-size: 2.5rem;
-  line-height: 1;
-  align-items: flex-end;
+  font-size: 2rem;
+  font-weight: 800;
+  font-size: 32px;
+  letter-spacing: 0.016em;
+  align-items: center;
 `;
 const StUser = styled.p`
   font-size: 1rem;
-  margin-left: 40px;
+  margin-left: 47px;
+  font-weight: 800;
+  font-size: 1.125rem;
+  letter-spacing: 0.016em;
+  color: #121212;
+  position: relative;
+  padding-left:28px;
+  &::before {
+    width: 16px;
+    height: 16px;
+    background: #007fff;
+    content:'';
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    margin:auto 0;
+    border-radius: 50%;
+  }
 `;
 const StUserSpan = styled.span`
   color: #007fff;
+`;
+const StButton = styled.button`
+  height: 40px;
+  width: 140px;
+  font-size: 0.875rem;
+  background: #007fff;
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  border-radius: 10px;
+`;
+
+const StChangeBtn = styled.button`
+  text-align: center;
+  width: 82px;
+  height: 26px;
+  border: 2px solid #007fff;
+  color: #007fff;
+  background: #fff;
+  font-size: 0.875rem;
+  border-radius: 50px;
+  cursor: pointer;
 `;
 const StContent = styled.div``;
 const StContentform = styled.form``;
@@ -163,105 +219,133 @@ const StContentTop = styled.div`
   width: 100%;
   height: 60px;
   line-height: 60px;
-  background: #f3f3f3;
+  background: #f9f9f9;
   border-radius: 10px;
 `;
-const StName = styled.p`
-  width: 12.87%;
-  padding-left: 15px;
+const Stcommonstyle = `
+  text-align:center;
+  font-weight: 700;
+  font-size: 1.125rem;
 `;
-const Stemail = styled.p`
-  width: 21.44%;
-  padding-left: 15px;
+const StcommonBottomstyle = `
+    text-overflow: ellipsis;
+  overflow: hidden;
+  text-align:center;
+  white-space: nowrap;
+  font-weight: 500;
+font-size: 1rem;
 `;
-const StPosition = styled.p`
-  width: 14.3%;
-  padding-left: 15px;
-`;
-const Stpositionchange = styled.p`
-  width: 35.38%;
-  padding-left: 15px;
-`;
+
 const StChange = styled.p`
-  width: 16.01%;
-  text-align: center;
-`;
-const StContentBottom = styled.div`
-  width: 100%;
-  height: 80px;
-  line-height: 80px;
-  border: 1px solid #dce1e3;
-  border-radius: 10px;
-  display: flex;
-  margin-top: 30px;
-`;
-const StPositionchangeWrap = styled.div`
-  display: flex;
-  width: 35.38%;
-  padding-left: 15px;
-`;
-const StChangeBtn = styled.button`
+  width: 12.84%;
   text-align: center;
 `;
 
-const StPositionchangeDiv = styled.div`
-  margin-right: 40px;
-  &:last-child {
-    margin-right: 0;
-  }
+const StName = styled.p`
+  width: 10.98%;
+  ${Stcommonstyle}
 `;
+const Stemail = styled.p`
+  width: 18.3%;
+  ${Stcommonstyle}
+`;
+const StNumber = styled.p`
+  width: 13.18%;
+  ${Stcommonstyle}
+`;
+const StPosition = styled.p`
+  width: 16.11%;
+  ${Stcommonstyle}
+`;
+
+const StNameBottom = styled.p`
+  width: 10.98%;
+  ${StcommonBottomstyle}
+`;
+const StemailBottom = styled.p`
+  width: 18.3%;
+  ${StcommonBottomstyle}
+`;
+const StNumberBottom = styled.p`
+  width: 13.18%;
+  ${StcommonBottomstyle}
+`;
+const StPositionBottom = styled.p`
+  width: 16.11%;
+  ${StcommonBottomstyle}
+`;
+
+const Stpositionchange = styled.p`
+  width: 31.48%;
+  ${Stcommonstyle}
+  text-align: left;
+`;
+
+
+
+const StContentBottom = styled.div`
+  width: 100%;
+  height: 80px;
+  border: 1px solid #c5c5c5;
+  border-radius: 10px;
+  display: flex;
+  line-height: 80px;
+  margin-top: 20px;
+`;
+
+const StPositionchangeWrap = styled.div`
+  display: flex;
+  width: 31.48%;
+  gap: 4.3%;
+`;
+
+const StPositionchangeDiv = styled.div``
 const StPositionInput = styled.input`
   display: none;
 `;
+
+const StPositonCommon =`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  border-radius: 50%;
+  content: "";
+`;
+const StPositonBeforeCommon = `
+  width: 14px;
+  height: 14px;
+  left: 0px;
+  background: #c5c5c5;
+`;
+
+const StPositonAfterCommon = `
+  width: 8px;
+  height: 8px;
+  left: 3px;
+`;
 const StPositionLabel = styled.label`
-  padding-left: 25px;
+  padding-left: 20px;
   position: relative;
+  font-size: 1rem;
+  font-weight:500;
   input[type="radio"] + &::before {
-    background: #e7e9f1;
-    width: 17px;
-    height: 17px;
-    content: "";
-    left: 0px;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin: auto 0;
-    border-radius: 50%;
+    ${StPositonBeforeCommon}
+    ${StPositonCommon}
   }
   input[type="radio"] + &::after {
-    background: #ccd5df;
-    width: 9px;
-    height: 9px;
-    content: "";
-    left: 4px;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin: auto 0;
-    border-radius: 50%;
+    background: #aeaeae;
+    ${StPositonAfterCommon}
+    ${StPositonCommon}
   }
   input[type="radio"]:checked + &::before {
-    background: #b3c8ff;
-    width: 17px;
-    height: 17px;
-    content: "";
-    left: 0px;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin: auto 0;
-    border-radius: 50%;
+    
+    ${StPositonBeforeCommon}
+    ${StPositonCommon}
   }
   input[type="radio"]:checked + &::after {
     background: #007fff;
-    width: 9px;
-    height: 9px;
-    content: "";
-    left: 4px;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin: auto 0;
-    border-radius: 50%;
+    ${StPositonAfterCommon}
+    ${StPositonCommon}
   }
 `;

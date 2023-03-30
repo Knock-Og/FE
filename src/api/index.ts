@@ -8,6 +8,10 @@ import {
   CategoryDel,
   EditBookmark,
   PostToBookmark,
+  FindIdItem,
+  findIdCodeItem,
+  FindPwItem,
+  findPwCodeItem,
 } from "types";
 
 export const LOGIN = {
@@ -24,30 +28,31 @@ export const ADMIN = {
   member: () => reqWithAccessToken.get(`/members`),
   position: (positionItem: PositionItem) =>
     reqWithAccessToken.put(
-      `/position/members/${positionItem.positionID}`,
+      `/member/${positionItem.positionID}/position`,
       positionItem
     ),
 };
 
-export const ADMINCATEGORI = {
-  categoryAdd: (category: AdminCategory) =>
-    reqWithAccessToken.post(`/categories`, category), //메소드확인
-  categories: () => reqWithAccessToken.get(`/categories`),
-  categoryPut: (categoriesput: Categoriesput) =>
-    reqWithAccessToken.put(`/categories/${categoriesput.id}`, categoriesput),
-  categoryDel: (categoryDel: CategoryDel) =>
-    reqWithAccessToken.delete(`/categories/${categoryDel.id}`),
-};
-
 export const CATEGORY = {
   getCategories: () =>
-    reqWithAccessToken.get("/categories").then((res) => res.data),
-  addCategory: (categoryName: string) =>
-    reqWithAccessToken.post("/categories", categoryName),
-  editCategory: (categoryName: string, categoryId: number) =>
-    reqWithAccessToken.put(`/categories/${categoryId}`, categoryName),
-  removeCategory: (categoryId: number) =>
-    reqWithAccessToken.delete(`/categories/${categoryId}`),
+    reqWithAccessToken.get("/getCategories").then((res) => res.data),
+  categoryAdd: (category: AdminCategory) =>
+    reqWithAccessToken.post(`/category`, category),
+  categoryPut: (categoriesput: Categoriesput) =>
+    reqWithAccessToken.put(`/category/${categoriesput.id}`, categoriesput),
+  categoryDel: (categoryDel: CategoryDel) =>
+    reqWithAccessToken.delete(`/category/${categoryDel.id}`),
+};
+
+export const FIND = {
+  findId: (findId: FindIdItem) => baseAxios.post("/sms", findId),
+  findIdCode: (idcode: findIdCodeItem) =>
+    baseAxios.post("/member/email", idcode),
+
+  findPw: (findPw: FindPwItem) => baseAxios.post("/mail/auth", findPw),
+
+  findPwCode: (pwcode: findPwCodeItem) =>
+    baseAxios.post(`/member/pwd/${pwcode.authenticationCode}`, pwcode),
 };
 
 export const SEARCH = {

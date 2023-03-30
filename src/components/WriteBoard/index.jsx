@@ -10,9 +10,9 @@ function WriteBoard() {
     content: "",
     keywords: ["키워드1"],
     editingStatus: "false",
-    category: "공지사항",
-    modifyPermission: "member",
-    readablePosition: "member",
+    category: "",
+    modifyPermission: "Owner",
+    readablePosition: "Owner",
   });
 
   const onChangeHandler = (event) => {
@@ -23,7 +23,7 @@ function WriteBoard() {
   //통신
   const createReview = async (data, accessToken) => {
     const response = await axios.post(
-      `http://43.201.3.8:8080/post`,
+      `http://43.201.3.8:8080/posts`,
       bordContent,
       {
         headers: {
@@ -40,29 +40,16 @@ function WriteBoard() {
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    mutationCreate.mutate(bordContent, getCookie("accessToken"));
+    // mutationCreate.mutate(bordContent, getCookie("accessToken"));
   };
 
   const categoryOptions = [
-    { key: 1, value: "공지사항" },
-    { key: 2, value: "점심메뉴" },
-    { key: 3, value: "연차, 휴가" },
-  ];
-
-  const modifyPermissionOptions = [
-    { key: 1, value: "member" },
-    { key: 2, value: "manger" },
-    { key: 3, value: "owner" },
-  ];
-
-  const readablePositionOptions = [
-    { key: 1, value: "member" },
-    { key: 2, value: "manger" },
-    { key: 3, value: "owner" },
+    { key: 1, value: "카테고리1" },
+    { key: 2, value: "카테고리2" },
+    { key: 3, value: "카테고리3" },
   ];
 
   console.log("bordContent", bordContent);
-
   return (
     <StAddForm onSubmit={onSubmitHandler}>
       <StInputGroup>
@@ -82,20 +69,6 @@ function WriteBoard() {
         />
         <StAddSelect name="category" onChange={onChangeHandler}>
           {categoryOptions.map((option) => (
-            <StAddOption key={option.key} value={option.value}>
-              {option.value}
-            </StAddOption>
-          ))}
-        </StAddSelect>
-        <StAddSelect name="modifyPermission" onChange={onChangeHandler}>
-          {modifyPermissionOptions.map((option) => (
-            <StAddOption key={option.key} value={option.value}>
-              {option.value}
-            </StAddOption>
-          ))}
-        </StAddSelect>
-        <StAddSelect name="readablePosition" onChange={onChangeHandler}>
-          {readablePositionOptions.map((option) => (
             <StAddOption key={option.key} value={option.value}>
               {option.value}
             </StAddOption>
