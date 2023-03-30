@@ -8,16 +8,5 @@ export const isDarkState = atom<boolean>({
 
 export const searchedPostsState = atom<Post[] | null>({
   key: "searchedPosts",
-  default: [
-    {
-      id: 0,
-      memberName: "test",
-      title: "test",
-      content: "test",
-      createdAt: "test",
-      modifiedAt: "test",
-      keywords: ["test1", "test2", "test3"],
-      commentCount: 3,
-    },
-  ],
+  default: null,
 });

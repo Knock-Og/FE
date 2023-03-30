@@ -22,6 +22,8 @@ export interface Post {
   modifiedAt: string;
   keywords: string[];
   commentCount: number;
+  postViews: number;
+  editingStatus: string;
 }
 
 export interface Category {

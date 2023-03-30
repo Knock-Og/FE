@@ -10,6 +10,7 @@ import MyPost from "routes/MyPost";
 import Bookmark from "routes/Bookmark";
 import Admin from "routes/Admin";
 import AdminCategory from "routes/AdminCategory";
+import Main from "routes/Main";
 
 const App = () => {
   const isDark = useRecoilValue(isDarkState);
@@ -19,6 +20,7 @@ const App = () => {
         <GlobalStyle />
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Main />} />
             <Route path="/bookmark" element={<Bookmark />}>
               <Route path=":folderName" element={<Bookmark />} />
             </Route>

@@ -66,17 +66,17 @@ export const BOOKMARK = {
   getBookmarks: () =>
     reqWithAccessToken.get("/bookmark/folders").then((res) => res.data),
   getBookmark: (folderId: number) =>
-    reqWithAccessToken
-      .get(`/bookmark/folder/${folderId}/bookmarks`)
-      .then((res) => res.data),
+    reqWithAccessToken.get(`/bookmark/folder/${folderId}/bookmarks`),
   addBookmark: (bookMarkFolderName: string) =>
     reqWithAccessToken.post("/bookmark/folder", { bookMarkFolderName }),
-  addPostToBookmark: ({ folderId, postId }: PostToBookmark) =>
-    reqWithAccessToken.post(`/bookmark/folder/${folderId}/post/${postId}`),
   editBookmark: ({ folderId, bookMarkFolderName }: EditBookmark) =>
-    reqWithAccessToken.put(`/bookmark/folder/${folderId}`, bookMarkFolderName),
+    reqWithAccessToken.put(`/bookmark/folder/${folderId}`, {
+      bookMarkFolderName,
+    }),
   deleteBookmark: (folderId: number) =>
     reqWithAccessToken.delete(`/bookmark/folder/${folderId}`),
+  addPostToBookmark: ({ folderId, postId }: PostToBookmark) =>
+    reqWithAccessToken.post(`/bookmark/folder/${folderId}/post/${postId}`),
   deletePostToBookmark: ({ folderId, postId }: PostToBookmark) =>
     reqWithAccessToken.delete(`/bookmark/folder/${folderId}/post/${postId}`),
 };

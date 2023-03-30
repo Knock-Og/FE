@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRecoilState } from "recoil";
+import { IconButton, Input } from "@mui/material";
+import { Edit, FolderDelete, Cancel } from "@mui/icons-material";
 import styled from "styled-components";
 import { BOOKMARK } from "api";
 import { PostCard, Layout, NoSearched } from "components";
@@ -14,9 +16,11 @@ const Bookmark = () => {
   const location = useLocation();
   const queryClient = useQueryClient();
   const [searchedPosts, setSearchedPosts] = useRecoilState(searchedPostsState);
-  const [navItems, setNavItems] = useState<NavItem[]>([
-    { itemValue: "test", handler: () => console.log("test") },
-  ]);
+  const [navItems, setNavItems] = useState<NavItem[]>();
+  const [isEdit, setIsEdit] = useState(false);
+  const [editedFolderName, setEditedFolderName] = useState(
+    params.folderName as string
+  );
 
   const { data: bookmarksData } = useQuery<IBookmark[]>(
     "getBookmarks",
@@ -24,17 +28,43 @@ const Bookmark = () => {
   );
   const { mutate: getBookmark } = useMutation(BOOKMARK.getBookmark, {
     onSuccess: (res) => setSearchedPosts(res.data as Post[]),
+    onError: () => setSearchedPosts(null),
   });
 
   const { mutate: addBookmark } = useMutation(BOOKMARK.addBookmark, {
     onSuccess: () => queryClient.invalidateQueries("getBookmarks"),
   });
   const { mutate: editBookmark } = useMutation(BOOKMARK.editBookmark, {
-    onSuccess: () => queryClient.invalidateQueries("getBookmarks"),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries("getBookmarks");
+      alert(res.data.message);
+    },
   });
   const { mutate: deleteBookmark } = useMutation(BOOKMARK.deleteBookmark, {
     onSuccess: () => queryClient.invalidateQueries("getBookmarks"),
   });
+
+  const handleChangeEditInput = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setEditedFolderName(e.target.value);
+
+  const handleClickEditBtn = () => setIsEdit((prev) => !prev);
+
+  const handleEditSubmit = () => {
+    editBookmark({
+      folderId: location.state.folderId,
+      bookMarkFolderName: editedFolderName,
+    });
+    navigate(`/bookmark/${editedFolderName}`);
+  };
+
+  const handleClickDelBtn = () => {
+    deleteBookmark(location.state.folderId);
+    navigate("/bookmark");
+  };
+
+  useEffect(() => {
+    setSearchedPosts(null);
+  }, [setSearchedPosts]);
 
   useEffect(() => {
     if (bookmarksData) {
@@ -54,24 +84,37 @@ const Bookmark = () => {
   }, [bookmarksData, navigate, getBookmark]);
 
   return (
-    <Layout navItems={navItems} addBookmarkHandler={addBookmark} isBookMarkNav>
-      <StBreadCrumbWrapper>
-        {params.folderName && <StBreadCrumb>{params.folderName}</StBreadCrumb>}
-        <StEditBtn
-          onClick={() =>
-            editBookmark({
-              folderId: location.state.folderId,
-              bookMarkFolderName: params.folderName as string,
-            })
-          }
-        >
-          수정
-        </StEditBtn>
-        <StDelBtn onClick={() => deleteBookmark(location.state.folderId)}>
-          삭제
-        </StDelBtn>
-      </StBreadCrumbWrapper>
-      {searchedPosts ? (
+    <Layout
+      navItems={navItems}
+      addBookmarkHandler={addBookmark}
+      isBookMarkNav
+      breadcrumb={
+        params.folderName && (
+          <>
+            {isEdit ? (
+              <StBreadCrumbInput
+                value={editedFolderName}
+                onChange={handleChangeEditInput}
+                endAdornment={
+                  <IconButton onClick={handleEditSubmit}>
+                    <Edit />
+                  </IconButton>
+                }
+              />
+            ) : (
+              <StBreadCrumb>{params.folderName}</StBreadCrumb>
+            )}
+            <StEditBtn onClick={handleClickEditBtn}>
+              {isEdit ? <Cancel /> : <Edit />}
+            </StEditBtn>
+            <StDelBtn onClick={handleClickDelBtn}>
+              <FolderDelete />
+            </StDelBtn>
+          </>
+        )
+      }
+    >
+      {searchedPosts && searchedPosts?.length > 0 ? (
         searchedPosts.map((post) => <PostCard key={post.id} {...post} />)
       ) : (
         <NoSearched />
@@ -82,15 +125,12 @@ const Bookmark = () => {
 
 export default Bookmark;
 
-const StBreadCrumbWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 const StBreadCrumb = styled.div`
   font-size: 1.5rem;
 `;
 
-const StEditBtn = styled.button``;
+const StBreadCrumbInput = styled(Input)``;
 
-const StDelBtn = styled.button``;
+const StEditBtn = styled(IconButton)``;
+
+const StDelBtn = styled(IconButton)``;
