@@ -27,6 +27,37 @@ export interface Post {
   editingStatus: string;
 }
 
+export interface PostDetail {
+  id: number;
+  memberName: string;
+  title: string;
+  content: string;
+  createdAt: string;
+  modifiedAt: string;
+  category: string;
+  keywords: string[];
+  postViews: number;
+  editingStatus: string;
+}
+
+export interface EditPostReq {
+  postId: number;
+  post: EditPost;
+}
+
+export interface EditPost {
+  title: string;
+  content: string;
+  keywords: string[];
+  category: string;
+  modifyPermission: "Owner" | "Manager" | "Member";
+  readablePosition: "Owner" | "Manager" | "Member";
+}
+
+export interface AddPost extends EditPost {
+  editingStatus: "true" | "false";
+}
+
 export interface Category {
   id: number;
   categoryName: string;

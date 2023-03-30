@@ -1,48 +1,52 @@
-import { CircularProgress } from "@mui/material";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import {
   AiOutlineClockCircle,
   AiOutlineComment,
   AiOutlineEye,
 } from "react-icons/ai";
+import { CircularProgress } from "@mui/material";
 import styled from "styled-components";
 import { Post } from "types";
-import { EventSourcePolyfill } from "event-source-polyfill";
-import { getCookie } from "api/cookies";
+import { POST } from "api";
+// import { EventSourcePolyfill } from "event-source-polyfill";
+// import { getCookie } from "api/cookies";
 
 const PostCard = (post: Post) => {
-  const EventSource = EventSourcePolyfill;
-  const [eventSource, setEventSource] = useState<EventSource>();
+  // const EventSource = EventSourcePolyfill;
+  // const [eventSource, setEventSource] = useState<EventSource>();
   const navigate = useNavigate();
+  const { mutate: switchEditingStatus } = useMutation(POST.switchEditingStatus);
 
   const handleClickPostCard = () => {
+    switchEditingStatus(post.id);
     navigate(`/post/${post.id}`);
-    setEventSource(
-      new EventSource(`${process.env.React_APP_SERVER_URL}connect/${post.id}`, {
-        headers: {
-          Authorization: `Bearer ${getCookie("access_token")}`,
-        },
-        withCredentials: true,
-      })
-    );
+    // setEventSource(
+    //   new EventSource(`${process.env.React_APP_SERVER_URL}connect/${post.id}`, {
+    //     headers: {
+    //       Authorization: `Bearer ${getCookie("access_token")}`,
+    //     },
+    //     withCredentials: true,
+    //   })
+    // );
   };
 
-  useEffect(() => {
-    if (eventSource) {
-      eventSource.onopen = () => console.log("is connected !");
+  // useEffect(() => {
+  //   if (eventSource) {
+  //     eventSource.onopen = () => console.log("is connected !");
 
-      eventSource.onmessage = (event) => {
-        alert(JSON.parse(event.data));
-      };
-    }
+  //     eventSource.onmessage = (event) => {
+  //       alert(JSON.parse(event.data));
+  //     };
+  //   }
 
-    return () => {
-      if (eventSource) {
-        eventSource.close();
-      }
-    };
-  }, [eventSource]);
+  //   return () => {
+  //     if (eventSource) {
+  //       eventSource.close();
+  //     }
+  //   };
+  // }, [eventSource]);
 
   return (
     <StPostCardBox onClick={handleClickPostCard}>

@@ -15,18 +15,16 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             {/* Admin */}
-            <Route path="/admin" element={<ROUTE.Admin />}>
-              <Route path="category" element={<ROUTE.AdminCategory />} />
-              <Route path="login" element={<ROUTE.AdminLogin />} />
-            </Route>
+            <Route path="/admin" element={<ROUTE.Admin />} />
+            <Route path="/admin/category" element={<ROUTE.AdminCategory />} />
+            <Route path="/admin/login" element={<ROUTE.AdminLogin />} />
 
             {/* Main */}
             <Route path="/" element={<ROUTE.Main />} />
 
             {/* Bookmark */}
-            <Route path="/bookmark" element={<ROUTE.Bookmark />}>
-              <Route path=":folderName" element={<ROUTE.Bookmark />} />
-            </Route>
+            <Route path="/bookmark" element={<ROUTE.Bookmark />} />
+            <Route path="/bookmark/:folderName" element={<ROUTE.Bookmark />} />
 
             {/* Category */}
             <Route
@@ -38,12 +36,11 @@ const App = () => {
             <Route path="/post/:id" element={<ROUTE.Detail />} />
 
             {/* Login */}
-            <Route path="/login" element={<ROUTE.Login />}>
-              <Route path="findid" element={<ROUTE.FindId />} />
-              <Route path="findid/code" element={<ROUTE.FindIdCode />} />
-              <Route path="findpw" element={<ROUTE.FindPw />} />
-              <Route path="findpw/code" element={<ROUTE.FindPwCode />} />
-            </Route>
+            <Route path="/login" element={<ROUTE.Login />} />
+            <Route path="/login/findid" element={<ROUTE.FindId />} />
+            <Route path="/login/findid/code" element={<ROUTE.FindIdCode />} />
+            <Route path="/login/findpw" element={<ROUTE.FindPw />} />
+            <Route path="/login/findpw/code" element={<ROUTE.FindPwCode />} />
 
             {/* Modify */}
             <Route path="/modify" element={<ROUTE.Modify />} />

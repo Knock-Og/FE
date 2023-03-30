@@ -1,7 +1,7 @@
 import { DetailBoard } from "components";
 
-const Deatil = () => {
+const Detail = () => {
   return <DetailBoard />;
 };
 
-export default Deatil;
+export default Detail;

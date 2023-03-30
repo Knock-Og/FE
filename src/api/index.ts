@@ -12,6 +12,8 @@ import {
   findIdCodeItem,
   FindPwItem,
   findPwCodeItem,
+  AddPost,
+  EditPostReq,
 } from "types";
 
 export const LOGIN = {
@@ -35,7 +37,7 @@ export const ADMIN = {
 
 export const CATEGORY = {
   getCategories: () =>
-    reqWithAccessToken.get("/getCategories").then((res) => res.data),
+    reqWithAccessToken.get("/categories").then((res) => res.data),
   categoryAdd: (category: AdminCategory) =>
     reqWithAccessToken.post(`/category`, category),
   categoryPut: (categoriesput: Categoriesput) =>
@@ -48,9 +50,7 @@ export const FIND = {
   findId: (findId: FindIdItem) => baseAxios.post("/sms", findId),
   findIdCode: (idcode: findIdCodeItem) =>
     baseAxios.post("/member/email", idcode),
-
   findPw: (findPw: FindPwItem) => baseAxios.post("/mail/auth", findPw),
-
   findPwCode: (pwcode: findPwCodeItem) =>
     baseAxios.post(`/member/pwd/${pwcode.authenticationCode}`, pwcode),
 };
@@ -84,4 +84,15 @@ export const BOOKMARK = {
     reqWithAccessToken.post(`/bookmark/folder/${folderId}/post/${postId}`),
   deletePostToBookmark: ({ folderId, postId }: PostToBookmark) =>
     reqWithAccessToken.delete(`/bookmark/folder/${folderId}/post/${postId}`),
+};
+
+export const POST = {
+  getPost: (postId: number) =>
+    reqWithAccessToken.get(`/post/${postId}`).then((res) => res.data),
+  switchEditingStatus: (postId: number) =>
+    reqWithAccessToken.put(`post/${postId}/editingStatus`),
+  addPost: (post: AddPost) => reqWithAccessToken.post("/post", post),
+  editPost: ({ post, postId }: EditPostReq) =>
+    reqWithAccessToken.put(`/post/${postId}`, post),
+  delPost: (postId: number) => reqWithAccessToken.delete(`/post/${postId}`),
 };
