@@ -16,13 +16,13 @@ const CategoryForm = () => {
       onSuccess: (response) => {
         if (response) {
           queryClient.invalidateQueries("category");
-          console.log("성공햇습니다.");
+          //console.log("성공햇습니다.");
         }
       },
       onError: (response) => {
         if (response) {
           queryClient.invalidateQueries("category");
-          console.log("실패햇습니다.");
+          //console.log("실패햇습니다.");
         }
       },
     }
@@ -104,37 +104,39 @@ const CategoryForm = () => {
       <StAdminWrap>
         <StTop>
           <StTitle>
-            Category
+            카테고리관리
             <StUser>
-              총 <span>{data?.data.length}</span>개
+              총 <StUserSpan></StUserSpan>개{/* {data?.data.length} */}
             </StUser>
           </StTitle>
-          <button onClick={() => modalBtn()}>카테고리추가</button>
+          <StButton onClick={() => modalBtn()}>카테고리 추가</StButton>
         </StTop>
         <StContent>
           <StContentTop>
             <StName>카테고리 명</StName>
           </StContentTop>
-
           {data?.data.map((item: CategoryItem) => {
             return (
               <StContentBottom key={item.id}>
-                <StCategory>{item.categoryName}</StCategory>
-                <button
-                  onClick={() => {
-                    categoryDel(item.id);
-                  }}
-                >
-                  삭제
-                </button>
-                <button
-                  onClick={() => {
-                    setModalPutOpen(true);
-                    setCategoryPutID(item.id);
-                  }}
-                >
-                  수정
-                </button>
+                <StName>{item.categoryName}</StName>
+                <StChange>
+                  
+                  <StChangeBtn
+                    onClick={() => {
+                      setModalPutOpen(true);
+                      setCategoryPutID(item.id);
+                    }}
+                  >
+                    카테고리 수정
+                  </StChangeBtn>
+                  <StDelBtn
+                    onClick={() => {
+                      categoryDel(item.id);
+                    }}
+                  >
+                    카테고리 삭제
+                  </StDelBtn>
+                </StChange>
               </StContentBottom>
             );
           })}
@@ -145,15 +147,41 @@ const CategoryForm = () => {
         {modalOpen && (
           <StCategoryAdd>
             <StCategoryForm onSubmit={categorySubmit}>
-              <StCategoryTitle>카테고리</StCategoryTitle>
-              <StCategoryInput
-                type="text"
-                value={categoryName}
-                placeholder="카테고리명을 적어주세요"
-                onChange={(e) => setCategoryName(e.target.value)}
-              />
-              <StButton>추가하기</StButton>
+              <StIoClose
+                width="40"
+                height="40"
+                viewBox="0 0 40 40"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                onClick={modalBtn}
+              >
+                <path
+                  d="M27.5594 11.4419L10.8927 28.1086"
+                  stroke="#C5C5C5"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M10.8927 11.4419L27.5594 28.1086"
+                  stroke="#C5C5C5"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </StIoClose>
+              <StCategoryTitle>카테고리 추가</StCategoryTitle>
+              <StCategory>
+                <StCategoryInput
+                  type="text"
+                  value={categoryName}
+                  placeholder="추가할 카테고리 명"
+                  onChange={(e) => setCategoryName(e.target.value)}
+                />
+                <StCommonButton>추가</StCommonButton>
+              </StCategory>
             </StCategoryForm>
+            <StSignBg onClick={modalBtn} />
           </StCategoryAdd>
         )}
       </ModalPortal>
@@ -163,15 +191,41 @@ const CategoryForm = () => {
         {modalPutOpen && (
           <StCategoryAdd>
             <StCategoryForm onSubmit={categoryPutSubmit}>
-              <StCategoryTitle>카테고리</StCategoryTitle>
-              <StCategoryInput
-                type="text"
-                value={categoryPutName}
-                placeholder="카테고리명을 적어주세요"
-                onChange={(e) => setCategoryPutName(e.target.value)}
-              />
-              <StButton>수정하기</StButton>
+              <StIoClose
+                width="40"
+                height="40"
+                viewBox="0 0 40 40"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                onClick={modalBtn}
+              >
+                <path
+                  d="M27.5594 11.4419L10.8927 28.1086"
+                  stroke="#C5C5C5"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M10.8927 11.4419L27.5594 28.1086"
+                  stroke="#C5C5C5"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </StIoClose>
+              <StCategoryTitle>카테고리 수정</StCategoryTitle>
+              <StCategory>
+                <StCategoryInput
+                  type="text"
+                  value={categoryPutName}
+                  placeholder="수정할 카테고리 명"
+                  onChange={(e) => setCategoryPutName(e.target.value)}
+                />
+                <StCommonButton>수정</StCommonButton>
+              </StCategory>
             </StCategoryForm>
+            <StSignBg onClick={modalBtn} />
           </StCategoryAdd>
         )}
       </ModalPortal>
@@ -181,13 +235,13 @@ const CategoryForm = () => {
 export default CategoryForm;
 
 const StAdminWrap = styled.div`
-  width: calc(100%- 15.63%);
-  padding: 85px 5.56% 0;
-  height: 100vh;
-  box-sizing: border-box;
+  width: calc(100% - 20.21%);
+  margin-left: 20.21%;
+  padding: 95px 3.7%;
 `;
+
 const StTop = styled.div`
-  margin-bottom: 38px;
+  margin-bottom: 40px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -195,17 +249,38 @@ const StTop = styled.div`
 `;
 const StTitle = styled.h3`
   display: flex;
-  font-size: 2.5rem;
-  line-height: 1;
-  align-items: flex-end;
+  font-size: 2rem;
+  font-weight: 800;
+  font-size: 32px;
+  letter-spacing: 0.016em;
+  align-items: center;
 `;
 const StUser = styled.p`
   font-size: 1rem;
-  margin-left: 40px;
-  > span {
-    color: #007fff;
+  margin-left: 47px;
+  font-weight: 800;
+  font-size: 1.125rem;
+  letter-spacing: 0.016em;
+  color: #121212;
+  position: relative;
+  padding-left: 28px;
+  &::before {
+    width: 16px;
+    height: 16px;
+    background: #007fff;
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    border-radius: 50%;
   }
 `;
+const StUserSpan = styled.span`
+  color: #007fff;
+`;
+
 const StContent = styled.div``;
 const StContentTop = styled.div`
   display: flex;
@@ -213,67 +288,129 @@ const StContentTop = styled.div`
   height: 60px;
   line-height: 60px;
   background: #f3f3f3;
-  border-radius: 10px;
+  border-radius: 5px;
 `;
 const StName = styled.p`
-  width: 100%;
-  padding-left: 15px;
+  text-align: left;
+  padding-left: 4.83%;
+  font-weight: 700;
+  font-size: 1.125rem;
+  width: 75%;
 `;
 const StContentBottom = styled.div`
   width: 100%;
   height: 80px;
-  line-height: 80px;
-  border: 1px solid #dce1e3;
+  border: 1px solid #c5c5c5;
   border-radius: 10px;
   display: flex;
-  margin-top: 30px;
+  line-height: 80px;
+  margin-top: 20px;
 `;
-const StCategory = styled.p`
-  width: 80%;
-  padding-left: 15px;
+const StButtonCommon = `
+  text-align: center;
+  width: 130px;
+  height: 26px;
+  background: #fff;
+  font-size: 0.875rem;
+  border-radius: 50px;  
+
 `;
+const StChangeBtn = styled.button`
+  border: 2px solid #007fff;
+  color: #007fff;
+  ${StButtonCommon}
+`;
+const StDelBtn = styled.button`
+  border: 2px solid #aeaeae;
+  color: #aeaeae;
+  ${StButtonCommon}
+`;
+const StChange = styled.p`
+  width: 25%;
+  text-align: center;
+  display:flex;
+  gap: 10px;
+  align-items: center;
+`;
+
+
+const StButton = styled.button`
+  height: 40px;
+  width: 140px;
+  font-size: 0.875rem;
+  background: #007fff;
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  border-radius: 10px;
+`;
+
+
+//모달부분
 const StCategoryAdd = styled.div`
   width: 100%;
-  height: 100vh;
-  position: fixed;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  background: rgba(0, 0, 0, 0.6);
+`;
+const StSignBg = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  background: rgba(0, 0, 0, 0.4);
 `;
 const StCategoryForm = styled.form`
   width: 500px;
   background: #fff;
-  padding: 60px;
+  z-index: 1;
+  border-radius: 10px;
+  padding: 70px 68px 80px;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  height: 250px;
 `;
+
 const StCategoryTitle = styled.h3`
-  font-size: 35px;
-  font-weight: 700;
-  line-height: 1;
-  margin-bottom: 40px;
+  font-weight: 800;
+  font-size: 1.25rem;
+  margin-bottom: 35px;
   text-align: center;
 `;
 const StCategoryInput = styled.input`
   width: 100%;
-  height: 50px;
+  height: 44px;
   border: 0;
   outline: 0;
-  border-bottom: 1px solid #ececec;
+  padding-right:90px;
+  border-bottom: 1px solid #000;
   &::placeholder {
     color: #bdbdbd;
   }
-  margin-bottom: 5px;
 `;
-const StButton = styled.button`
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  background: #000;
-  color: #fff;
+const StCategory = styled.div`
+  position:relative;
+`
+const StCommonButton = styled.button`
+  position: absolute;
+  width: 84px;
+  height: 44px;
+  right: 0px;
+  top: 0;
+  background: #007fff;
+  color:#fff;
+  border:0;
+`;
+
+const StIoClose = styled.svg`
+  font-size: 22px;
+  position: absolute;
+  right: 20px;
+  top: 20px;
   cursor: pointer;
+  transition: all 0.3s;
+  &:hover {
+    transform: rotatez(180deg);
+  }
 `;

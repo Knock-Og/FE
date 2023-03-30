@@ -14,14 +14,16 @@ export const setCookie = (
   cookie.set(cookieName, value, option);
 
   // 활동이 없으면 쿠키 삭제
-  const inactivityTime = 30 * 60 * 60;
+  const inactivityTime = 60 * 60 * 24;
   let timer: NodeJS.Timeout;
   let debouncedResetTimer: () => void;
+  //const Navigate = useNavigate();
   const resetTimer = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       removeCookie(cookieName);
       alert("활동을 하지않아 자동 로그아웃되었습니다.");
+      //Navigate("/");
     }, inactivityTime);
   };
 
@@ -56,3 +58,6 @@ export const getCookie = (cookieName: string) => {
 export const removeCookie = (cookieName: string) => {
   return cookie.remove(cookieName);
 };
+
+// ruffy@kakao.com
+// ruffy1234!

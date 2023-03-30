@@ -6,16 +6,12 @@ export interface LoginReq {
 export interface SignUpReq extends LoginReq {
   position: string;
   memberName: string;
+  phoneNum:string
 }
 
 export interface NavItem {
   itemValue: string;
   handler: () => void;
-}
-
-export interface CreateBoard {
-  title: string;
-  content: string;
 }
 
 export interface Post {
@@ -54,6 +50,7 @@ export interface SignItem {
   memberName: string;
   email: string;
   position: string;
+  phoneNum:string;
 }
 export interface PositionItem {
   positionID: number;
@@ -75,4 +72,29 @@ export interface Categoriesput {
 }
 export interface CategoryDel {
   id: number;
+}
+
+export interface SignUpFormProps {
+  modalOpen: boolean;
+  onClose: () => void;
+}
+
+
+
+export interface FindIdItem {
+  memberName: string;
+  phoneNum: string;
+}
+export interface findIdCodeItem {
+  authenticationCode: string;
+  phoneNum: string;
+}
+
+export interface FindPwItem {
+  email: string;
+}
+
+export interface findPwCodeItem {
+  authenticationCode: string;
+  email: string;
 }

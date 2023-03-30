@@ -64,11 +64,103 @@ const AdminNav = () => {
       </StLogo>
       <StNav>
         <StNavLink href="/admin">
-          <StNavButton active={pathname === "/admin"}>사용자관리</StNavButton>
+          <StNavButton active={pathname === "/admin"}>
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 40 40"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M34 35V31.6667C34 29.8986 33.2625 28.2029 31.9497 26.9526C30.637 25.7024 28.8565 25 27 25H13C11.1435 25 9.36301 25.7024 8.05025 26.9526C6.7375 28.2029 6 29.8986 6 31.6667V35" />
+              <path d="M20 20C24.4183 20 28 16.6421 28 12.5C28 8.35786 24.4183 5 20 5C15.5817 5 12 8.35786 12 12.5C12 16.6421 15.5817 20 20 20Z" />
+            </svg>
+            <StBtnP>사용자관리</StBtnP>
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 40 40"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 21.6666C20.9205 21.6666 21.6666 20.9204 21.6666 19.9999C21.6666 19.0794 20.9205 18.3333 20 18.3333C19.0795 18.3333 18.3333 19.0794 18.3333 19.9999C18.3333 20.9204 19.0795 21.6666 20 21.6666Z"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M31.6667 21.6666C32.5871 21.6666 33.3333 20.9204 33.3333 19.9999C33.3333 19.0794 32.5871 18.3333 31.6667 18.3333C30.7462 18.3333 30 19.0794 30 19.9999C30 20.9204 30.7462 21.6666 31.6667 21.6666Z"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M8.33335 21.6666C9.25383 21.6666 10 20.9204 10 19.9999C10 19.0794 9.25383 18.3333 8.33335 18.3333C7.41288 18.3333 6.66669 19.0794 6.66669 19.9999C6.66669 20.9204 7.41288 21.6666 8.33335 21.6666Z"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </StNavButton>
         </StNavLink>
         <StNavLink href="/admin/category">
           <StNavButton active={pathname === "/admin/category"}>
-            카테고리관리
+            <svg
+              width="43"
+              height="45"
+              viewBox="0 0 43 45"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g filter="url(#filter0_d_233_1395)">
+                <path
+                  d="M34.8462 4H25.1538C23.9643 4 23 4.96431 23 6.15385V15.8462C23 17.0357 23.9643 18 25.1538 18H34.8462C36.0357 18 37 17.0357 37 15.8462V6.15385C37 4.96431 36.0357 4 34.8462 4Z"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M16.8462 4H7.15385C5.96431 4 5 4.96431 5 6.15385V15.8462C5 17.0357 5.96431 18 7.15385 18H16.8462C18.0357 18 19 17.0357 19 15.8462V6.15385C19 4.96431 18.0357 4 16.8462 4Z"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M16.8462 22H7.15385C5.96431 22 5 22.9643 5 24.1538V33.8462C5 35.0357 5.96431 36 7.15385 36H16.8462C18.0357 36 19 35.0357 19 33.8462V24.1538C19 22.9643 18.0357 22 16.8462 22Z"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle cx="31" cy="29" r="7" stroke-width="2.5" />
+              </g>
+            </svg>
+            <StBtnP> 카테고리관리</StBtnP>
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 40 40"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 21.6666C20.9205 21.6666 21.6666 20.9204 21.6666 19.9999C21.6666 19.0794 20.9205 18.3333 20 18.3333C19.0795 18.3333 18.3333 19.0794 18.3333 19.9999C18.3333 20.9204 19.0795 21.6666 20 21.6666Z"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M31.6667 21.6666C32.5871 21.6666 33.3333 20.9204 33.3333 19.9999C33.3333 19.0794 32.5871 18.3333 31.6667 18.3333C30.7462 18.3333 30 19.0794 30 19.9999C30 20.9204 30.7462 21.6666 31.6667 21.6666Z"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M8.33335 21.6666C9.25383 21.6666 10 20.9204 10 19.9999C10 19.0794 9.25383 18.3333 8.33335 18.3333C7.41288 18.3333 6.66669 19.0794 6.66669 19.9999C6.66669 20.9204 7.41288 21.6666 8.33335 21.6666Z"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </StNavButton>
         </StNavLink>
       </StNav>
@@ -78,9 +170,11 @@ const AdminNav = () => {
 
 export default AdminNav;
 const StAdminNavWrap = styled.div`
-  width: 15.63%;
+  width: 20.21%;
   height: 100vh;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid rgb(221, 221, 221);
+  position: fixed;
+  background: #fff;
 `;
 
 const StLogo = styled.div`
@@ -92,18 +186,29 @@ const StLogo = styled.div`
   margin-bottom: 50px;
 `;
 const StNav = styled.div``;
-const StNavLink = styled.a``;
+const StNavLink = styled.a`
+  margin-bottom: 26px;
+  display: block;
+`;
 const StNavButton = styled.button<{ active?: boolean }>`
   width: 100%;
-  height: 60px;
-  position: relative;
-  padding-left: 40px;
-  color: ${({ active }) => (active ? "#007FFF" : "#828282")};
-  display: block;
-  font-weight: 500;
-  background: #fff;
+  height: 66px;
+  padding-left: 14.95%;
+  padding-right: 12.89%;
+  
+  color: ${({ active }) => (active ? "#007FFF" : "#C5C5C5")};
+  background-color: #fff;
   border: 0;
-  text-align: left;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
   cursor: pointer;
-  border-left: ${({ active }) => (active ? "5px solid #007FFF" : "")};
+  border-left: ${({ active }) =>
+    active ? "10px solid #007FFF" : "10px solid #fff"};
+  fill: ${({ active }) => (active ? "#007FFF" : "#C5C5C5")};
+  stroke: ${({ active }) => (active ? "#007FFF" : "#C5C5C5")};
+`;
+const StBtnP = styled.p`
+  font-weight: 800;
+  font-size: 18px;
 `;

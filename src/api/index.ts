@@ -8,6 +8,10 @@ import {
   CategoryDel,
   EditBookmark,
   PostToBookmark,
+  FindIdItem,
+  findIdCodeItem,
+  FindPwItem,
+  findPwCodeItem,
 } from "types";
 
 export const LOGIN = {
@@ -31,12 +35,15 @@ export const ADMIN = {
 
 export const ADMINCATEGORI = {
   categoryAdd: (category: AdminCategory) =>
-    reqWithAccessToken.post(`/categories`, category), //메소드확인
-  categories: () => reqWithAccessToken.get(`/categories`),
+    reqWithAccessToken.post(`/category`, category), //메소드확인
+ 
+    categories: () => reqWithAccessToken.get(`/categories`),
+  
   categoryPut: (categoriesput: Categoriesput) =>
-    reqWithAccessToken.put(`/categories/${categoriesput.id}`, categoriesput),
-  categoryDel: (categoryDel: CategoryDel) =>
-    reqWithAccessToken.delete(`/categories/${categoryDel.id}`),
+    reqWithAccessToken.put(`/category/${categoriesput.id}`, categoriesput),
+ 
+    categoryDel: (categoryDel: CategoryDel) =>
+    reqWithAccessToken.delete(`/category/${categoryDel.id}`),
 };
 
 export const CATEGORY = {
@@ -49,6 +56,19 @@ export const CATEGORY = {
   removeCategory: (categoryId: number) =>
     reqWithAccessToken.delete(`/categories/${categoryId}`),
 };
+
+export const FIND = {
+  findId: (findId: FindIdItem) => baseAxios.post("/sms", findId),
+  findIdCode: (idcode: findIdCodeItem) =>
+    baseAxios.post("/member/email", idcode),
+
+  findPw: (findPw: FindPwItem) => baseAxios.post("/mail/auth", findPw),
+
+  findPwCode: (pwcode: findPwCodeItem) =>
+    baseAxios.post(`/member/pwd/${pwcode.authenticationCode}`, pwcode.email),
+};
+
+
 
 export const SEARCH = {
   getSearchedData: (keyword: string) =>
