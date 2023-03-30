@@ -28,7 +28,7 @@ export const ADMIN = {
   member: () => reqWithAccessToken.get(`/members`),
   position: (positionItem: PositionItem) =>
     reqWithAccessToken.put(
-      `/position/members/${positionItem.positionID}`,
+      `/member/${positionItem.positionID}/position`,
       positionItem
     ),
 };
@@ -65,7 +65,7 @@ export const FIND = {
   findPw: (findPw: FindPwItem) => baseAxios.post("/mail/auth", findPw),
 
   findPwCode: (pwcode: findPwCodeItem) =>
-    baseAxios.post(`/member/pwd/${pwcode.authenticationCode}`, pwcode.email),
+    baseAxios.post(`/member/pwd/${pwcode.authenticationCode}`, pwcode),
 };
 
 

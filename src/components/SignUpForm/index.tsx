@@ -179,7 +179,7 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
             fill="#007FFF"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <g clip-path="url(#clip0_233_2558)">
+            <g clipPath="url(#clip0_233_2558)">
               <path d="M38.1199 30.6145L54.6516 50.9797H44.4698L32.4268 36.0955L25.0916 43.3287V51.0078H16.771V15.1124H25.0916V32.3666L43.2087 15.0176H54.4529L38.1199 30.6145Z" />
               <path d="M90.7602 50.8111H83.3682L67.834 31.3904V50.8181H61.3178V22.6123H68.7098L84.2278 42.1523V22.6123H90.7602V50.8111Z" />
               <path d="M182.311 34.8068L195.287 50.811H187.295L177.839 39.1151L172.081 44.7717V50.8005H165.556V22.6368H172.089V36.1832L186.317 22.5596H195.129L182.311 34.8068Z" />
@@ -207,16 +207,16 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
               <path
                 d="M27.5594 11.4419L10.8927 28.1086"
                 stroke="#C5C5C5"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M10.8927 11.4419L27.5594 28.1086"
                 stroke="#C5C5C5"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </StIoClose>
           )}
@@ -349,7 +349,7 @@ const StSignForm = styled.form`
   z-index: 1;
   border-radius: 10px;
   padding: 45px 85px;
-  position: absolute;
+  position: fixed;
   transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
@@ -360,7 +360,7 @@ const StSignForm = styled.form`
   }
   &::-webkit-scrollbar-thumb {
     background-color: #fff;
-    border-radius:10px;
+    border-radius: 10px;
   }
   &::-webkit-scrollbar-track {
     background-color: #fff;

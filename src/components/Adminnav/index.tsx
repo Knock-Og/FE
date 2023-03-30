@@ -84,21 +84,21 @@ const AdminNav = () => {
             >
               <path
                 d="M20 21.6666C20.9205 21.6666 21.6666 20.9204 21.6666 19.9999C21.6666 19.0794 20.9205 18.3333 20 18.3333C19.0795 18.3333 18.3333 19.0794 18.3333 19.9999C18.3333 20.9204 19.0795 21.6666 20 21.6666Z"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M31.6667 21.6666C32.5871 21.6666 33.3333 20.9204 33.3333 19.9999C33.3333 19.0794 32.5871 18.3333 31.6667 18.3333C30.7462 18.3333 30 19.0794 30 19.9999C30 20.9204 30.7462 21.6666 31.6667 21.6666Z"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M8.33335 21.6666C9.25383 21.6666 10 20.9204 10 19.9999C10 19.0794 9.25383 18.3333 8.33335 18.3333C7.41288 18.3333 6.66669 19.0794 6.66669 19.9999C6.66669 20.9204 7.41288 21.6666 8.33335 21.6666Z"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
           </StNavButton>
@@ -115,23 +115,23 @@ const AdminNav = () => {
               <g filter="url(#filter0_d_233_1395)">
                 <path
                   d="M34.8462 4H25.1538C23.9643 4 23 4.96431 23 6.15385V15.8462C23 17.0357 23.9643 18 25.1538 18H34.8462C36.0357 18 37 17.0357 37 15.8462V6.15385C37 4.96431 36.0357 4 34.8462 4Z"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M16.8462 4H7.15385C5.96431 4 5 4.96431 5 6.15385V15.8462C5 17.0357 5.96431 18 7.15385 18H16.8462C18.0357 18 19 17.0357 19 15.8462V6.15385C19 4.96431 18.0357 4 16.8462 4Z"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M16.8462 22H7.15385C5.96431 22 5 22.9643 5 24.1538V33.8462C5 35.0357 5.96431 36 7.15385 36H16.8462C18.0357 36 19 35.0357 19 33.8462V24.1538C19 22.9643 18.0357 22 16.8462 22Z"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
-                <circle cx="31" cy="29" r="7" stroke-width="2.5" />
+                <circle cx="31" cy="29" r="7" strokeWidth="2.5" />
               </g>
             </svg>
             <StBtnP> 카테고리관리</StBtnP>
@@ -144,21 +144,21 @@ const AdminNav = () => {
             >
               <path
                 d="M20 21.6666C20.9205 21.6666 21.6666 20.9204 21.6666 19.9999C21.6666 19.0794 20.9205 18.3333 20 18.3333C19.0795 18.3333 18.3333 19.0794 18.3333 19.9999C18.3333 20.9204 19.0795 21.6666 20 21.6666Z"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M31.6667 21.6666C32.5871 21.6666 33.3333 20.9204 33.3333 19.9999C33.3333 19.0794 32.5871 18.3333 31.6667 18.3333C30.7462 18.3333 30 19.0794 30 19.9999C30 20.9204 30.7462 21.6666 31.6667 21.6666Z"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M8.33335 21.6666C9.25383 21.6666 10 20.9204 10 19.9999C10 19.0794 9.25383 18.3333 8.33335 18.3333C7.41288 18.3333 6.66669 19.0794 6.66669 19.9999C6.66669 20.9204 7.41288 21.6666 8.33335 21.6666Z"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
           </StNavButton>

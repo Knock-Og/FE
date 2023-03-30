@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import ModalPortal from "api/portal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ADMINCATEGORI } from "api";
 import { CategoryItem } from "types";
@@ -15,45 +15,80 @@ const CategoryForm = () => {
     {
       onSuccess: (response) => {
         if (response) {
-          queryClient.invalidateQueries("category");
-          //console.log("성공햇습니다.");
+          queryClient.invalidateQueries("categories");
+          return response.data;
         }
       },
       onError: (response) => {
         if (response) {
-          queryClient.invalidateQueries("category");
-          //console.log("실패햇습니다.");
+          queryClient.invalidateQueries("categories");
         }
       },
     }
   );
-  const categorySubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    if (categoryName.trim() === "") return alert("카테고리명을 적어주세요");
-    e.preventDefault();
-    categoryMutation.mutate({ categoryName });
-  };
   const [modalOpen, setModalOpen] = useState(false);
   const modalBtn = () => {
     setModalOpen(!modalOpen);
   };
 
+  useEffect(() => {
+    if (modalOpen) {
+      document.body.style.cssText = `
+    position: fixed; 
+    top: -${window.scrollY}px;
+    overflow-y: scroll;
+    width: 100%;`;
+      return () => {
+        const scrollY = document.body.style.top;
+        document.body.style.cssText = "";
+        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+      };
+    }
+  }, [modalOpen]);
+  const categorySubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if (categoryName.trim() === "") return alert("카테고리명을 적어주세요");
+    e.preventDefault();
+    modalBtn()
+    categoryMutation.mutate({ categoryName });
+  };
+  
+  
   //카테고리 수정
   const [categoryPutName, setCategoryPutName] = useState("");
   const [categoryPutID, setCategoryPutID] = useState(Number);
+
+
   const [modalPutOpen, setModalPutOpen] = useState(false);
+  const modalPutBtn = () => {
+    setModalPutOpen(!modalPutOpen);
+  };
+  useEffect(() => {
+    if (modalPutOpen) {
+      document.body.style.cssText = `
+    position: fixed; 
+    top: -${window.scrollY}px;
+    overflow-y: scroll;
+    width: 100%;`;
+      return () => {
+        const scrollY = document.body.style.top;
+        document.body.style.cssText = "";
+        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+      };
+    }
+  }, [modalPutOpen]);
   const categoryPutMutation = useMutation(
     "categoryput",
     ADMINCATEGORI.categoryPut,
     {
       onSuccess: (response) => {
         if (response) {
-          queryClient.invalidateQueries("category");
+          queryClient.invalidateQueries("categories");
           console.log("성공햇습니다.");
         }
       },
       onError: (response) => {
         if (response) {
-          queryClient.invalidateQueries("category");
+          queryClient.invalidateQueries("categories");
           console.log("실패햇습니다.");
         }
       },
@@ -62,10 +97,12 @@ const CategoryForm = () => {
   const categoryPutSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     if (categoryPutName.trim() === "") return alert("카테고리명을 적어주세요");
     e.preventDefault();
+    modalPutBtn();
     categoryPutMutation.mutate({
       categoryName: categoryPutName,
       id: categoryPutID,
     });
+    
   };
   //카테고리 삭제
   const categoryDelMutation = useMutation(
@@ -74,13 +111,15 @@ const CategoryForm = () => {
     {
       onSuccess: (response) => {
         if (response) {
-          queryClient.invalidateQueries("category");
+          queryClient.invalidateQueries("categories");
+          
           console.log("성공햇습니다.");
+          return response.data;
         }
       },
       onError: (response) => {
         if (response) {
-          queryClient.invalidateQueries("category");
+          queryClient.invalidateQueries("categories");
           console.log("실패햇습니다.");
         }
       },
@@ -106,7 +145,7 @@ const CategoryForm = () => {
           <StTitle>
             카테고리관리
             <StUser>
-              총 <StUserSpan></StUserSpan>개{/* {data?.data.length} */}
+              총 <StUserSpan>{data?.data.length}</StUserSpan>개
             </StUser>
           </StTitle>
           <StButton onClick={() => modalBtn()}>카테고리 추가</StButton>
@@ -120,7 +159,6 @@ const CategoryForm = () => {
               <StContentBottom key={item.id}>
                 <StName>{item.categoryName}</StName>
                 <StChange>
-                  
                   <StChangeBtn
                     onClick={() => {
                       setModalPutOpen(true);
@@ -158,16 +196,16 @@ const CategoryForm = () => {
                 <path
                   d="M27.5594 11.4419L10.8927 28.1086"
                   stroke="#C5C5C5"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M10.8927 11.4419L27.5594 28.1086"
                   stroke="#C5C5C5"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </StIoClose>
               <StCategoryTitle>카테고리 추가</StCategoryTitle>
@@ -197,24 +235,26 @@ const CategoryForm = () => {
                 viewBox="0 0 40 40"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                onClick={modalBtn}
+                onClick={modalPutBtn}
               >
                 <path
                   d="M27.5594 11.4419L10.8927 28.1086"
                   stroke="#C5C5C5"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M10.8927 11.4419L27.5594 28.1086"
                   stroke="#C5C5C5"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </StIoClose>
-              <StCategoryTitle>카테고리 수정</StCategoryTitle>
+              <StCategoryTitle onClick={modalPutBtn}>
+                카테고리 수정
+              </StCategoryTitle>
               <StCategory>
                 <StCategoryInput
                   type="text"
@@ -225,7 +265,7 @@ const CategoryForm = () => {
                 <StCommonButton>수정</StCommonButton>
               </StCategory>
             </StCategoryForm>
-            <StSignBg onClick={modalBtn} />
+            <StSignBg onClick={modalPutBtn} />
           </StCategoryAdd>
         )}
       </ModalPortal>
@@ -313,6 +353,7 @@ const StButtonCommon = `
   background: #fff;
   font-size: 0.875rem;
   border-radius: 50px;  
+  cursor: pointer;
 
 `;
 const StChangeBtn = styled.button`
@@ -352,7 +393,7 @@ const StCategoryAdd = styled.div`
 `;
 const StSignBg = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100000px;
   position: absolute;
   transform: translate(-50%, -50%);
   top: 50%;
@@ -365,7 +406,7 @@ const StCategoryForm = styled.form`
   z-index: 1;
   border-radius: 10px;
   padding: 70px 68px 80px;
-  position: absolute;
+  position: fixed;
   transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
@@ -399,8 +440,10 @@ const StCommonButton = styled.button`
   right: 0px;
   top: 0;
   background: #007fff;
-  color:#fff;
-  border:0;
+  color: #fff;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
 `;
 
 const StIoClose = styled.svg`

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import ModalPortal from "api/portal";
 import { SignUpForm } from "components";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ADMIN } from "api";
 import { SignItem } from "types";
@@ -10,17 +10,30 @@ const AdminForm = () => {
   const modalBtn = () => {
     setModalOpen(false);
   };
-
+  useEffect(() => {
+    if (modalOpen) {
+      document.body.style.cssText = `
+    position: fixed; 
+    top: -${window.scrollY}px;
+    overflow-y: scroll;
+    width: 100%;`;
+      return () => {
+        const scrollY = document.body.style.top;
+        document.body.style.cssText = "";
+        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+      };
+    }
+  }, [modalOpen]);
   const queryClient = useQueryClient();
-  const positionMutation = useMutation(ADMIN.position, {
+  const positionMutation = useMutation("position", ADMIN.position, {
     onSuccess: (response) => {
       if (response) {
-        queryClient.invalidateQueries("position");
+        queryClient.invalidateQueries("member");
       }
     },
     onError: (response) => {
       if (response) {
-        queryClient.invalidateQueries("position");
+        queryClient.invalidateQueries("member");
       }
     },
   });
@@ -197,6 +210,7 @@ const StChangeBtn = styled.button`
   background: #fff;
   font-size: 0.875rem;
   border-radius: 50px;
+  cursor: pointer;
 `;
 const StContent = styled.div``;
 const StContentform = styled.form``;
