@@ -10,7 +10,6 @@ export { default as FindPw } from "./FindPw";
 export { default as FindPwCode } from "./FindPwCode";
 export { default as Login } from "./Login";
 export { default as Main } from "./Main";
-export { default as Modify } from "./Modify";
 export { default as MyPost } from "./MyPost";
 export { default as Searched } from "./Searched";
 export { default as Write } from "./Write";

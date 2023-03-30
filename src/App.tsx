@@ -33,7 +33,7 @@ const App = () => {
             />
 
             {/* Detail */}
-            <Route path="/post/:id" element={<ROUTE.Detail />} />
+            <Route path="/post/:postId" element={<ROUTE.Detail />} />
 
             {/* Login */}
             <Route path="/login" element={<ROUTE.Login />} />
@@ -41,9 +41,6 @@ const App = () => {
             <Route path="/login/findid/code" element={<ROUTE.FindIdCode />} />
             <Route path="/login/findpw" element={<ROUTE.FindPw />} />
             <Route path="/login/findpw/code" element={<ROUTE.FindPwCode />} />
-
-            {/* Modify */}
-            <Route path="/modify" element={<ROUTE.Modify />} />
 
             {/* Mypage */}
             <Route path="/mypage/posts" element={<ROUTE.MyPost />} />
