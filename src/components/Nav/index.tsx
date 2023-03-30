@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { IconButton } from "@mui/material";
+import { CreateNewFolder } from "@mui/icons-material";
 import styled from "styled-components";
 import { NavItem } from "types";
 
@@ -9,6 +12,7 @@ interface Props {
 }
 
 const Nav = ({ navItems, isBookMarkNav, addBookmarkHandler }: Props) => {
+  const params = useParams();
   const [addBookmarkInput, setAddBookmarkInput] = useState("");
 
   const handleChangeAddBookmarkInput = (
@@ -20,18 +24,24 @@ const Nav = ({ navItems, isBookMarkNav, addBookmarkHandler }: Props) => {
 
   return (
     <StContainer>
-      {isBookMarkNav && (
-        <StAddBookMarkBtn onClick={handleClickBookMarkAddBtn}>
-          추가
-        </StAddBookMarkBtn>
-      )}
       <StUl>
         {navItems.map((item) => (
-          <StLi key={item.itemValue} onClick={item.handler}>
+          <StLi
+            isActive={params.categoryName === item.itemValue}
+            key={item.itemValue}
+            onClick={item.handler}
+          >
             {item.itemValue}
           </StLi>
         ))}
-        {isBookMarkNav && <input onChange={handleChangeAddBookmarkInput} />}
+        {isBookMarkNav && (
+          <StAddBookMarkInputWrapper>
+            <StAddBookMarkInput onChange={handleChangeAddBookmarkInput} />
+            <StAddBookMarkBtn onClick={handleClickBookMarkAddBtn}>
+              <CreateNewFolder />
+            </StAddBookMarkBtn>
+          </StAddBookMarkInputWrapper>
+        )}
       </StUl>
     </StContainer>
   );
@@ -44,25 +54,67 @@ const StContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid gainsboro;
   padding: 30px;
-  width: 300px;
-  height: 100vh;
+  width: 380px;
+  height: 80vh;
+  box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
+  border: 1px solid ${(props) => props.theme.grey};
+  border-radius: 24px;
 `;
 
 const StUl = styled.ul`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  width: 100%;
+  gap: 30px;
 `;
 
-const StLi = styled.li`
+const StLi = styled.li<{ isActive: boolean }>`
+  width: 100%;
+  height: 40px;
+  border: 1px solid ${(props) => props.theme.grey};
+  border-radius: 10px;
+
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 40px;
+  text-align: center;
+
+  background-color: ${(props) =>
+    props.isActive ? props.theme.keyBlue : "#fff"};
+  color: ${(props) => (props.isActive ? "#fff" : props.theme.grey)};
   cursor: pointer;
 `;
 
-const StAddBookMarkBtn = styled.button`
+const StAddBookMarkInputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 40px;
+  border: 1px solid ${(props) => props.theme.grey};
+  border-radius: 10px;
+
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 40px;
+`;
+
+const StAddBookMarkBtn = styled(IconButton)`
   position: absolute;
-  top: 3%;
-  right: 3%;
-  border-radius: 50%;
+  top: 50%;
+  right: 0%;
+  transform: translateY(-50%);
+`;
+
+const StAddBookMarkInput = styled.input`
+  width: 80%;
+  height: 40px;
+  padding-left: 10px;
+  border: none;
+  background: none;
+  outline: none;
+  border-radius: 10px;
+
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 40px;
 `;

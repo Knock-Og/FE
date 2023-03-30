@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { setCookie } from "api/cookies";
 import { LOGIN } from "api";
 
-const LoginForm = () => {
+const AdminLoginform = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +14,7 @@ const LoginForm = () => {
   const loginMutation = useMutation("login", LOGIN.login, {
     onSuccess: (response) => {
       setCookie("access_token", response.headers.authorization.substr(7));
-      navigate("/");
+      navigate("/admin");
     },
   });
 
@@ -30,12 +30,7 @@ const LoginForm = () => {
     setEmail("");
     setPassword("");
   };
-  const findId = ()=>{
-    navigate("/login/findId");
-  }
-  const findPw = () => {
-    navigate("/login/findPw");
-  };
+
   return (
     <StLoginBg>
       <StLoginWrap>
@@ -130,17 +125,14 @@ const LoginForm = () => {
             </StLoginUl>
             <StLoginBtn>로그인</StLoginBtn>
           </StLoginForm>
-          <StLink>
-            <StLinkli onClick={() => findId()}>아이디 찾기</StLinkli>
-            <StLinkli onClick={() => findPw()}>비밀번호 찾기</StLinkli>
-          </StLink>
+          
         </StLogin>
       </StLoginWrap>
     </StLoginBg>
   );
 };
 
-export default LoginForm;
+export default AdminLoginform;
 
 const StLoginBg = styled.div`
   width: 100%;
@@ -215,22 +207,4 @@ const StLoginBtn = styled.button`
   border: 0;
   color: #fff;
   cursor: pointer;
-`;
-const StLink = styled.ul`
-  margin-top: 20px;
-  line-height: 1;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-`;
-const StLinkli = styled.li`
-  font-weight: 500;
-  color: #007fff;
-  font-size: 12px;
-  cursor: pointer;
-  &:first-child {
-    margin-right: 20px;
-    padding-right: 20px;
-    border-right: 1px solid #828282;
-  }
 `;

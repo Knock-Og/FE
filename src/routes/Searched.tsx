@@ -37,7 +37,7 @@ const Searched = () => {
 
   return (
     <Layout navItems={navItems}>
-      {searchedPosts ? (
+      {searchedPosts && searchedPosts?.length > 0 ? (
         searchedPosts.map((post) => <PostCard key={post.id} {...post} />)
       ) : (
         <NoSearched />

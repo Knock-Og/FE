@@ -38,9 +38,11 @@ const Category = () => {
   }, [categoryData, navigate, mutate]);
 
   return (
-    <Layout navItems={navItems}>
-      <StBreadCrumb>{params.categoryName}</StBreadCrumb>
-      {searchedPosts ? (
+    <Layout
+      navItems={navItems}
+      breadcrumb={<StBreadCrumb>{params.categoryName}</StBreadCrumb>}
+    >
+      {searchedPosts && searchedPosts?.length > 0 ? (
         searchedPosts.map((post) => <PostCard key={post.id} {...post} />)
       ) : (
         <NoSearched />

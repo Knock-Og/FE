@@ -6,16 +6,12 @@ export interface LoginReq {
 export interface SignUpReq extends LoginReq {
   position: string;
   memberName: string;
+  phoneNum: string;
 }
 
 export interface NavItem {
   itemValue: string;
   handler: () => void;
-}
-
-export interface CreateBoard {
-  title: string;
-  content: string;
 }
 
 export interface Post {
@@ -27,6 +23,39 @@ export interface Post {
   modifiedAt: string;
   keywords: string[];
   commentCount: number;
+  postViews: number;
+  editingStatus: string;
+}
+
+export interface PostDetail {
+  id: number;
+  memberName: string;
+  title: string;
+  content: string;
+  createdAt: string;
+  modifiedAt: string;
+  category: string;
+  keywords: string[];
+  postViews: number;
+  editingStatus: string;
+}
+
+export interface EditPostReq {
+  postId: number;
+  post: EditPost;
+}
+
+export interface EditPost {
+  title: string;
+  content: string;
+  keywords: string[];
+  category: string;
+  modifyPermission: "Owner" | "Manager" | "Member";
+  readablePosition: "Owner" | "Manager" | "Member";
+}
+
+export interface AddPost extends EditPost {
+  editingStatus: "true" | "false";
 }
 
 export interface Category {
@@ -54,6 +83,7 @@ export interface SignItem {
   memberName: string;
   email: string;
   position: string;
+  phoneNum: string;
 }
 export interface PositionItem {
   positionID: number;
@@ -75,4 +105,27 @@ export interface Categoriesput {
 }
 export interface CategoryDel {
   id: number;
+}
+
+export interface SignUpFormProps {
+  modalOpen: boolean;
+  onClose: () => void;
+}
+
+export interface FindIdItem {
+  memberName: string;
+  phoneNum: string;
+}
+export interface findIdCodeItem {
+  authenticationCode: string;
+  phoneNum: string;
+}
+
+export interface FindPwItem {
+  email: string;
+}
+
+export interface findPwCodeItem {
+  authenticationCode: string;
+  email: string;
 }
