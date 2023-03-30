@@ -11,6 +11,9 @@ import Bookmark from "routes/Bookmark";
 import Admin from "routes/Admin";
 import AdminCategory from "routes/AdminCategory";
 import Main from "routes/Main";
+import Write from "routes/Write";
+import Detail from "routes/Detail";
+import { ModifyBoard } from "components";
 
 const App = () => {
   const isDark = useRecoilValue(isDarkState);
@@ -28,6 +31,9 @@ const App = () => {
             <Route path="/category/:categoryName" element={<Category />} />
             <Route path="/search" element={<Searched />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/write" element={<Write />} />
+            <Route path="/post/:id" element={<Detail />} />
+            <Route path="/modify" element={<ModifyBoard />} />
             <Route path="/admin" element={<Admin />}>
               <Route path="category" element={<AdminCategory />} />
             </Route>
