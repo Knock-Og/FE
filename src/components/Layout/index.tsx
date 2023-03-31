@@ -6,7 +6,7 @@ interface Props {
   navItems?: NavItem[];
   children: React.ReactNode;
   isBookMarkNav?: boolean;
-  isNavHidden?: boolean;
+  breadcrumb?: React.ReactNode;
   addBookmarkHandler?: (addBookmarkInput: string) => void;
 }
 
@@ -14,39 +14,58 @@ const Layout = ({
   navItems,
   children,
   isBookMarkNav,
-  isNavHidden,
+  breadcrumb,
   addBookmarkHandler,
 }: Props) => {
   return (
-    <>
+    <StLayout>
       <Header />
       <StContainer>
-        {navItems && !isNavHidden && (
+        {navItems && (
           <Nav
             navItems={navItems}
             isBookMarkNav={isBookMarkNav}
             addBookmarkHandler={addBookmarkHandler}
           />
         )}
-        <StPostCardContainer>{children}</StPostCardContainer>
+        <StContents>
+          {breadcrumb && (
+            <StBreadCrumbWrapper>{breadcrumb}</StBreadCrumbWrapper>
+          )}
+          <StPostsWrapper>{children}</StPostsWrapper>
+        </StContents>
       </StContainer>
-    </>
+    </StLayout>
   );
 };
 
 export default Layout;
+
+const StLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 30px;
+`;
 
 const StContainer = styled.div`
   display: flex;
   gap: 30px;
 `;
 
-const StPostCardContainer = styled.div`
+const StContents = styled.div`
+  height: 80vh;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  overflow: hidden;
+`;
 
-  padding: 10px;
-  border: 1px solid gainsboro;
+const StPostsWrapper = styled.div`
+  height: 100%;
+  overflow: auto;
+`;
+
+const StBreadCrumbWrapper = styled.div`
+  padding: 0px 0px 10px 10px;
+  display: flex;
+  align-items: center;
 `;

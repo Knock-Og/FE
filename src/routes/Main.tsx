@@ -53,14 +53,7 @@ const Header = () => {
 
   return (
     <StContainer>
-      <StHeaderLeftWrapper>
-        <StLogo onClick={() => navigate("/")} />
-        <StSearchWrapper>
-          <StSearchInput ref={searchInputRef} onKeyDown={handleKeyDown} />
-          <StSearchBtn onClick={handleClickSearchBtn}>찾기</StSearchBtn>
-        </StSearchWrapper>
-      </StHeaderLeftWrapper>
-      <StHeaderRightWrapper>
+      <StHeader>
         <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
           {isDark ? <Sun /> : <Moon />}
         </StModeToggleBtn>
@@ -79,7 +72,19 @@ const Header = () => {
             {accessToken ? "로그아웃" : "로그인"}
           </MenuItem>
         </Menu>
-      </StHeaderRightWrapper>
+      </StHeader>
+
+      <StMainWrapper>
+        <Logo />
+        <StSearchWrapper>
+          <StSearchInput
+            ref={searchInputRef}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask, Seek, Knock !"
+          />
+          <StSearchBtn onClick={handleClickSearchBtn}>찾기</StSearchBtn>
+        </StSearchWrapper>
+      </StMainWrapper>
     </StContainer>
   );
 };
@@ -87,37 +92,55 @@ const Header = () => {
 export default Header;
 
 const StContainer = styled.div`
+  position: relative;
   width: 100%;
+  height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: 30px;
 `;
 
-const StHeaderLeftWrapper = styled.div`
-  width: 80%;
+const StHeader = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
+  width: 100%;
   align-items: center;
-  gap: 70px;
+  justify-content: flex-end;
+  padding: 30px;
 `;
 
-const StLogo = styled(Logo)`
-  transform: translateY(-10px);
-  cursor: pointer;
+const StMainWrapper = styled.div`
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+  gap: 50px;
 `;
 
 const StSearchWrapper = styled.div`
-  width: 60%;
+  width: 100%;
   position: relative;
 `;
 
 const StSearchInput = styled.input`
   width: 100%;
-  height: 32px;
+  height: 64px;
   border-radius: 10px;
   border: 1px solid ${(props) => props.theme.grey};
   border-radius: 128px;
   box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
-  padding: 10px;
+  padding: 20px 40px;
   outline: none;
+  font-family: "SUIT";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
 `;
 
 const StSearchBtn = styled(Search)`
@@ -125,13 +148,6 @@ const StSearchBtn = styled(Search)`
   right: 2%;
   top: 50%;
   transform: translateY(-50%);
-`;
-
-const StHeaderRightWrapper = styled.div`
-  width: 20%;
-  display: flex;
-  justify-content: flex-end;
-  gap: 5px;
 `;
 
 const StModeToggleBtn = styled.button`

@@ -1,13 +1,55 @@
-import { CircularProgress } from "@mui/material";
+// import { useEffect, useState } from "react";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
+import {
+  AiOutlineClockCircle,
+  AiOutlineComment,
+  AiOutlineEye,
+} from "react-icons/ai";
+import { CircularProgress } from "@mui/material";
 import styled from "styled-components";
 import { Post } from "types";
+import { POST } from "api";
+// import { EventSourcePolyfill } from "event-source-polyfill";
+// import { getCookie } from "api/cookies";
 
 const PostCard = (post: Post) => {
+  // const EventSource = EventSourcePolyfill;
+  // const [eventSource, setEventSource] = useState<EventSource>();
   const navigate = useNavigate();
+  const { mutate: switchEditingStatus } = useMutation(POST.switchEditingStatus);
+
+  const handleClickPostCard = () => {
+    switchEditingStatus(post.id);
+    navigate(`/post/${post.id}`);
+    // setEventSource(
+    //   new EventSource(`${process.env.React_APP_SERVER_URL}connect/${post.id}`, {
+    //     headers: {
+    //       Authorization: `Bearer ${getCookie("access_token")}`,
+    //     },
+    //     withCredentials: true,
+    //   })
+    // );
+  };
+
+  // useEffect(() => {
+  //   if (eventSource) {
+  //     eventSource.onopen = () => console.log("is connected !");
+
+  //     eventSource.onmessage = (event) => {
+  //       alert(JSON.parse(event.data));
+  //     };
+  //   }
+
+  //   return () => {
+  //     if (eventSource) {
+  //       eventSource.close();
+  //     }
+  //   };
+  // }, [eventSource]);
 
   return (
-    <StPostCardBox onClick={() => navigate(`/post/${post.id}`)}>
+    <StPostCardBox onClick={handleClickPostCard}>
       <StKeyWordsWrapper>
         {post.keywords.map((keyword) => (
           <StKeyWord key={keyword}>{keyword}</StKeyWord>
@@ -22,10 +64,19 @@ const PostCard = (post: Post) => {
           : post.content}
       </StContent>
       <StPostCardFooter>
-        <div>{post.createdAt}</div>
-        <div>{post.commentCount}개의 댓글</div>
-        {/* TODO: post.isEdit &&  <CircularProgress size={13} /> */}
-        {true && <CircularProgress size={13} />}
+        <StFooterItem>
+          <AiOutlineClockCircle />
+          {post.createdAt.slice(0, 10)}
+        </StFooterItem>
+        <StFooterItem>
+          <AiOutlineComment />
+          {post.commentCount}
+        </StFooterItem>
+        <StFooterItem>
+          <AiOutlineEye />
+          {post.postViews}
+        </StFooterItem>
+        {post.editingStatus === "true" && <CircularProgress size={13} />}
       </StPostCardFooter>
     </StPostCardBox>
   );
@@ -34,34 +85,68 @@ const PostCard = (post: Post) => {
 export default PostCard;
 
 const StPostCardBox = styled.div`
+  width: 100%;
+  height: 260px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 10px;
-  border: 1px solid gainsboro;
+  justify-content: space-between;
+  padding: 30px;
+  border: 1px solid ${(props) => props.theme.grey};
+  box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
+  border-radius: 24px;
   cursor: pointer;
+  margin-bottom: 10px;
 `;
 
 const StKeyWordsWrapper = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 15px;
 `;
 
 const StKeyWord = styled.div`
-  background-color: blue;
-  color: white;
-  padding: 5px;
-  border-radius: 50px;
+  background-color: ${(props) => props.theme.keyBlue};
+  color: #fff;
+  width: 82px;
+  height: 32px;
+  border-radius: 24px;
+  font-family: "SUIT";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 32px;
+  text-align: center;
 `;
 
 const StTitle = styled.div`
-  font-size: 1.5rem;
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 800;
+  font-size: 32px;
+  line-height: 38px;
+  color: ${(props) => props.theme.darkGrey};
 `;
 
-const StContent = styled.div``;
+const StContent = styled.div`
+  font-family: "SUIT";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 160%;
+  color: ${(props) => props.theme.darkGrey};
+`;
 
 const StPostCardFooter = styled.div`
   display: flex;
   gap: 10px;
-  font-size: 0.75rem;
+  font-family: "SUIT";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  color: ${(props) => props.theme.darkGrey};
+`;
+
+const StFooterItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 3px;
 `;

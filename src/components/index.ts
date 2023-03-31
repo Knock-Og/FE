@@ -9,7 +9,9 @@ export { default as CategoryForm } from "./CategoryForm";
 export { default as AdminNav } from "./Adminnav";
 export { default as Layout } from "./Layout";
 export { default as NoSearched } from "./NoSearched";
-
+export { default as ModifyBoard } from "./ModifyBoard";
+export { default as WriteBoard } from "./WriteBoard";
+export { default as DetailBoard } from "./DetailBoard";
 export { default as FindPwForm } from "./FindPwForm";
 export { default as FindIdForm } from "./FindIdForm";
 export { default as FindIdCodeForm } from "./FindIdCodeForm";

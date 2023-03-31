@@ -12,6 +12,8 @@ import {
   findIdCodeItem,
   FindPwItem,
   findPwCodeItem,
+  AddPost,
+  EditPostReq,
 } from "types";
 
 export const LOGIN = {
@@ -33,42 +35,25 @@ export const ADMIN = {
     ),
 };
 
-export const ADMINCATEGORI = {
-  categoryAdd: (category: AdminCategory) =>
-    reqWithAccessToken.post(`/category`, category), //메소드확인
- 
-    categories: () => reqWithAccessToken.get(`/categories`),
-  
-  categoryPut: (categoriesput: Categoriesput) =>
-    reqWithAccessToken.put(`/category/${categoriesput.id}`, categoriesput),
- 
-    categoryDel: (categoryDel: CategoryDel) =>
-    reqWithAccessToken.delete(`/category/${categoryDel.id}`),
-};
-
 export const CATEGORY = {
   getCategories: () =>
     reqWithAccessToken.get("/categories").then((res) => res.data),
-  addCategory: (categoryName: string) =>
-    reqWithAccessToken.post("/categories", categoryName),
-  editCategory: (categoryName: string, categoryId: number) =>
-    reqWithAccessToken.put(`/categories/${categoryId}`, categoryName),
-  removeCategory: (categoryId: number) =>
-    reqWithAccessToken.delete(`/categories/${categoryId}`),
+  categoryAdd: (category: AdminCategory) =>
+    reqWithAccessToken.post(`/category`, category),
+  categoryPut: (categoriesput: Categoriesput) =>
+    reqWithAccessToken.put(`/category/${categoriesput.id}`, categoriesput),
+  categoryDel: (categoryDel: CategoryDel) =>
+    reqWithAccessToken.delete(`/category/${categoryDel.id}`),
 };
 
 export const FIND = {
   findId: (findId: FindIdItem) => baseAxios.post("/sms", findId),
   findIdCode: (idcode: findIdCodeItem) =>
     baseAxios.post("/member/email", idcode),
-
   findPw: (findPw: FindPwItem) => baseAxios.post("/mail/auth", findPw),
-
   findPwCode: (pwcode: findPwCodeItem) =>
     baseAxios.post(`/member/pwd/${pwcode.authenticationCode}`, pwcode),
 };
-
-
 
 export const SEARCH = {
   getSearchedData: (keyword: string) =>
@@ -86,17 +71,28 @@ export const BOOKMARK = {
   getBookmarks: () =>
     reqWithAccessToken.get("/bookmark/folders").then((res) => res.data),
   getBookmark: (folderId: number) =>
-    reqWithAccessToken
-      .get(`/bookmark/folder/${folderId}/bookmarks`)
-      .then((res) => res.data),
+    reqWithAccessToken.get(`/bookmark/folder/${folderId}/bookmarks`),
   addBookmark: (bookMarkFolderName: string) =>
     reqWithAccessToken.post("/bookmark/folder", { bookMarkFolderName }),
-  addPostToBookmark: ({ folderId, postId }: PostToBookmark) =>
-    reqWithAccessToken.post(`/bookmark/folder/${folderId}/post/${postId}`),
   editBookmark: ({ folderId, bookMarkFolderName }: EditBookmark) =>
-    reqWithAccessToken.put(`/bookmark/folder/${folderId}`, bookMarkFolderName),
+    reqWithAccessToken.put(`/bookmark/folder/${folderId}`, {
+      bookMarkFolderName,
+    }),
   deleteBookmark: (folderId: number) =>
     reqWithAccessToken.delete(`/bookmark/folder/${folderId}`),
+  addPostToBookmark: ({ folderId, postId }: PostToBookmark) =>
+    reqWithAccessToken.post(`/bookmark/folder/${folderId}/post/${postId}`),
   deletePostToBookmark: ({ folderId, postId }: PostToBookmark) =>
     reqWithAccessToken.delete(`/bookmark/folder/${folderId}/post/${postId}`),
+};
+
+export const POST = {
+  getPost: (postId: number) =>
+    reqWithAccessToken.get(`/post/${postId}`).then((res) => res.data),
+  switchEditingStatus: (postId: number) =>
+    reqWithAccessToken.put(`post/${postId}/editingStatus`),
+  addPost: (post: AddPost) => reqWithAccessToken.post("/post", post),
+  editPost: ({ post, postId }: EditPostReq) =>
+    reqWithAccessToken.put(`/post/${postId}`, post),
+  delPost: (postId: number) => reqWithAccessToken.delete(`/post/${postId}`),
 };

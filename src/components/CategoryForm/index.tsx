@@ -2,30 +2,26 @@ import styled from "styled-components";
 import ModalPortal from "api/portal";
 import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { ADMINCATEGORI } from "api";
+import { CATEGORY } from "api";
 import { CategoryItem } from "types";
 
 const CategoryForm = () => {
   const queryClient = useQueryClient();
   //카테고리 추가
   const [categoryName, setCategoryName] = useState("");
-  const categoryMutation = useMutation(
-    "categoryadd",
-    ADMINCATEGORI.categoryAdd,
-    {
-      onSuccess: (response) => {
-        if (response) {
-          queryClient.invalidateQueries("categories");
-          return response.data;
-        }
-      },
-      onError: (response) => {
-        if (response) {
-          queryClient.invalidateQueries("categories");
-        }
-      },
-    }
-  );
+  const categoryMutation = useMutation("categoryadd", CATEGORY.categoryAdd, {
+    onSuccess: (response) => {
+      if (response) {
+        queryClient.invalidateQueries("getCategories");
+        return response.data;
+      }
+    },
+    onError: (response) => {
+      if (response) {
+        queryClient.invalidateQueries("getCategories");
+      }
+    },
+  });
   const [modalOpen, setModalOpen] = useState(false);
   const modalBtn = () => {
     setModalOpen(!modalOpen);
@@ -48,15 +44,13 @@ const CategoryForm = () => {
   const categorySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     if (categoryName.trim() === "") return alert("카테고리명을 적어주세요");
     e.preventDefault();
-    modalBtn()
+    modalBtn();
     categoryMutation.mutate({ categoryName });
   };
-  
-  
+
   //카테고리 수정
   const [categoryPutName, setCategoryPutName] = useState("");
   const [categoryPutID, setCategoryPutID] = useState(Number);
-
 
   const [modalPutOpen, setModalPutOpen] = useState(false);
   const modalPutBtn = () => {
@@ -76,24 +70,20 @@ const CategoryForm = () => {
       };
     }
   }, [modalPutOpen]);
-  const categoryPutMutation = useMutation(
-    "categoryput",
-    ADMINCATEGORI.categoryPut,
-    {
-      onSuccess: (response) => {
-        if (response) {
-          queryClient.invalidateQueries("categories");
-          console.log("성공햇습니다.");
-        }
-      },
-      onError: (response) => {
-        if (response) {
-          queryClient.invalidateQueries("categories");
-          console.log("실패햇습니다.");
-        }
-      },
-    }
-  );
+  const categoryPutMutation = useMutation("categoryput", CATEGORY.categoryPut, {
+    onSuccess: (response) => {
+      if (response) {
+        queryClient.invalidateQueries("getCategories");
+        console.log("성공햇습니다.");
+      }
+    },
+    onError: (response) => {
+      if (response) {
+        queryClient.invalidateQueries("getCategories");
+        console.log("실패햇습니다.");
+      }
+    },
+  });
   const categoryPutSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     if (categoryPutName.trim() === "") return alert("카테고리명을 적어주세요");
     e.preventDefault();
@@ -102,29 +92,24 @@ const CategoryForm = () => {
       categoryName: categoryPutName,
       id: categoryPutID,
     });
-    
   };
   //카테고리 삭제
-  const categoryDelMutation = useMutation(
-    "categorydel",
-    ADMINCATEGORI.categoryDel,
-    {
-      onSuccess: (response) => {
-        if (response) {
-          queryClient.invalidateQueries("categories");
-          
-          console.log("성공햇습니다.");
-          return response.data;
-        }
-      },
-      onError: (response) => {
-        if (response) {
-          queryClient.invalidateQueries("categories");
-          console.log("실패햇습니다.");
-        }
-      },
-    }
-  );
+  const categoryDelMutation = useMutation("categorydel", CATEGORY.categoryDel, {
+    onSuccess: (response) => {
+      if (response) {
+        queryClient.invalidateQueries("getCategories");
+
+        console.log("성공햇습니다.");
+        return response.data;
+      }
+    },
+    onError: (response) => {
+      if (response) {
+        queryClient.invalidateQueries("getCategories");
+        console.log("실패햇습니다.");
+      }
+    },
+  });
   const categoryDel = (id: number) => {
     if (window.confirm("삭제하시겠습니까?")) {
       categoryDelMutation.mutate({ id });
@@ -132,12 +117,12 @@ const CategoryForm = () => {
     }
   };
   const { isLoading, isError, data } = useQuery(
-    "categories",
-    ADMINCATEGORI.categories
+    "getCategories",
+    CATEGORY.getCategories
   );
   if (isLoading) return <h1>"성공했습니다.!"</h1>;
   if (isError) return <h1>"실패했습니다.!"</h1>;
-  //console.log(data);
+
   return (
     <>
       <StAdminWrap>
@@ -145,7 +130,7 @@ const CategoryForm = () => {
           <StTitle>
             카테고리관리
             <StUser>
-              총 <StUserSpan>{data?.data.length}</StUserSpan>개
+              총 <StUserSpan>{data.length}</StUserSpan>개
             </StUser>
           </StTitle>
           <StButton onClick={() => modalBtn()}>카테고리 추가</StButton>
@@ -154,7 +139,7 @@ const CategoryForm = () => {
           <StContentTop>
             <StName>카테고리 명</StName>
           </StContentTop>
-          {data?.data.map((item: CategoryItem) => {
+          {data.map((item: CategoryItem) => {
             return (
               <StContentBottom key={item.id}>
                 <StName>{item.categoryName}</StName>
@@ -369,11 +354,10 @@ const StDelBtn = styled.button`
 const StChange = styled.p`
   width: 25%;
   text-align: center;
-  display:flex;
+  display: flex;
   gap: 10px;
   align-items: center;
 `;
-
 
 const StButton = styled.button`
   height: 40px;
@@ -385,7 +369,6 @@ const StButton = styled.button`
   cursor: pointer;
   border-radius: 10px;
 `;
-
 
 //모달부분
 const StCategoryAdd = styled.div`
@@ -424,15 +407,15 @@ const StCategoryInput = styled.input`
   height: 44px;
   border: 0;
   outline: 0;
-  padding-right:90px;
+  padding-right: 90px;
   border-bottom: 1px solid #000;
   &::placeholder {
     color: #bdbdbd;
   }
 `;
 const StCategory = styled.div`
-  position:relative;
-`
+  position: relative;
+`;
 const StCommonButton = styled.button`
   position: absolute;
   width: 84px;
