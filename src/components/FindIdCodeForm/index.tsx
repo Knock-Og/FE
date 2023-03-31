@@ -21,17 +21,28 @@ const FindIdCodeForm = () => {
     FIND.findIdCode,
     {
       onSuccess: (Response) => {
-        queryClient.invalidateQueries("code");
+        queryClient.invalidateQueries("find");
         return Response.data;
+      },
+      onError: async (response: {
+        response: { data: { message: string } };
+      }): Promise<string> => {
+        queryClient.invalidateQueries("find");
+        alert("인증코드를 다시 확인해주세요");
+        return response.response.data.message;
       },
     }
   );
 
-  const codeSubmit = (e:React.FormEvent<HTMLFormElement>)=>{
+  const codeSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault()
     if (authenticationCode.trim() === "") return alert("인증코드를 작성해주세요");
-    idFindCodeMutate({ authenticationCode, phoneNum });
-    setAuthenticationCode("");
+    try {
+      await idFindCodeMutate({ authenticationCode, phoneNum });
+      setAuthenticationCode("");
+    } catch (error) {
+      queryClient.invalidateQueries("find");
+    }
   }
   
   return (
@@ -95,23 +106,28 @@ const FindIdCodeForm = () => {
           />
         </g>
       </StLogo>
-      <StIdSubmitForm onSubmit={codeSubmit}>
-        <StTitle>인증코드를 입력해주세요.</StTitle>
-        <StInput
-          type="text"
-          placeholder="인증코드를 적어주세요"
-          value={authenticationCode}
-          onChange={codeChange}
-        />
-        <Stbutton>인증하기</Stbutton>
-      </StIdSubmitForm>
+      {data?.data.email ? null : (
+        <StIdSubmitForm onSubmit={codeSubmit}>
+          <StTitle>인증코드를 입력해주세요.</StTitle>
+          <StInput
+            type="text"
+            placeholder="인증코드를 적어주세요"
+            value={authenticationCode}
+            onChange={codeChange}
+          />
+          <Stbutton>인증하기</Stbutton>
+        </StIdSubmitForm>
+      )}
       {data?.data.email ? (
-        <StCode>
-          <StContentTitle>
-            회원님의 이메일은 <span>{data?.data.email}</span> 입니다.
-          </StContentTitle>
-          <Stbutton onClick={() => loginPage()}>로그인페이지</Stbutton>
-        </StCode>
+        <div>
+          <StTitle>회원님의 이메일은 아래와 같습니다.</StTitle>
+          <StCode>
+            <StContentTitle>
+              회원님의 이메일은 <span>{data?.data.email}</span> 입니다.
+            </StContentTitle>
+            <Stbutton onClick={() => loginPage()}>로그인페이지</Stbutton>
+          </StCode>
+        </div>
       ) : null}
     </StFindIdWrap>
   );
@@ -158,8 +174,6 @@ const StInput = styled.input`
 `
 const StCode = styled.div`
   margin-top: 50px;
-  padding-top: 50px;
-  border-top: 1px dashed #eee;
 `;
 const StContentTitle = styled.p`
   font-size: 1.125rem;

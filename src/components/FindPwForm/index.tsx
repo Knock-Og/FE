@@ -25,17 +25,29 @@ const FindPwForm = () => {
   const queryClient = useQueryClient()
   const emailMutation = useMutation("findPw", FIND.findPw, {
     onSuccess: (response) => {
-      queryClient.invalidateQueries("find");
+      queryClient.invalidateQueries("findpw");
       return response.data;
     },
+    onError: async (response: {
+      response: { data: { message: string } };
+    }): Promise<string> => {
+      queryClient.invalidateQueries("findpw");
+      return response.response.data.message;
+    },
   });
-  const pwSubmit =(e:React.FormEvent<HTMLFormElement>)=>{
+  const pwSubmit = async(e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault()
-    if(email.trim() === "") return alert("이메일을 적어주세요")
-    
-    emailMutation.mutate({ email })
-    navigate("/login/findPw/code", { state: { email: email } });
-    setEmail("")
+    if (!email || email.trim() === "") return alert("이메일을 적어주세요");
+    if (email.indexOf("@") === -1)return alert("'@'를 포함해서 이메일을 작성해주세요");
+    try {
+      await emailMutation.mutateAsync({ email });
+      navigate("/login/findPw/code", { state: { email: email } });
+      setEmail("");
+    } catch (error) {
+      queryClient.invalidateQueries("findpw");
+      e.stopPropagation();
+      alert("등록된 회원정보가 없습니다.");
+    }
   }
   return (
     <StFindPWWrap>

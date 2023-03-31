@@ -36,21 +36,34 @@ const FindIdForm = () => {
     };
 
     const queryClient = useQueryClient()
-    const idMutation = useMutation("findId",FIND.findId,{
-        onSuccess:(response)=>{
-            queryClient.invalidateQueries("find")
-            return response.data
-            
-        }
-    })
-    const idSubmit =(e:React.FormEvent<HTMLFormElement>)=>{
+    const idMutation = useMutation("findId", FIND.findId, {
+      onSuccess: (response) => {
+        queryClient.invalidateQueries("find");
+        return response.data;
+      },
+      onError: async (response: {
+        response: { data: { message: string } };
+      }): Promise<string> => {
+        queryClient.invalidateQueries("find");
+        return response.response.data.message;
+      },
+    });
+    const idSubmit = async(e:React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault()
+        
         if(memberName.trim() === "") return alert("회원명을 작성해주세요");
-        if(phoneNum.trim() === "") return alert("휴대폰번호를 작성해주세요");
-        idMutation.mutate({ memberName, phoneNum });
-        navigate("/login/findId/code", { state: { phoneNum: phoneNum } });
-        setMemberName("")
-        setPhoneNum("");
+        if (phoneNum.indexOf("-") === -1) return alert("'-'를 포함해서 휴대폰번호를 작성해주세요")
+        if (!phoneNum || phoneNum.trim() === "") return alert("휴대폰번호를 작성해주세요");
+        try {
+          await idMutation.mutateAsync({ memberName, phoneNum });
+          navigate("/login/findId/code", { state: { phoneNum } });
+          setMemberName("");
+          setPhoneNum("");
+        } catch (error) {
+          queryClient.invalidateQueries("find");
+          e.stopPropagation();
+         alert("등록된 회원정보가 없습니다.");
+        }
     }
     return (
       <StFindIdWrap>

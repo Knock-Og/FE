@@ -17,18 +17,35 @@ const FindPwCodeForm = () => {
       setAuthenticationCode(e.target.value);
     };
     const queryClient = useQueryClient()
-    const { mutate: pwFindCodeMutate, data } = useMutation("pwcode",FIND.findPwCode,{
-      onSuccess: (Response) => {
-        queryClient.invalidateQueries("code");
-        return Response.data;
-      },
-    }
-  );
-    const codeSubmit = (e:React.FormEvent<HTMLFormElement>)=>{
+    const { mutate: pwFindCodeMutate, data } = useMutation(
+      "pwcode",
+      FIND.findPwCode,
+      {
+        onSuccess: (Response) => {
+          queryClient.invalidateQueries("findpw");
+          return Response.data;
+        },
+        onError: async (response: {
+          response: { data: { message: string } };
+        }): Promise<string> => {
+          queryClient.invalidateQueries("findpw");
+          alert("인증코드를 다시 확인해주세요");
+          return response.response.data.message;
+        },
+      }
+    );
+    const codeSubmit = async(e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault()
     if (authenticationCode.trim() === "") return alert("인증코드를 작성해주세요");
-    pwFindCodeMutate({ authenticationCode, email });
-    setAuthenticationCode("");
+    try {
+      await pwFindCodeMutate({ authenticationCode, email });
+      setAuthenticationCode("");
+    } catch (error) {
+      queryClient.invalidateQueries("findpw");
+    }
+    
+   
+    
   }
   return (
     <StFindPwWrap>
@@ -91,16 +108,18 @@ const FindPwCodeForm = () => {
           />
         </g>
       </StLogo>
-      <StPwSubmitForm onSubmit={codeSubmit}>
-        <StTitle>인증코드를 입력해주세요.</StTitle>
-        <StInput
-          type="text"
-          placeholder="인증코드를 적어주세요"
-          value={authenticationCode}
-          onChange={codeChange}
-        />
-        <Stbutton>인증하기</Stbutton>
-      </StPwSubmitForm>
+      {data?.data.password ? null : (
+        <StPwSubmitForm onSubmit={codeSubmit}>
+          <StTitle>인증코드를 입력해주세요.</StTitle>
+          <StInput
+            type="text"
+            placeholder="인증코드를 적어주세요"
+            value={authenticationCode}
+            onChange={codeChange}
+          />
+          <Stbutton>인증하기</Stbutton>
+        </StPwSubmitForm>
+      )}
       {data?.data.password ? (
         <StCode>
           <StContentTitle>
@@ -154,8 +173,6 @@ const StInput = styled.input`
 `;
 const StCode = styled.div`
   margin-top: 50px;
-  padding-top: 50px;
-  border-top: 1px dashed #eee;
 `;
 const StContentTitle = styled.p`
   font-size: 1.125rem;
