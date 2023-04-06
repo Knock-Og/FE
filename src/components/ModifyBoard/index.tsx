@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { POST } from "api";
 import { EditPost, PostDetail } from "types";
