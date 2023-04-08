@@ -14,6 +14,7 @@ import {
   findPwCodeItem,
   AddPost,
   EditPostReq,
+  EditCommentReq,
 } from "types";
 
 export const LOGIN = {
@@ -96,4 +97,16 @@ export const POST = {
   editPost: ({ post, postId }: EditPostReq) =>
     reqWithAccessToken.put(`/post/${postId}`, post),
   delPost: (postId: number) => reqWithAccessToken.delete(`/post/${postId}`),
+};
+
+export const LOG = {
+  getLog: (postId: number) =>
+    reqWithAccessToken.get(`/post/${postId}/logs`).then((res) => res.data),
+};
+
+export const COMMENT = {
+  getComments: (postId: number) =>
+    reqWithAccessToken.get(`/post/${postId}/comments`).then((res) => res.data),
+  addComment: ({ postId, comment }: EditCommentReq) =>
+    reqWithAccessToken.post(`/post/${postId}/comment`, comment),
 };

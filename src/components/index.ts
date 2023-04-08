@@ -18,3 +18,7 @@ export { default as FindIdForm } from "./FindIdForm";
 export { default as MypageForm } from "./MypageForm";
 export { default as MyPostContent } from "./MyPostContent";
 export { default as MyPickContent } from "./MyPickContent";
+
+export { default as LogBoard } from "./LogBoard";
+export { default as BookmarksBoard } from "./BookmarksBoard";
+export { default as CommentBoard } from "./CommentBoard";

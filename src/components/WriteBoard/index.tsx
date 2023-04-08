@@ -10,17 +10,21 @@ const WriteBoard = () => {
   const [newPost, setNewPost] = useState<AddPost>({
     title: "",
     content: "",
-    keywords: ["게시글작성"],
+    keywords: [],
     editingStatus: "false",
     category: "공지사항",
     modifyPermission: "Owner",
     readablePosition: "Owner",
   });
+  console.log(newPost);
 
   const { mutate: addPost } = useMutation(POST.addPost);
 
   const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) =>
     setNewPost({ ...newPost, title: e.target.value });
+
+  const handleChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setNewPost({ ...newPost, keywords: e.target.value.split(" ") });
 
   const handleChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
     setNewPost({ ...newPost, content: e.target.value });
@@ -40,6 +44,7 @@ const WriteBoard = () => {
   return (
     <StContainer>
       <StTitleInput placeholder="제목" onChange={handleChangeTitle} />
+      <StTitleInput placeholder="키워드" onChange={handleChangeKeyword} />
       <StContentInput placeholder="내용" onChange={handleChangeContent} />
       <StAddBtnWrapper>
         <StAddBtn onClick={handleClickAddBtn}>작성완료</StAddBtn>
