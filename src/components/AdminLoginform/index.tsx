@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "react-query";
+import { useMutation,useQueryClient } from "react-query";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import styled from "styled-components";
 import { setCookie } from "api/cookies";
@@ -8,27 +8,36 @@ import { LOGIN } from "api";
 
 const AdminLoginform = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
   const loginMutation = useMutation("login", LOGIN.login, {
     onSuccess: (response) => {
       setCookie("access_token", response.headers.authorization.substr(7));
+      queryClient.invalidateQueries("login");
       navigate("/admin");
+    },
+    onError: async (response: {
+      response: { data: { message: string } };
+    }): Promise<string> => {
+      queryClient.invalidateQueries("login");
+      alert("등록된 회원정보가 없습니다.");
+      return response.response.data.message;
     },
   });
 
   const onChangePw = () => setShowPw(!showPw);
 
-  const loginHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const loginHandler =  (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (email.trim() === "") return alert("이메일을 입력해주세요!");
     if (password.trim() === "") return alert("비밀번호를 입력해주세요!");
-
-    loginMutation.mutate({ email, password });
-    setEmail("");
-    setPassword("");
+ loginMutation.mutate({ email, password });
+      setEmail("");
+      setPassword("");
+   
   };
 
   return (
@@ -144,28 +153,23 @@ const StLoginBg = styled.div`
 const StLoginWrap = styled.div`
   width: 700px;
   padding: 0 115px;
-  box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
   border-radius: 24px;
-  border: 1px solid #121212;
-  height: 690px;
+  border: 1px solid #aeaeae;
+  height: 630px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
 `;
 const StTop = styled.div`
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 `;
-const StLogo = styled.svg`
-  display: block;
-  line-height: 1;
-  margin: 0 auto 55px;
-`;
+const StLogo = styled.svg``;
 const StExplanation = styled.p`
   font-weight: 500;
-  font-size: 16px;
-  line-height: 1;
-  color: #828282;
+  color: #aeaeae;
+  margin: 25px auto 0px;
 `;
 const StLogin = styled.div`
   width: 100%;
@@ -179,14 +183,15 @@ const StLoginLi = styled.li`
 const StInput = styled.input`
   width: 100%;
   height: 70px;
-  border: 1px solid #121212;
+  border: 1px solid #aeaeae;
   border-radius: 10px;
-  padding: 0 24px;
-  font-weight: 300;
+  padding: 0 26px;
+  font-weight: 500;
+  outline: 0;
   &::placeholder {
     color: #c9c9c9;
   }
-  outline: 0;
+
   &:focus {
     border: 1px solid #007fff;
   }
@@ -200,9 +205,8 @@ const StLoginLabel = styled.label`
 const StLoginBtn = styled.button`
   width: 100%;
   background: #007fff;
-  border-radius: 24px;
-  font-weight: 800;
-  font-size: 18px;
+  border-radius: 10px;
+  font-weight: 500;
   height: 64px;
   border: 0;
   color: #fff;

@@ -47,12 +47,11 @@ export const CATEGORY = {
 };
 
 export const FIND = {
-  findId: (findId: FindIdItem) => baseAxios.post("/sms", findId),
+  findId: (findId: FindIdItem) => baseAxios.post("/auth/sms", findId),
   findIdCode: (idcode: findIdCodeItem) =>
     baseAxios.post("/member/email", idcode),
-  findPw: (findPw: FindPwItem) => baseAxios.post("/mail/auth", findPw),
-  findPwCode: (pwcode: findPwCodeItem) =>
-    baseAxios.post(`/member/pwd/${pwcode.authenticationCode}`, pwcode),
+  findPw: (findPw: FindPwItem) => baseAxios.post("/auth/email", findPw),
+  findPwCode: (pwcode: findPwCodeItem) => baseAxios.post(`/member/pwd`, pwcode),
 };
 
 export const SEARCH = {
@@ -65,6 +64,8 @@ export const SEARCH = {
 export const MYPAGE = {
   getMyPosts: () =>
     reqWithAccessToken.get("/mypage/posts").then((res) => res.data),
+
+ 
 };
 
 export const BOOKMARK = {

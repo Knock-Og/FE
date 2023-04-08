@@ -3,9 +3,13 @@ import ModalPortal from "api/portal";
 import { SignUpForm } from "components";
 import { useState,useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import Reactpage from "react-js-pagination"
 import { ADMIN } from "api";
 import { SignItem } from "types";
+import left_arr from "../../assets/left_arr.svg"
+import right_arr from "../../assets/right_arr.svg";
 const AdminForm = () => {
+  
   const [modalOpen, setModalOpen] = useState(false);
   const modalBtn = () => {
     setModalOpen(false);
@@ -54,11 +58,24 @@ const AdminForm = () => {
 
     positionMutation.mutate({ position, positionID });
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
   const { isLoading, isError, data } = useQuery("member", ADMIN.member);
   if (isLoading) return <h1>"성공했습니다.!"</h1>;
   if (isError) return <h1>"실패했습니다.!"</h1>;
-  
-  // console.log(data)
+  //1페이지당 보여지는 개수
+  const perPage = 8;
+  const totalPages = Math.ceil(data?.data.length / perPage);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const offset = (currentPage - 1) * perPage;
+  const paginatedData = data?.data.slice(offset, offset + perPage);
+ 
+   
+  //console.log(data);
   return (
     <>
       <StAdminWrap>
@@ -66,7 +83,7 @@ const AdminForm = () => {
           <StTitle>
             사용자관리
             <StUser>
-              전체사용자 <StUserSpan>{/* {data?.data.length} */}</StUserSpan>명
+              전체사용자 <StUserSpan> {data?.data.length}</StUserSpan>명
             </StUser>
           </StTitle>
           <StButton onClick={() => setModalOpen(true)}>인원추가 +</StButton>
@@ -80,7 +97,7 @@ const AdminForm = () => {
             <Stpositionchange>직급변경</Stpositionchange>
             <StChange>직급수정</StChange>
           </StContentTop>
-           {data?.data.map((item: SignItem) => {
+          {paginatedData.map((item: SignItem) => {
             return (
               <StContentform onSubmit={positionSubmit} key={item.id}>
                 <StContentBottom>
@@ -132,14 +149,27 @@ const AdminForm = () => {
                 </StContentBottom>
               </StContentform>
             );
-          })} 
+          })}
         </StContent>
+        <PaginationWrapper>
+          <Reactpage
+            activePage={currentPage}
+            totalItemsCount={totalPages}
+            itemsCountPerPage={8}
+            pageRangeDisplayed={5}
+            onChange={handlePageChange}
+            hideFirstLastPages={true}
+            prevPageText={<PrevButton />}
+            nextPageText={<NextButton />}
+          />
+        </PaginationWrapper>
       </StAdminWrap>
       {modalOpen && (
         <ModalPortal>
           <SignUpForm onClose={modalBtn} modalOpen={modalOpen} />
         </ModalPortal>
       )}
+
     </>
   );
 };
@@ -149,6 +179,7 @@ const StAdminWrap = styled.div`
   width: calc(100% - 20.21%);
   margin-left: 20.21%;
   padding: 95px 3.7%;
+
 `;
 const StTop = styled.div`
   margin-bottom: 40px;
@@ -161,7 +192,6 @@ const StTitle = styled.h3`
   display: flex;
   font-size: 2rem;
   font-weight: 800;
-  font-size: 32px;
   letter-spacing: 0.016em;
   align-items: center;
 `;
@@ -348,4 +378,53 @@ const StPositionLabel = styled.label`
     ${StPositonAfterCommon}
     ${StPositonCommon}
   }
+`;
+
+const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 25px;
+  .pagination {
+    display: flex;
+    align-items: center;
+  }
+  .pagination li {
+    display: flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #c5c5c5;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    justify-content: center;
+  }
+  .pagination li.active a {
+    color: #121212;
+  }
+  .pagination li a button {
+    font-size: 0;
+  }
+`;
+
+const PrevButton = styled.button`
+  background-image: url(${left_arr});
+  background-size: contain;
+  width: 18px;
+  height: 18px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  
+`;
+
+const NextButton = styled.button`
+  background-image: url(${right_arr});
+  background-size: contain;
+  border: none;
+  width: 18px;
+  height: 18px;
+  background-color: transparent;
+  cursor: pointer;
 `;

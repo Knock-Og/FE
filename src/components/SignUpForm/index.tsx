@@ -27,40 +27,14 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   const queryClient = useQueryClient();
   const signUpMutation = useMutation("signUp", ADMIN.signUp, {
     onSuccess: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("member");
-        
-        return response.data;
-      } 
+      queryClient.invalidateQueries("member");
+      return response.data;
     },
-  });
-
-  //이메일 중복확인
-  const checkEmailMutation = useMutation("checkEmail", ADMIN.checkEmail, {
-    onSuccess: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("email");
-        alert("사용가능한 이메일 입니다.");
-      } 
-    },
-    onError: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("email");
-        alert("중복된 이메일 입니다.");
-      }
-    },
-  });
-
-  //이름 중복확인
-  const checkNameMutation = useMutation("checkName", ADMIN.checkName, {
-    onSuccess: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("name");
-        alert("사용가능한 이름 입니다.");
-      } else {
-        queryClient.invalidateQueries("name");
-        alert("중복된 이름 입니다.");
-      }
+    onError: async (response: {
+      response: { data: { message: string } };
+    }): Promise<string> => {
+      queryClient.invalidateQueries("member");
+      return response.response.data.message;
     },
   });
 
@@ -68,8 +42,9 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   const POSITION_LIST = ["직급을 선택해주세요", "Member", "Manager", "Owner"];
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const passwordRegex =
-    /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+    /^.*(?=^.{8,32}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
   const phoneNumberRegex = /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/;
+  const nameRegex = /^[가-힣a-zA-Z]+$/;
   //전화번호 유효성검사
   const phoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const phoneNumberValue = e.target.value;
@@ -77,10 +52,9 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
     const isphoneNumber = phoneNumberRegex.test(phoneNumberValue);
     setPhoneNumBoolean(!isphoneNumber);
     setPhoneNumMsg(
-      isphoneNumber
-        ? ""
-        : "'-'를 포함한 휴대폰 번호를 정확히 입력하세요"
+      isphoneNumber ? "" : "'-'를 포함한 휴대폰 번호를 정확히 입력하세요!"
     );
+    
   };
 
   //비밀번호 유효성검사
@@ -92,7 +66,7 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
     setPasswordMsg(
       isValidPassword
         ? "사용 가능한 비밀번호입니다"
-        : "영어,숫자,특수문자를 포함한 8자~15자 이내로 입력해주세요"
+        : "비밀번호는 대소문자, 숫자, 특수문자를 포함하여 8-32자 이내로 입력해주세요"
     );
   };
 
@@ -105,49 +79,95 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
     setPasswordCheckMsg(
       isPasswordCheck
         ? "비밀번호가 일치합니다."
-        : "비밀번호가 일치하지 않습니다."
+        : "비밀번호가 일치하지 않습니다!"
     );
   };
-
-  //이메일을 서버로 전송..
-  const checkEmail = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    checkEmailMutation.mutate(email);
-  };
-
   //이메일 유효성검사
   const emailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const emailCheck = e.target.value;
     setEmail(emailCheck);
     const isValidEmail = emailRegex.test(e.target.value);
     setIsValidEmailBoolean(isValidEmail);
-    setEmailMsg(isValidEmail ? "" : "이메일형식이 올바르지 않습니다.");
+    setEmailMsg(isValidEmail ? "" : "이메일형식이 올바르지 않습니다!");
+  };
+
+  //이메일 중복확인
+  const checkEmailMutation = useMutation("checkEmail", ADMIN.checkEmail, {
+    onSuccess: (response) => {
+      if (response) {
+        queryClient.invalidateQueries("email");
+        alert("사용가능한 이메일 입니다.");
+      }
+    },
+    onError: (response) => {
+      if (response) {
+        queryClient.invalidateQueries("email");
+        alert("중복된 이메일 입니다!");
+      }
+    },
+  });
+  //이메일을 서버로 전송..
+  const checkEmail = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (!isValidEmail) return alert("이메일형식이 올바르지 않습니다!");
+    checkEmailMutation.mutate(email);
+    
+    setIsValidEmailBoolean(true);
+  };
+  //이름 유효성검사
+  const nameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const nameCheck = e.target.value;
+    setMemberName(nameCheck);
+    const isValidName =
+      nameRegex && nameRegex.test(nameCheck) && nameCheck.length >= 2;
+    setIsValidNameBoolean(isValidName);
+    setMemberNameMsg(isValidName ? "" : "영문 또는 한글 2자 이상 적어주세요!");
   };
 
   //이름을 서버로 전송..
   const checkName = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    if (!isValidName) return alert("올바른 형식의 이름이 아닙니다!");
     checkNameMutation.mutate(memberName);
+    setIsValidNameBoolean(true);
   };
-
-  //이름 유효성검사
-  const nameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const nameCheck = e.target.value;
-    setMemberName(nameCheck);
-    const isValidName = nameCheck.length >= 2;
-    setIsValidNameBoolean(isValidName);
-    setMemberNameMsg(isValidName ? "" : "2자 이상 적어주세요");
-  };
-
+  //이름 중복확인
+  const checkNameMutation = useMutation("checkName", ADMIN.checkName, {
+    onSuccess: (response) => {
+      if (response) {
+        queryClient.invalidateQueries("name");
+        setIsValidNameBoolean(true);
+        alert("사용가능한 이름 입니다!");
+      }
+    },
+    onError: (response) => {
+      if (response) {
+        queryClient.invalidateQueries("name");
+        alert("중복된 이름 입니다!");
+      }
+    },
+  });
   const signupSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (memberName.trim() === "") return alert("이름을 입력해주세요!");
     if (position.trim() === "") return alert("직급을 선택해주세요!");
-    if (password.trim() === "") return alert("비밀번호를 입력해주세요!");
-    if (passwordCheck.trim() === "")
-      return alert("비밀번호 확인란을 입력해주세요!");
+    if (memberName.trim() === "") return alert("이름을 입력해주세요!");
+    if (!isValidName) return alert("이름 중복 검사를 수행해주세요!");
+    if (!isValidEmail) return alert("이메일 중복 검사를 수행해주세요!");
     if (email.trim() === "") return alert("이메일을 입력해주세요!");
     if (phoneNum.trim() === "") return alert("휴대폰 번호를 입력해주세요!");
+    if (password.trim() === "") return alert("비밀번호를 입력해주세요!");
+    if (passwordCheck.trim() === "") return alert("비밀번호 확인란을 입력해주세요!");
+    
+    const isphoneNumber = phoneNumberRegex.test(phoneNum);
+    if (!isphoneNumber) return alert("'-'를 포함한 휴대폰 번호를 정확히 입력하세요!");
+    const isValidPassword = passwordRegex.test(password);
+    if (!isValidPassword)
+      return alert(
+        "비밀번호는 대소문자, 숫자, 특수문자를 포함하여 8-32자 이내로 입력해주세요!"
+      );
+    if (password !== passwordCheck)
+      return alert("비밀번호가 일치하지 않습니다!");
+
     try {
       await signUpMutation.mutateAsync({
         position,
@@ -164,7 +184,10 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
       setEmail("");
       onClose();
     } catch (error) {
-      console.error(error);
+      queryClient.invalidateQueries("member");
+      e.stopPropagation();
+      
+      
     }
   };
 
@@ -247,11 +270,7 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
                 onChange={nameChange}
               />
               {!isValidName && <StErrorMsg>{memberNameMsg}</StErrorMsg>}
-              <StCheckBtn
-                type="button"
-                disabled={!isValidName}
-                onClick={checkName}
-              >
+              <StCheckBtn type="button" onClick={checkName}>
                 중복확인
               </StCheckBtn>
             </StSignRight>
@@ -266,11 +285,7 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
                 onChange={emailChange}
               />
               {!isValidEmail && <StErrorMsg>{emailMsg}</StErrorMsg>}
-              <StCheckBtn
-                type="button"
-                disabled={!isValidEmail}
-                onClick={checkEmail}
-              >
+              <StCheckBtn type="button" onClick={checkEmail}>
                 중복확인
               </StCheckBtn>
             </StSignRight>
@@ -337,7 +352,7 @@ const StSignWrap = styled.div`
 const StSignBg = styled.div`
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
   transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
