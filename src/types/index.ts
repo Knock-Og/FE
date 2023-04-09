@@ -86,8 +86,8 @@ export interface SignItem {
   phoneNum: string;
 }
 export interface PositionItem {
-  positionID: number;
-  position: string;
+  id: number;
+  item: string;
 }
 
 export interface CategoryItem {
@@ -155,4 +155,10 @@ export interface PostId {
 export interface EditCommentReq {
   postId: number;
   comment: AddComment;
+}
+
+
+export interface SettingProps {
+  settingOpen: boolean;
+  onClose: () => void;
 }

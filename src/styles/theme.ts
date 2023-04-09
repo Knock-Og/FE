@@ -24,7 +24,9 @@ export const GlobalStyle = createGlobalStyle`
     background-color: ${({ theme }) => theme.bgColor};
     transition: all 0.5s;
   }
-
+  button{
+    padding:0;
+  }
   
   @font-face {
     font-family: 'SUIT-Bold';
@@ -62,6 +64,10 @@ export const defaultTheme: DefaultTheme = {
   lightGrey: "#C5C5C5",
   veryLightGrey: "#f9f9f9",
   greyLight: "#aeaeae",
+  lightBlue: "#F5FAFF",
+  redColor: "#FF0F00",
+  borderColor: "#AEAEAE",
+  scrollColor: "#606060",
 };
 
 export const darkTheme: DefaultTheme = {

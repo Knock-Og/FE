@@ -29,9 +29,10 @@ export const ADMIN = {
   checkName: (memberName: string) =>
     reqWithAccessToken.get(`/check/name/${memberName}`),
   member: () => reqWithAccessToken.get(`/members`),
+  
   position: (positionItem: PositionItem) =>
     reqWithAccessToken.put(
-      `/member/${positionItem.positionID}/position`,
+      `/member/${positionItem.id}/position`,
       positionItem
     ),
 };
