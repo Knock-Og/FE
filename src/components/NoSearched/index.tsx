@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Exclamation } from "assets";
+import { Nosearch } from "assets";
 
 const NoSearched = () => {
   const navigate = useNavigate();
   return (
     <StContainer>
-      <StLogo />
+      <Nosearch />
       <StLabel>검색된 게시물이 없습니다</StLabel>
       <StCreateBtn onClick={() => navigate("/write")}>게시글 작성</StCreateBtn>
     </StContainer>
@@ -17,38 +17,33 @@ export default NoSearched;
 
 const StContainer = styled.div`
   width: 100%;
-  height: 80vh;
-
+  min-height: calc(100vh - 230px);
+  margin: 50px 0 ;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  gap: 30px;
-  border: 1px solid ${(props) => props.theme.grey};
-  box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
+  text-align: center;
+  gap: 40px;
+  border: 1px solid ${(props) => props.theme.lightGrey};
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
   border-radius: 24px;
 `;
 
-const StLogo = styled(Exclamation)`
-  width: 100px;
-  height: 100px;
-`;
 
-const StLabel = styled.div`
-  font-family: "Pretendard";
-  font-style: normal;
+
+const StLabel = styled.h4`
   font-weight: 800;
-  font-size: 36px;
-  line-height: 43px;
-  text-align: center;
+  font-size: 2rem;
+  margin-bottom:10px;
 `;
 
 const StCreateBtn = styled.button`
-  width: 360px;
-  height: 64px;
+  width: 250px;
+  height: 60px;
   background: ${(props) => props.theme.keyBlue};
-  border-radius: 24px;
+  border-radius: 60px;
   color: #fff;
   border: none;
+  cursor: pointer;
 `;

@@ -11,29 +11,24 @@ interface Props {
 }
 
 const Layout = ({
-  navItems,
   children,
-  isBookMarkNav,
   breadcrumb,
-  addBookmarkHandler,
 }: Props) => {
   return (
     <StLayout>
       <Header />
       <StContainer>
-        {navItems && (
+        {/* {navItems && (
           <Nav
             navItems={navItems}
             isBookMarkNav={isBookMarkNav}
             addBookmarkHandler={addBookmarkHandler}
           />
-        )}
-        <StContents>
+        )} */}
           {breadcrumb && (
             <StBreadCrumbWrapper>{breadcrumb}</StBreadCrumbWrapper>
           )}
           <StPostsWrapper>{children}</StPostsWrapper>
-        </StContents>
       </StContainer>
     </StLayout>
   );
@@ -41,28 +36,16 @@ const Layout = ({
 
 export default Layout;
 
-const StLayout = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  padding: 30px;
-`;
+const StLayout = styled.div``;
 
 const StContainer = styled.div`
-  display: flex;
-  gap: 30px;
+  width: 1376px;
+  margin: 0 auto;
+  min-height: calc(100% - 130px);
 `;
 
-const StContents = styled.div`
-  height: 80vh;
-  width: 100%;
-  overflow: hidden;
-`;
 
-const StPostsWrapper = styled.div`
-  height: 100%;
-  overflow: auto;
-`;
+const StPostsWrapper = styled.div``;
 
 const StBreadCrumbWrapper = styled.div`
   padding: 0px 0px 10px 10px;

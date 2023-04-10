@@ -22,3 +22,6 @@ export { ReactComponent as MainLogo } from "./MainLogo.svg";
 export { ReactComponent as FolderPlue } from "./FolderPlue.svg";
 export { ReactComponent as Settings } from "./Settings.svg";
 
+export { ReactComponent as Close } from "./close.svg";
+export { ReactComponent as HeaderLogo } from "./header_logo.svg";
+export { ReactComponent as Nosearch } from "./Nosearch.svg";

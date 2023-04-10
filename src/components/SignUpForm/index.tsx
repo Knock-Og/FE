@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "react-query";
 import styled from "styled-components";
 import { ADMIN } from "api";
 import {SignUpFormProps} from "types"
+import { Close } from "assets";
 const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   // 이름, 이메일
   const [memberName, setMemberName] = useState("");
@@ -218,31 +219,7 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
             </g>
           </svg>
           <StSignTitle>계정생성</StSignTitle>
-          {modalOpen && (
-            <StIoClose
-              width="40"
-              height="40"
-              viewBox="0 0 40 40"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              onClick={onClose}
-            >
-              <path
-                d="M27.5594 11.4419L10.8927 28.1086"
-                stroke="#C5C5C5"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M10.8927 11.4419L27.5594 28.1086"
-                stroke="#C5C5C5"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </StIoClose>
-          )}
+          {modalOpen && <StIoClose onClick={onClose} />}
         </StTop>
         <StSignUl>
           <StSignLi>
@@ -391,13 +368,13 @@ const StSignTitle = styled.h3`
   margin-top: 40px;
   color: #121212;
 `;
-const StIoClose = styled.svg`
-  font-size: 22px;
+const StIoClose = styled(Close)`
   position: absolute;
   right: 20px;
   top: 20px;
   cursor: pointer;
   transition: all 0.3s;
+  stroke: ${(props) => props.theme.lightGrey};
   &:hover {
     transform: rotatez(180deg);
   }

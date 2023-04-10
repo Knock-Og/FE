@@ -156,13 +156,14 @@ const StContainer = styled.div`
 const StHeader = styled.div`
   position: fixed;
   top: 0;
-  left:0;
+  left: 0;
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: flex-end;
-  height:120px;
-  padding:0 60px;
+  height: 130px;
+  padding: 0 60px;
+  z-index: 5;
 `;
 const StMainWrapper = styled.div`
   display: flex;
@@ -177,7 +178,7 @@ const StSearchWrapper = styled.div`
   width: 100%;
   position: relative;
   margin: 65px 0 40px;
-  z-index: -1;
+  z-index: 1;
 `;
 const StSearchInput = styled.input`
   width: 100%;
@@ -215,7 +216,7 @@ const StModeToggleBtn = styled.button`
   justify-content: center;
   cursor: pointer;
   gap: 5px;
-  z-index: -1;
+  z-index: 2;
 `;
 
 
