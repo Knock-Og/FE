@@ -39,6 +39,7 @@ const Layout = ({
         <StPostsWrapper>
           {children}
           {page && (
+            
             <Pagination
               count={page.endPage}
               page={page.page}
@@ -46,7 +47,7 @@ const Layout = ({
                 window.scrollTo(0, 0);
                 page.setPage(curPage);
               }}
-              color="primary"
+              
             />
           )}
         </StPostsWrapper>
@@ -60,21 +61,18 @@ export default Layout;
 const StLayout = styled.div``;
 
 const StContainer = styled.div`
-  width: 1376px;
-  margin: 0 auto;
-  min-height: calc(100% - 130px);
+  max-width: 1376px;
+
+  margin: 180px auto 80px;
 `;
 
 const StPostsWrapper = styled.div`
-  height: 100%;
-  overflow: auto;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
 `;
 
 const StBreadCrumbWrapper = styled.div`
-  padding: 0px 0px 10px 10px;
-  display: flex;
-  align-items: center;
+
 `;

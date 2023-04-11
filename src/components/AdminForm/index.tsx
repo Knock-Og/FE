@@ -5,15 +5,16 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { MainArr } from "assets";
 import { ADMIN } from "api";
 import { SignItem } from "types";
+
+interface OpenState {
+  [key: string]: boolean;
+}
+
+interface PositionState {
+  [key: string]: string;
+}
+
 const AdminForm = () => {
-  interface OpenState {
-    [key: string]: boolean;
-  }
-
-  interface PositionState {
-    [key: string]: string;
-  }
-
   const positionList = [
     { id: 0, position: "MEMBER" },
     { id: 1, position: "MANAGER" },
@@ -43,6 +44,16 @@ const AdminForm = () => {
   });
 
   const modalBtn = () => setModalOpen(false);
+
+  const handleClickPositionLabel = (itemId: number) => {
+    const openState = data?.data.reduce((acc: OpenState, v: SignItem) => {
+      if (v.id === itemId) {
+        return { ...acc, [`${v.id}`]: true };
+      }
+      return { ...acc, [`${v.id}`]: false };
+    }, {});
+    setIsOpen(openState);
+  };
 
   const positionChange = (itemId: number, changePosition: string) => {
     setChangeItemId(itemId);
@@ -96,15 +107,11 @@ const AdminForm = () => {
     }
   }, [modalOpen]);
 
-  const resetIsOpen = () => {
+  useEffect(() => {
     const openState = data?.data.reduce((acc: OpenState, v: SignItem) => {
       return { ...acc, [`${v.id}`]: false };
     }, {});
     setIsOpen(openState);
-  };
-
-  useEffect(() => {
-    resetIsOpen();
 
     const positionState = data?.data.reduce(
       (acc: PositionState, v: SignItem) => {
@@ -113,7 +120,6 @@ const AdminForm = () => {
       {}
     );
     setPosition(positionState);
-    // eslint-disable-next-line
   }, [data]);
 
   if (isLoading) return <h1>"성공했습니다.!"</h1>;
@@ -148,17 +154,9 @@ const AdminForm = () => {
               <StBottomList>{item.position}</StBottomList>
               <StOpsion onSubmit={positionSubmit}>
                 <StBottomListSel>
-                  <StSelWarp>
+                  <StSelWrap>
                     <StSeletLabel
-                      onClick={() => {
-                        if (isOpen) {
-                          resetIsOpen();
-                          setIsOpen({
-                            ...isOpen,
-                            [`${item.id}`]: !isOpen[`${item.id}`],
-                          });
-                        }
-                      }}
+                      onClick={() => handleClickPositionLabel(item.id)}
                     >
                       {position && position[item.id]}
                       <MenuArr />
@@ -177,7 +175,7 @@ const AdminForm = () => {
                         ))}
                       </StSeletUl>
                     )}
-                  </StSelWarp>
+                  </StSelWrap>
                 </StBottomListSel>
                 <StBottomListBtn>
                   <StChangeBtn type="submit">직급수정</StChangeBtn>
@@ -303,7 +301,7 @@ const StBottomListSel = styled.div`
   align-items: center;
   justify-content: center;
 `;
-const StSelWarp = styled.div`
+const StSelWrap = styled.div`
   position: relative;
   width: 120px;
 `;
@@ -320,6 +318,7 @@ const StSeletLabel = styled.p`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  cursor: pointer;
 `;
 const MenuArr = styled(MainArr)`
   fill: ${(props) => props.theme.lightGrey};
@@ -350,6 +349,7 @@ const StBottomListBtn = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
 const StChangeBtn = styled.button`
   text-align: center;
   width: 90px;

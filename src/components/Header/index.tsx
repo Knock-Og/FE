@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -69,13 +69,36 @@ const Header = () => {
     navigate("/login");
     removeCookie("access_token");
   };
+const [headerMove, setHeaderMove] = useState(false);
+const stContainerRef = useRef<HTMLDivElement>(null);
 
+function handleScroll() {
+  if (window.scrollY !== 0) {
+    setHeaderMove(true);
+    if (stContainerRef.current) {
+      stContainerRef.current.classList.add("on");
+    }
+  } else {
+    setHeaderMove(false);
+    if (stContainerRef.current) {
+      stContainerRef.current.classList.remove("on");
+    }
+  }
+}
+
+useEffect(() => {
+  window.addEventListener("scroll", handleScroll);
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, []);
+  
   return (
-    <StContainer>
+    <StContainer className={headerMove ? "on" : ""}>
       <StHeaderLeftWrapper>
         <StHeaderLogo onClick={() => navigate("/")} />
         <StSearchWrapper>
-          <StSearchInput ref={searchInputRef} onKeyDown={handleKeyDown} />
+          <StSearchInput ref={searchInputRef} onKeyDown={handleKeyDown} placeholder="검색어 또는 키워드를 입력"/>
           <StSearchBtn onClick={handleClickSearchBtn}>찾기</StSearchBtn>
         </StSearchWrapper>
       </StHeaderLeftWrapper>
@@ -93,9 +116,6 @@ const Header = () => {
         <StMenu className={isOn ? "on" : ""}>
           <StMenuItem onClick={() => navigate("/mypage")}>
             마이페이지
-          </StMenuItem>
-          <StMenuItem onClick={() => navigate("/mypage/posts")}>
-            내 포스트
           </StMenuItem>
           <StMenuItem onClick={() => navigate("/bookmark")}>
             즐겨찾기
@@ -132,7 +152,7 @@ export default Header;
 
 const StContainer = styled.div`
   width: 100%;
-  position: relative;
+  position: absolute;
   top: 0;
   left: 0;
   height: 130px;
@@ -141,10 +161,18 @@ const StContainer = styled.div`
   align-items: center;
   display: flex;
   border-bottom: 1px solid ${(props) => props.theme.lightGrey};
+  background: ${(props) => props.theme.bgColor};
+  z-index: 9;
+  transition: all 0.3s;
+  &.on {
+    position: fixed;
+    height: 85px;
+    box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
+  }
 `;
 
 const StHeaderLeftWrapper = styled.div`
-  width: 52.08%;
+  width: 50%;
   display: flex;
   align-items: center;
   gap: 80px;
@@ -154,10 +182,12 @@ const StHeaderLogo = styled(HeaderLogo)`
   cursor: pointer;
   position: relative;
   top: -5px;
+  width:140px;
+  height:36px;
 `;
 
 const StSearchWrapper = styled.div`
-  width: 75.3%;
+  width: calc(100% - 220px);
   position: relative;
 `;
 
@@ -166,8 +196,7 @@ const StSearchInput = styled.input`
   height: 50px;
   border-radius: 65px;
   border: 1px solid ${(props) => props.theme.lightGrey};
-  box-shadow: -4px -4px 4px -1px rgba(255, 254, 254, 0.8),
-    4px 5px 11px -5px rgba(106, 115, 147, 0.4);
+  box-shadow:  4px 5px 11px -5px rgba(106, 115, 147, 0.4);
   padding: 0px 55px 0px 30px;
   outline: none;
 `;
@@ -258,7 +287,7 @@ const MenuArr = styled(MainArr)`
 const StMenu = styled.div`
   position: absolute;
   width: 150px;
-  bottom: -210px;
+  bottom: -170px;
   right: 0;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
   background: ${(props) => props.theme.bgColor};
@@ -292,7 +321,7 @@ const StAlarm = styled.div`
   position: absolute;
   width: 350px;
   height: 600px;
-
+  right:0;
   bottom: -625px;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
   background: ${(props) => props.theme.bgColor};

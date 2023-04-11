@@ -71,9 +71,9 @@ const DetailBoard = (post: PostDetail) => {
     <>
       <StContainer>
         <button onClick={handleClickBookmark}>
-          {isBookmarkPost ? "제거" : "추가"}
+          {isBookmarkPost ? "제거" : "추가1"}
         </button>
-        <StTitle>{post.title}</StTitle>
+        <StTitle>{post.title}1</StTitle>
         <Viewer initialValue={post.content} />
       </StContainer>
       <StBox>

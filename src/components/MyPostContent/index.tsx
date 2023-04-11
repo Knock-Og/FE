@@ -1,69 +1,103 @@
-import { MYPAGE } from "api";
-import { useQuery } from "react-query";
-import { Post } from "types";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useMutation, useQuery } from "react-query";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { Pagination } from "@mui/material";
 import styled from "styled-components";
+import { CATEGORY, SEARCH, MYPAGE } from "api";
+import { PostCard, NoSearched, Setting } from "components";
+import {
+  endPageState,
+  searchedCategoryState,
+  searchedPostsState,
+} from "store/atoms";
+import { Category as ICategory, NavItem, Post } from "types";
+
 const MyPostContent = () => {
+  const [navItems, setNavItems] = useState<NavItem[]>();
+  const [page, setPage] = useState<number>(1);
+  const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
+
+  const [searchedPosts, setSearchedPosts] = useRecoilState(searchedPostsState);
+  const setSearchedCategory = useSetRecoilState(searchedCategoryState);
+  const [endPage, setEndPage] = useRecoilState(endPageState);
+
+  const navigate = useNavigate();
+
+  const { data: categoryData } = useQuery<ICategory[]>(
+    "getCategories",
+    CATEGORY.getCategories
+  );
+
+  const { mutate: getMyPosts } = useMutation(MYPAGE.getMyPosts, {
+    onSuccess: (res) => {
+      setSearchedPosts(res.data.postResponseDtoList as Post[]);
+      setEndPage(res.data.endPage);
+    },
+    onError: () => {
+      setSearchedPosts([]);
+      setEndPage(1);
+    },
+  });
+
+  const { mutate } = useMutation(SEARCH.getCategoryData, {
+    onSuccess: (res) => {
+      setSearchedPosts(res.data.searchResponseDtoList as Post[]);
+      setEndPage(res.data.endPage);
+    },
+    onError: () => {
+      setSearchedPosts([]);
+      setEndPage(1);
+    },
+  });
+
+  useEffect(() => {
+    setEndPage(1);
+    getMyPosts(page);
+    //eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    if (categoryData) {
+      const categories: NavItem[] = categoryData.map((v) => {
+        return {
+          itemValue: v.categoryName,
+          handler: () => {
+            setPage(1);
+            setSearchedCategory(v.categoryName);
+            mutate({ category: v.categoryName, page: 1, sort: "관심도" });
+            navigate(`/category/${v.categoryName}`);
+          },
+        };
+      });
+      setNavItems(categories);
+    }
+  }, [categoryData, navigate, mutate, setSearchedCategory]);
+
   return (
     <StPostContent>
-      {/* {data.map((item) => {
-            return (
-              <StPostTop>
-                <StLeft>
-                  <StPostPick>
-                    <StSvg>
-                      <path d="M6 0L7.6995 3.6204L11.5 4.20452L8.75 7.02103L9.399 11L6 9.1204L2.601 11L3.25 7.02103L0.5 4.20452L4.3005 3.6204L6 0Z" />
-                    </StSvg>
-                  </StPostPick>
-                  <StTitle></StTitle>
-                </StLeft>
-                <StRight>
-                  <StName></StName>
-                  <StDay></StDay>
-                </StRight>
-              </StPostTop>
-            );
-          })} */}
+      <Setting open={isNavOpen} setOpen={setIsNavOpen} navItems={navItems} />
+      {searchedPosts && searchedPosts?.length > 0 ? (
+        searchedPosts.map((post) => <PostCard key={post.id} {...post} />)
+      ) : (
+        <NoSearched />
+      )}
+      <Pagination
+        count={endPage}
+        page={page}
+        onChange={(_, curPage) => {
+          window.scrollTo(0, 0);
+          setPage(curPage);
+        }}
+        color="primary"
+      />
     </StPostContent>
   );
 };
 export default MyPostContent;
 
 const StPostContent = styled.div`
-  width: 100%;
-  border: 1px solid ${(props) => props.theme.greyLight};
-`;
-const StPostTop = styled.div`
-  border-bottom: 1px solid ${(props) => props.theme.greyLight};
-  padding: 10px 30px 10px 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-const StLeft = styled.div``;
-const StPostPick = styled.div`
-  border: 1px solid ${(props) => props.theme.lightGrey};
-  width: 24px;
-  height: 24px;
-  border-radius: 24px;
-  display: flex;
-  align-items: center;
+  display:flex;
+  flex-wrap:wrap;
   justify-content: center;
-`;
-const StSvg = styled.svg`
-  fill: ${(props) => props.theme.lightGrey};
-  width: 12px;
-  height: 12px;
-`;
-const StTitle = styled.em`
-  display: block;
-  font-weight: 500;
-  margin-left: 1.09%;
-`;
-const StRight = styled.div``;
-const StName = styled.p`
-  font-weight: 500;
-  margin-right: 3.63%;
-`;
-const StDay = styled.p`
-  font-weight: 500;
 `;
