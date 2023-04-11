@@ -1,36 +1,37 @@
-import { BookmarksBoard, CommentBoard, LogBoard } from "components";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import { useMutation } from "react-query";
+import { Viewer } from "@toast-ui/react-editor";
 import styled from "styled-components";
-import { PostDetail } from "types";
-import { useState } from "react";
 import { Comment, CommentBlue, LogBlue, Log, StarBlue, Star } from "assets";
+import { BOOKMARK } from "api";
+import { BookmarksBoard, CommentBoard, LogBoard } from "components";
+import { PostDetail } from "types";
+import "@toast-ui/editor/dist/toastui-editor.css";
+import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
 const DetailBoard = (post: PostDetail) => {
-  const paramsPost = useParams();
-  // console.log("paramsPost", paramsPost.postId);
-
-  // 컴포넌트 내부에서 사용할 상태 관리
-  // select 를 통해서 선택된 컴포넌트를 렌더링
-  // isActive 를 통해서 선택된 컴포넌트의 아이콘을 파란색으로 변경
-
+  const [isBookmarkPost, setIsBookmarkPost] = useState(false);
   const [select, setSelect] = useState<string>();
   const [isActiveComment, setIsActiveComment] = useState<boolean>(false);
   const [isActiveLog, setIsActiveLog] = useState<boolean>(false);
   const [isActiveBookmark, setIsActiveBookmark] = useState<boolean>(false);
 
-  // postId 를 받아오기 위한 코드
-  const postId = paramsPost.postId ? parseInt(paramsPost.postId) : 0;
+  const location = useLocation();
+  const params = useParams();
+  const postId = parseInt(`${params.postId}`);
 
-  // 선택된 컴포넌트를 렌더링하기 위한 코드
-  // postId 를 props 로 넘겨주기 위해 컴포넌트를 렌더링하는 코드를 변수로 선언
+  const { mutate: addPostToBookmark } = useMutation(BOOKMARK.addPostToBookmark);
+  const { mutate: deletePostToBookmark } = useMutation(
+    BOOKMARK.deletePostToBookmark
+  );
+
   const selectComponent: Record<string, JSX.Element> = {
     comment: <CommentBoard postId={postId} />,
     log: <LogBoard postId={postId} />,
     bookmark: <BookmarksBoard postId={postId} />,
   };
 
-  //클릭시 해당 컴포넌트를 랜더링
-  //클릭시 해당 컴포넌트의 아이콘을 파란색으로 변경
   const handleClickComment = () => {
     setSelect("comment");
     setIsActiveComment(true);
@@ -50,13 +51,32 @@ const DetailBoard = (post: PostDetail) => {
     setIsActiveComment(false);
     setIsActiveLog(false);
     setIsActiveBookmark(true);
+
+    isBookmarkPost
+      ? addPostToBookmark({
+          folderId: location.state.folderId,
+          postId: post.id,
+        })
+      : deletePostToBookmark({
+          folderId: location.state.folderId,
+          postId: post.id,
+        });
   };
 
+  useEffect(() => {
+    // 즐겨찾기에 있는 건지 조회 후 update
+    setIsBookmarkPost(false);
+    //eslint-disable-next-line
+  }, []);
+
   return (
-    <Wapper>
+    <>
       <StContainer>
+        <button onClick={handleClickBookmark}>
+          {isBookmarkPost ? "제거" : "추가"}
+        </button>
         <StTitle>{post.title}</StTitle>
-        <StContent>{post.content}</StContent>
+        <Viewer initialValue={post.content} />
       </StContainer>
       <StBox>
         <StIcon>
@@ -78,16 +98,11 @@ const DetailBoard = (post: PostDetail) => {
         </StIcon>
         {select && <>{selectComponent[select]}</>}
       </StBox>
-    </Wapper>
+    </>
   );
 };
 
 export default DetailBoard;
-
-const Wapper = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
 
 const StContainer = styled.div`
   display: flex;
@@ -113,17 +128,6 @@ const StTitle = styled.div`
   box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
 `;
 
-const StContent = styled.div`
-  width: 100%;
-  height: 400px;
-  border: 1px solid ${(props) => props.theme.grey};
-  border-radius: 10px;
-  font-weight: 800;
-  font-size: 24px;
-  padding: 20px 40px;
-  box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
-`;
-
 const StBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -136,19 +140,6 @@ const StBox = styled.div`
   margin-left: 40px;
 `;
 
-const StButton = styled.button`
-  padding: 1rem 2rem;
-  margin-right: 1rem;
-  color: #111111;
-  background-color: #eeeeee;
-  border-radius: 2rem;
-`;
-
-const Content = styled.div`
-  width: 100%;
-  height: 100%;
-`;
-
 const StIcon = styled.div`
   display: flex;
   flex-direction: row;
@@ -156,5 +147,3 @@ const StIcon = styled.div`
   gap: 100px;
   margin-top: 50px;
 `;
-
-const StCardContainer = styled.div``;

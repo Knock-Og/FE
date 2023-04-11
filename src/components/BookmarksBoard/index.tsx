@@ -1,4 +1,3 @@
-import React from "react";
 import { PostId } from "types";
 
 function BookmarksBoard({ postId }: PostId) {

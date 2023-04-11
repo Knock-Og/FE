@@ -1,28 +1,18 @@
-import React from "react";
-
-import { COMMENT } from "api";
 import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
+import { COMMENT } from "api";
 import { AddComment, Comments, PostId } from "types";
 
-function index({ postId }: PostId) {
-  // 댓글 데이터 불러오기
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { data: comments } = useQuery<Comments[]>("getComment", () =>
-    COMMENT.getComments(postId)
-  );
-  console.log("CommentsBoard", comments);
-
-  // 댓글 추가하기
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+const CommentBoard = ({ postId }: PostId) => {
   const [newComment, setNewComment] = useState<AddComment>({
     comment: "",
   });
-  console.log("newComment", newComment);
 
-  // Mutation
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { data: comments } = useQuery<Comments[]>("getComment", () =>
+    COMMENT.getComments(postId)
+  );
+
   const { mutate: addComment } = useMutation(COMMENT.addComment);
 
   const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -55,9 +45,9 @@ function index({ postId }: PostId) {
       </form>
     </>
   );
-}
+};
 
-export default index;
+export default CommentBoard;
 
 const StCardContainer = styled.div`
   display: flex;

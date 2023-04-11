@@ -16,7 +16,7 @@ export { default as FindPwForm } from "./FindPwForm";
 export { default as FindIdForm } from "./FindIdForm";
 export { default as FindIdCodeForm } from "./FindIdCodeForm";
 export { default as FindPwCodeForm } from "./FindPwCodeForm";
-
+export { default as Sort } from "./Sort";
 export { default as LogBoard } from "./LogBoard";
 export { default as BookmarksBoard } from "./BookmarksBoard";
 export { default as CommentBoard } from "./CommentBoard";

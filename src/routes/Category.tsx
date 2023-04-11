@@ -4,23 +4,77 @@ import { useMutation, useQuery } from "react-query";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { CATEGORY, SEARCH } from "api";
-import { PostCard, Layout, NoSearched } from "components";
-import { searchedPostsState } from "store/atoms";
-import { Category as ICategory, NavItem, Post } from "types";
+import { PostCard, Layout, NoSearched, Sort } from "components";
+import {
+  endPageState,
+  searchedCategoryState,
+  searchedPostsState,
+} from "store/atoms";
+import { Category as ICategory, NavItem, Post, SortItem } from "types";
 
 const Category = () => {
+  const SORT_ITEMS: SortItem[] = [
+    {
+      itemValue: "연관순",
+      handler: () =>
+        getCategoryData({ category: searchedCategory, page, sort: "관심도" }),
+    },
+    {
+      itemValue: "최신순",
+      handler: () =>
+        getCategoryData({ category: searchedCategory, page, sort: "생성일자" }),
+    },
+    {
+      itemValue: "조회순",
+      handler: () =>
+        getCategoryData({ category: searchedCategory, page, sort: "조회수" }),
+    },
+    {
+      itemValue: "댓글순",
+      handler: () =>
+        getCategoryData({ category: searchedCategory, page, sort: "댓글수" }),
+    },
+  ];
+  const [navItems, setNavItems] = useState<NavItem[]>();
+  const [page, setPage] = useState<number>(1);
+  const [sort, setSort] = useState<string>("");
+
+  const [searchedPosts, setSearchedPosts] = useRecoilState(searchedPostsState);
+  const [searchedCategory, setSearchedCategory] = useRecoilState(
+    searchedCategoryState
+  );
+  const [endPage, setEndPage] = useRecoilState(endPageState);
+
   const navigate = useNavigate();
   const params = useParams();
-  const [searchedPosts, setSearchedPosts] = useRecoilState(searchedPostsState);
-  const [navItems, setNavItems] = useState<NavItem[]>();
 
   const { data: categoryData } = useQuery<ICategory[]>(
     "getCategories",
     CATEGORY.getCategories
   );
-  const { mutate } = useMutation(SEARCH.getCategoryData, {
-    onSuccess: (res) => setSearchedPosts(res.data as Post[]),
+  const { mutate: getCategoryData } = useMutation(SEARCH.getCategoryData, {
+    onSuccess: (res) => {
+      setSearchedPosts(res.data.searchResponseDtoList as Post[]);
+      setEndPage(res.data.endPage);
+    },
+    onError: () => {
+      setSearchedPosts([]);
+      setEndPage(1);
+    },
   });
+
+  useEffect(() => {
+    getCategoryData({ category: searchedCategory, page, sort });
+    //eslint-disable-next-line
+  }, [page]);
+
+  useEffect(() => {
+    setEndPage(1);
+    if (searchedCategory) {
+      getCategoryData({ category: searchedCategory, page, sort: "관심도" });
+    }
+    //eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     if (categoryData) {
@@ -28,19 +82,31 @@ const Category = () => {
         return {
           itemValue: v.categoryName,
           handler: () => {
-            mutate(v.categoryName);
+            setPage(1);
+            setSearchedCategory(v.categoryName);
+            getCategoryData({
+              category: v.categoryName,
+              page: 1,
+              sort: "관심도",
+            });
             navigate(`/category/${v.categoryName}`);
           },
         };
       });
       setNavItems(categories);
     }
-  }, [categoryData, navigate, mutate]);
+  }, [categoryData, navigate, getCategoryData, setSearchedCategory]);
 
   return (
     <Layout
       navItems={navItems}
-      breadcrumb={<StBreadCrumb>{params.categoryName}</StBreadCrumb>}
+      breadcrumb={
+        <StBreadCrumbWrapper>
+          <StBreadCrumb>{params.categoryName}</StBreadCrumb>
+          <Sort sortItems={SORT_ITEMS} sort={sort} setSort={setSort} />
+        </StBreadCrumbWrapper>
+      }
+      page={{ page, endPage, setPage }}
     >
       {searchedPosts && searchedPosts?.length > 0 ? (
         searchedPosts.map((post) => <PostCard key={post.id} {...post} />)
@@ -52,6 +118,13 @@ const Category = () => {
 };
 
 export default Category;
+
+const StBreadCrumbWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
 
 const StBreadCrumb = styled.div`
   font-size: 1.5rem;

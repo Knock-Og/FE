@@ -6,7 +6,6 @@ import {
   AdminCategory,
   Categoriesput,
   CategoryDel,
-  EditBookmark,
   PostToBookmark,
   FindIdItem,
   findIdCodeItem,
@@ -14,6 +13,10 @@ import {
   findPwCodeItem,
   AddPost,
   EditPostReq,
+  GetCategoryArgs,
+  GetBookmarkArgs,
+  EditBookmarkArgs,
+  GetSearchedArgs,
   EditCommentReq,
 } from "types";
 
@@ -57,25 +60,28 @@ export const FIND = {
 };
 
 export const SEARCH = {
-  getSearchedData: (keyword: string) =>
-    reqWithAccessToken.get(`/search?k=${keyword}`),
-  getCategoryData: (category: string) =>
-    reqWithAccessToken.get(`/category?c=${category}`),
+  getSearchedData: ({ keyword, page, sort }: GetSearchedArgs) =>
+    reqWithAccessToken.get(
+      `/search?page=${page}&keyword=${keyword}&sort=${sort}`
+    ),
+  getCategoryData: ({ category, page, sort }: GetCategoryArgs) =>
+    reqWithAccessToken.get(
+      `/category?page=${page}&category=${category}&sort=${sort}`
+    ),
 };
 
 export const MYPAGE = {
-  getMyPosts: () =>
-    reqWithAccessToken.get("/mypage/posts").then((res) => res.data),
+  getMyPosts: (page: number) =>
+    reqWithAccessToken.get(`/mypage/posts?p=${page}`),
 };
 
 export const BOOKMARK = {
-  getBookmarks: () =>
-    reqWithAccessToken.get("/bookmark/folders").then((res) => res.data),
-  getBookmark: (folderId: number) =>
-    reqWithAccessToken.get(`/bookmark/folder/${folderId}/bookmarks`),
+  getBookmarks: () => reqWithAccessToken.get("/bookmark/folders"),
+  getBookmark: ({ folderId, page }: GetBookmarkArgs) =>
+    reqWithAccessToken.get(`/bookmark/folder/${folderId}/bookmarks?p=${page}`),
   addBookmark: (bookMarkFolderName: string) =>
     reqWithAccessToken.post("/bookmark/folder", { bookMarkFolderName }),
-  editBookmark: ({ folderId, bookMarkFolderName }: EditBookmark) =>
+  editBookmark: ({ folderId, bookMarkFolderName }: EditBookmarkArgs) =>
     reqWithAccessToken.put(`/bookmark/folder/${folderId}`, {
       bookMarkFolderName,
     }),
@@ -90,8 +96,6 @@ export const BOOKMARK = {
 export const POST = {
   getPost: (postId: number) =>
     reqWithAccessToken.get(`/post/${postId}`).then((res) => res.data),
-  switchEditingStatus: (postId: number) =>
-    reqWithAccessToken.put(`post/${postId}/editingStatus`),
   addPost: (post: AddPost) => reqWithAccessToken.post("/post", post),
   editPost: ({ post, postId }: EditPostReq) =>
     reqWithAccessToken.put(`/post/${postId}`, post),

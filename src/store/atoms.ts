@@ -10,3 +10,18 @@ export const searchedPostsState = atom<Post[] | null>({
   key: "searchedPosts",
   default: null,
 });
+
+export const searchedCategoryState = atom<string>({
+  key: "searchedCategory",
+  default: "",
+});
+
+export const searchedKeywordState = atom<string>({
+  key: "searchedKeyword",
+  default: "",
+});
+
+export const endPageState = atom<number>({
+  key: "endPageState",
+  default: 1,
+});
