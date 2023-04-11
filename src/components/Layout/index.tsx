@@ -1,21 +1,39 @@
 import { Pagination } from "@mui/material";
 import styled from "styled-components";
-import { Header } from "components";
+import { Header, Setting } from "components";
 import { NavItem, Page } from "types";
 
 interface Props {
-  navItems?: NavItem[];
   children: React.ReactNode;
-  isBookMarkNav?: boolean;
   breadcrumb?: React.ReactNode;
-  addBookmarkHandler?: (addBookmarkInput: string) => void;
   page?: Page;
+  navItems?: NavItem[];
+  isBookMarkNav?: boolean;
+  addBookmarkHandler?: (addBookmarkInput: string) => void;
+  isNavOpen?: boolean;
+  setIsNavOpen?: (isOpen: boolean) => void;
 }
 
-const Layout = ({ children, breadcrumb, addBookmarkHandler, page }: Props) => {
+const Layout = ({
+  children,
+  breadcrumb,
+  navItems,
+  isBookMarkNav,
+  addBookmarkHandler,
+  page,
+  isNavOpen,
+  setIsNavOpen,
+}: Props) => {
   return (
     <StLayout>
       <Header />
+      <Setting
+        open={isNavOpen}
+        setOpen={setIsNavOpen}
+        navItems={navItems}
+        isBookMarkNav={isBookMarkNav}
+        addBookmarkHandler={addBookmarkHandler}
+      />
       <StContainer>
         {breadcrumb && <StBreadCrumbWrapper>{breadcrumb}</StBreadCrumbWrapper>}
         <StPostsWrapper>

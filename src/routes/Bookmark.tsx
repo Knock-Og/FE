@@ -19,6 +19,7 @@ const Bookmark = () => {
   const [editedFolderName, setEditedFolderName] = useState(
     params.folderName as string
   );
+  const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
 
   const [searchedPosts, setSearchedPosts] = useRecoilState(searchedPostsState);
   const [endPage, setEndPage] = useRecoilState(endPageState);
@@ -96,6 +97,8 @@ const Bookmark = () => {
   return (
     <Layout
       navItems={navItems}
+      isNavOpen={isNavOpen}
+      setIsNavOpen={setIsNavOpen}
       addBookmarkHandler={addBookmark}
       isBookMarkNav
       page={{ page, endPage, setPage }}

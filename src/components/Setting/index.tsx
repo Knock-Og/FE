@@ -1,46 +1,116 @@
-import React from 'react'
-import styled from 'styled-components'
-import { SettingProps, NavItem } from "types";
-import { Close } from "assets";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
+import styled, { keyframes } from "styled-components";
+import { IconButton, Input } from "@mui/material";
+import { CreateNewFolder } from "@mui/icons-material";
+import { NavItem } from "types";
+import { Close, NavOpenArrow } from "assets";
+
 interface Props {
-  navItems: NavItem[];
+  open?: boolean;
+  setOpen?: (isOpen: boolean) => void;
+  navItems?: NavItem[];
   isBookMarkNav?: boolean;
   addBookmarkHandler?: (addBookmarkInput: string) => void;
 }
 
-const Setting = (
-  { settingOpen, onClose }: SettingProps,
-  { navItems, isBookMarkNav, addBookmarkHandler }: Props
-) => {
-  const closeBtn = () => {
-    onClose();
+const Setting = ({
+  open,
+  setOpen,
+  navItems,
+  isBookMarkNav,
+  addBookmarkHandler,
+}: Props) => {
+  const params = useParams();
+  const [addBookmarkInput, setAddBookmarkInput] = useState("");
+
+  const handleChangeAddBookmarkInput = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => setAddBookmarkInput(e.target.value);
+
+  const handleClickBookMarkAddBtn = () => {
+    setAddBookmarkInput("");
+    addBookmarkHandler && addBookmarkHandler(addBookmarkInput);
   };
-  const pathname = window.location.pathname;
+
   return (
-    <StSettingWrap className={settingOpen ? "on" : "off"}>
-      <StSettingBox
-        onClick={(e) => e.stopPropagation()}
-        className={settingOpen ? "on" : "off"}
-      >
-        <StSettingTop>
-          <StSettingTitle>카테고리</StSettingTitle>
-          <StIoClose onClick={onClose} />
-        </StSettingTop>
-        <StSettingbottom>
-          <StSettingLink href="/">
-            <StsettingButton active={pathname === "/"}>
-              카테고리명명입니다!!!!!!!!!!
-            </StsettingButton>
-          </StSettingLink>
-        </StSettingbottom>
-      </StSettingBox>
-      <StSettingBg onClick={closeBtn} className={settingOpen ? "on" : "off"} />
-    </StSettingWrap>
+    <>
+      <StSettingWrap className={open ? "on" : "off"}>
+        <StSettingBox
+          onClick={(e) => e.stopPropagation()}
+          className={open ? "on" : "off"}
+        >
+          <StSettingTop>
+            <StSettingTitle>
+              {isBookMarkNav ? "즐겨찾기" : "카테고리"}
+            </StSettingTitle>
+            {setOpen && <StIoClose onClick={() => setOpen(false)} />}
+          </StSettingTop>
+
+          <StSettingbottom>
+            {navItems?.map((item) => (
+              <StSettingButton
+                key={item.itemValue}
+                onClick={() => {
+                  item.handler();
+                  setOpen && setOpen(false);
+                }}
+                active={
+                  params.categoryName === item.itemValue ||
+                  params.folderName === item.itemValue
+                }
+              >
+                {item.itemValue}
+              </StSettingButton>
+            ))}
+          </StSettingbottom>
+          {isBookMarkNav && (
+            <StBookmarkAddWrapper>
+              <StBookmarkAddTitle>즐겨찾기 폴더 생성</StBookmarkAddTitle>
+              <Input
+                onChange={handleChangeAddBookmarkInput}
+                endAdornment={
+                  <StAddBookMarkBtn onClick={handleClickBookMarkAddBtn}>
+                    <CreateNewFolder />
+                  </StAddBookMarkBtn>
+                }
+              />
+            </StBookmarkAddWrapper>
+          )}
+        </StSettingBox>
+
+        {setOpen && (
+          <StSettingBg
+            onClick={() => setOpen(false)}
+            className={open ? "on" : "off"}
+          />
+        )}
+      </StSettingWrap>
+      {setOpen && <StSettingToggleBtn onClick={() => setOpen(true)} />}
+    </>
   );
 };
 
-export default Setting
+export default Setting;
 
+const bounceFrames = keyframes`
+  0%{
+    transform : translate(0px,-50%);
+  }
+  50%{
+    transform : translate(10px,-50%);
+  }
+  100%{
+    transform : translate(0px,-50%);
+  }
+`;
+
+const StSettingToggleBtn = styled(NavOpenArrow)`
+  position: fixed;
+  top: 50%;
+  right: 5%;
+  animation: ${bounceFrames} 1s infinite;
+`;
 
 const StSettingWrap = styled.div`
   position: fixed;
@@ -95,10 +165,10 @@ const StSettingBg = styled.div`
   }
 `;
 const StSettingTop = styled.div`
-  position:relative;
-  height:100px;
-  padding:0 50px;
-`
+  position: relative;
+  height: 100px;
+  padding: 0 50px;
+`;
 const StSettingTitle = styled.h4`
   font-weight: 600;
   font-size: 1.75rem;
@@ -117,8 +187,8 @@ const StIoClose = styled(Close)`
 `;
 const StSettingbottom = styled.div`
   padding-bottom: 50px;
-  overflow-y: scroll;
-  height: calc(100vh - 100px);
+  overflow: auto;
+  height: 55%;
   &::-webkit-scrollbar {
     width: 10px;
   }
@@ -130,12 +200,9 @@ const StSettingbottom = styled.div`
     background-color: ${(props) => props.theme.bgColor};
   }
 `;
-const StSettingLink = styled.a`
+const StSettingButton = styled.button<{ active?: boolean }>`
   width: 100%;
   display: block;
-`;
-const StsettingButton = styled.button<{ active?: boolean }>`
-  width: 100%;
   padding: 0 50px 0 65px;
   background: ${({ active, theme }) =>
     active ? theme.lightBlue : "transparent"};
@@ -161,7 +228,7 @@ const StsettingButton = styled.button<{ active?: boolean }>`
     bottom: 0;
     margin: auto 0;
     content: "";
-    border:5px solid
+    border: 5px solid
       ${({ active, theme }) => (active ? theme.keyBlue : theme.greyLight)};
   }
   &:before {
@@ -175,7 +242,28 @@ const StsettingButton = styled.button<{ active?: boolean }>`
     bottom: 0px;
     margin: auto 0px;
     content: "";
-    background:
-      ${({ active, theme }) => (active ? "transparent" : theme.bgColor)};
+    background: ${({ active, theme }) =>
+      active ? "transparent" : theme.bgColor};
   }
+`;
+
+const StBookmarkAddWrapper = styled.div`
+  border-top: 1px solid ${({ theme }) => theme.lightGrey};
+  height: 45%;
+  padding: 30px 50px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const StBookmarkAddTitle = styled.h5`
+  font-weight: 600;
+  font-size: 1.75rem;
+  line-height: 100px;
+`;
+
+const StAddBookMarkBtn = styled(IconButton)`
+  position: absolute;
+  top: 50%;
+  right: 0%;
+  transform: translateY(-50%);
 `;
