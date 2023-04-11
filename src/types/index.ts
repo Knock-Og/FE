@@ -50,8 +50,8 @@ export interface EditPost {
   content: string;
   keywords: string[];
   category: string;
-  modifyPermission: "Owner" | "Manager" | "Member";
-  readablePosition: "Owner" | "Manager" | "Member";
+  modifyPermission: string;
+  readablePosition: string;
 }
 
 export interface AddPost extends EditPost {
@@ -68,7 +68,7 @@ export interface Bookmark {
   bookMarkFolderName: string;
 }
 
-export interface EditBookmark {
+export interface EditBookmarkArgs {
   folderId: number;
   bookMarkFolderName: string;
 }
@@ -129,3 +129,30 @@ export interface findPwCodeItem {
   authenticationCode: string;
   email: string;
 }
+
+export type HookCallback = (url: string, text?: string) => void;
+
+export interface Page {
+  page: number;
+  setPage: (page: number) => void;
+  endPage: number;
+}
+
+export interface GetSearchedArgs {
+  keyword: string;
+  page: number;
+  sort: string;
+}
+
+export interface GetCategoryArgs {
+  category: string;
+  page: number;
+  sort: string;
+}
+
+export interface GetBookmarkArgs {
+  folderId: number;
+  page: number;
+}
+
+export interface SortItem extends NavItem {}

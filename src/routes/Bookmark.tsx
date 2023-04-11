@@ -1,47 +1,69 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { useRecoilState } from "recoil";
 import { IconButton, Input } from "@mui/material";
 import { Edit, FolderDelete, Cancel } from "@mui/icons-material";
 import styled from "styled-components";
 import { BOOKMARK } from "api";
 import { PostCard, Layout, NoSearched } from "components";
-import { searchedPostsState } from "store/atoms";
+import { endPageState, searchedPostsState } from "store/atoms";
 import { Bookmark as IBookmark, NavItem, Post } from "types";
 
 const Bookmark = () => {
-  const navigate = useNavigate();
   const params = useParams();
-  const location = useLocation();
-  const queryClient = useQueryClient();
-  const [searchedPosts, setSearchedPosts] = useRecoilState(searchedPostsState);
-  const [navItems, setNavItems] = useState<NavItem[]>();
+
+  const [page, setPage] = useState<number>(1);
   const [isEdit, setIsEdit] = useState(false);
+  const [navItems, setNavItems] = useState<NavItem[]>();
   const [editedFolderName, setEditedFolderName] = useState(
     params.folderName as string
   );
 
-  const { data: bookmarksData } = useQuery<IBookmark[]>(
-    "getBookmarks",
-    BOOKMARK.getBookmarks
-  );
-  const { mutate: getBookmark } = useMutation(BOOKMARK.getBookmark, {
-    onSuccess: (res) => setSearchedPosts(res.data as Post[]),
-    onError: () => setSearchedPosts(null),
-  });
+  const [searchedPosts, setSearchedPosts] = useRecoilState(searchedPostsState);
+  const [endPage, setEndPage] = useRecoilState(endPageState);
 
-  const { mutate: addBookmark } = useMutation(BOOKMARK.addBookmark, {
-    onSuccess: () => queryClient.invalidateQueries("getBookmarks"),
-  });
-  const { mutate: editBookmark } = useMutation(BOOKMARK.editBookmark, {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { mutate: getBookmarks } = useMutation(BOOKMARK.getBookmarks, {
     onSuccess: (res) => {
-      queryClient.invalidateQueries("getBookmarks");
-      alert(res.data.message);
+      const nav = res.data.map((v: IBookmark) => {
+        return {
+          itemValue: v.bookMarkFolderName,
+          handler: () => {
+            navigate(`/bookmark/${v.bookMarkFolderName}`, {
+              state: { folderId: v.id },
+            });
+            getBookmark({ folderId: v.id, page });
+          },
+        };
+      });
+      setNavItems(nav);
+    },
+    onError: () => {
+      setNavItems([{ itemValue: "", handler: () => null }]);
     },
   });
+
+  const { mutate: getBookmark } = useMutation(BOOKMARK.getBookmark, {
+    onSuccess: (res) => {
+      setSearchedPosts(res.data.postResponseDtoList as Post[]);
+      setEndPage(res.data.endPage);
+    },
+    onError: () => {
+      setSearchedPosts([]);
+      setEndPage(1);
+    },
+  });
+  const { mutate: addBookmark } = useMutation(BOOKMARK.addBookmark, {
+    onSuccess: () => getBookmarks(),
+  });
+  const { mutate: editBookmark } = useMutation(BOOKMARK.editBookmark, {
+    onSuccess: () => getBookmarks(),
+  });
   const { mutate: deleteBookmark } = useMutation(BOOKMARK.deleteBookmark, {
-    onSuccess: () => queryClient.invalidateQueries("getBookmarks"),
+    onSuccess: () => getBookmarks(),
   });
 
   const handleChangeEditInput = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -55,44 +77,35 @@ const Bookmark = () => {
       bookMarkFolderName: editedFolderName,
     });
     navigate(`/bookmark/${editedFolderName}`);
+    handleClickEditBtn();
   };
 
   const handleClickDelBtn = () => {
     deleteBookmark(location.state.folderId);
     navigate("/bookmark");
+    handleClickEditBtn();
   };
 
   useEffect(() => {
-    setSearchedPosts(null);
-  }, [setSearchedPosts]);
-
-  useEffect(() => {
-    if (bookmarksData) {
-      const bookmarks: NavItem[] = bookmarksData.map((v) => {
-        return {
-          itemValue: v.bookMarkFolderName,
-          handler: () => {
-            navigate(`/bookmark/${v.bookMarkFolderName}`, {
-              state: { folderId: v.id },
-            });
-            getBookmark(v.id);
-          },
-        };
-      });
-      setNavItems(bookmarks);
-    }
-  }, [bookmarksData, navigate, getBookmark]);
+    setEndPage(1);
+    getBookmarks();
+    setSearchedPosts([]);
+    //eslint-disable-next-line
+  }, []);
 
   return (
     <Layout
       navItems={navItems}
       addBookmarkHandler={addBookmark}
       isBookMarkNav
+      page={{ page, endPage, setPage }}
       breadcrumb={
         params.folderName && (
           <>
             {isEdit ? (
               <StBreadCrumbInput
+                type="text"
+                defaultValue={editedFolderName}
                 value={editedFolderName}
                 onChange={handleChangeEditInput}
                 endAdornment={

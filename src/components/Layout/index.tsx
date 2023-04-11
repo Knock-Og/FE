@@ -1,6 +1,7 @@
+import { Pagination } from "@mui/material";
 import styled from "styled-components";
 import { Header, Nav } from "components";
-import { NavItem } from "types";
+import { NavItem, Page } from "types";
 
 interface Props {
   navItems?: NavItem[];
@@ -8,6 +9,7 @@ interface Props {
   isBookMarkNav?: boolean;
   breadcrumb?: React.ReactNode;
   addBookmarkHandler?: (addBookmarkInput: string) => void;
+  page?: Page;
 }
 
 const Layout = ({
@@ -16,6 +18,7 @@ const Layout = ({
   isBookMarkNav,
   breadcrumb,
   addBookmarkHandler,
+  page,
 }: Props) => {
   return (
     <StLayout>
@@ -32,7 +35,20 @@ const Layout = ({
           {breadcrumb && (
             <StBreadCrumbWrapper>{breadcrumb}</StBreadCrumbWrapper>
           )}
-          <StPostsWrapper>{children}</StPostsWrapper>
+          <StPostsWrapper>
+            {children}
+            {page && (
+              <Pagination
+                count={page.endPage}
+                page={page.page}
+                onChange={(_, curPage) => {
+                  window.scrollTo(0, 0);
+                  page.setPage(curPage);
+                }}
+                color="primary"
+              />
+            )}
+          </StPostsWrapper>
         </StContents>
       </StContainer>
     </StLayout>
@@ -54,14 +70,17 @@ const StContainer = styled.div`
 `;
 
 const StContents = styled.div`
-  height: 80vh;
+  /* height: 80vh; */
   width: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
 `;
 
 const StPostsWrapper = styled.div`
   height: 100%;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const StBreadCrumbWrapper = styled.div`

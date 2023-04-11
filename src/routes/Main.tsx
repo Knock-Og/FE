@@ -7,24 +7,36 @@ import styled from "styled-components";
 import { Logo, Search, AccountDrop, Sun, Moon } from "assets";
 import { SEARCH } from "api";
 import { getCookie, removeCookie } from "api/cookies";
-import { isDarkState, searchedPostsState } from "store/atoms";
+import {
+  isDarkState,
+  searchedKeywordState,
+  searchedPostsState,
+} from "store/atoms";
 import { Post } from "types";
 
 const Header = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const setSearchedPosts = useSetRecoilState(searchedPostsState);
+  const setSearchedKeyword = useSetRecoilState(searchedKeywordState);
+  const [isDark, setIsDark] = useRecoilState(isDarkState);
+
   const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const setSearchedPosts = useSetRecoilState(searchedPostsState);
-  const [isDark, setIsDark] = useRecoilState(isDarkState);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const accessToken = getCookie("access_token");
 
-  const { mutate } = useMutation(SEARCH.getSearchedData, {
+  const { mutate: getSearchedData } = useMutation(SEARCH.getSearchedData, {
     onSuccess: (res) => setSearchedPosts(res.data as Post[]),
   });
 
   const handleClickSearchBtn = () => {
-    mutate(`${searchInputRef.current?.value}`);
+    getSearchedData({
+      keyword: `${searchInputRef.current?.value}`,
+      page: 1,
+      sort: "관심도",
+    });
+    setSearchedKeyword(`${searchInputRef.current?.value}`);
     navigate(`/search?k=${searchInputRef.current?.value}`);
   };
 

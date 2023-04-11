@@ -19,15 +19,20 @@ const Nav = ({ navItems, isBookMarkNav, addBookmarkHandler }: Props) => {
     e: React.ChangeEvent<HTMLInputElement>
   ) => setAddBookmarkInput(e.target.value);
 
-  const handleClickBookMarkAddBtn = () =>
+  const handleClickBookMarkAddBtn = () => {
+    setAddBookmarkInput("");
     addBookmarkHandler && addBookmarkHandler(addBookmarkInput);
+  };
 
   return (
     <StContainer>
       <StUl>
         {navItems.map((item) => (
           <StLi
-            isActive={params.categoryName === item.itemValue}
+            isActive={
+              params.categoryName === item.itemValue ||
+              params.folderName === item.itemValue
+            }
             key={item.itemValue}
             onClick={item.handler}
           >
