@@ -18,6 +18,8 @@ import {
   EditBookmarkArgs,
   GetSearchedArgs,
   EditCommentReq,
+  MypageGetPw,
+  MemberItem,
 } from "types";
 
 export const LOGIN = {
@@ -31,12 +33,14 @@ export const ADMIN = {
     reqWithAccessToken.get(`/check/email/${email}`),
   checkName: (memberName: string) =>
     reqWithAccessToken.get(`/check/name/${memberName}`),
+  checkPhone: (phoneNum: string) =>
+    reqWithAccessToken.get(`/check/phone/${phoneNum}`),
+
   member: () => reqWithAccessToken.get(`/members`),
+  memberDel: (MemberItem: MemberItem) =>
+    reqWithAccessToken.delete(`/member/${MemberItem.id}`, { data: MemberItem }),
   position: (positionItem: PositionItem) =>
-    reqWithAccessToken.put(
-      `/member/${positionItem.positionID}/position`,
-      positionItem
-    ),
+    reqWithAccessToken.put(`/member/${positionItem.id}/position`, positionItem),
 };
 
 export const CATEGORY = {
@@ -51,12 +55,11 @@ export const CATEGORY = {
 };
 
 export const FIND = {
-  findId: (findId: FindIdItem) => baseAxios.post("/sms", findId),
+  findId: (findId: FindIdItem) => baseAxios.post("/auth/sms", findId),
   findIdCode: (idcode: findIdCodeItem) =>
     baseAxios.post("/member/email", idcode),
-  findPw: (findPw: FindPwItem) => baseAxios.post("/mail/auth", findPw),
-  findPwCode: (pwcode: findPwCodeItem) =>
-    baseAxios.post(`/member/pwd/${pwcode.authenticationCode}`, pwcode),
+  findPw: (findPw: FindPwItem) => baseAxios.post("/auth/email", findPw),
+  findPwCode: (pwcode: findPwCodeItem) => baseAxios.post(`/member/pwd`, pwcode),
 };
 
 export const SEARCH = {
@@ -73,6 +76,13 @@ export const SEARCH = {
 export const MYPAGE = {
   getMyPosts: (page: number) =>
     reqWithAccessToken.get(`/mypage/posts?p=${page}`),
+};
+
+export const MYPAGEPW = {
+  getPwData: (password: MypageGetPw) =>
+    reqWithAccessToken.post("/check/password", password),
+
+  getUserData: () => reqWithAccessToken.get("/mypage"),
 };
 
 export const BOOKMARK = {

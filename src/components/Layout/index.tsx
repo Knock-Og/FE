@@ -1,6 +1,6 @@
 import { Pagination } from "@mui/material";
 import styled from "styled-components";
-import { Header, Nav } from "components";
+import { Header } from "components";
 import { NavItem, Page } from "types";
 
 interface Props {
@@ -12,44 +12,26 @@ interface Props {
   page?: Page;
 }
 
-const Layout = ({
-  navItems,
-  children,
-  isBookMarkNav,
-  breadcrumb,
-  addBookmarkHandler,
-  page,
-}: Props) => {
+const Layout = ({ children, breadcrumb, addBookmarkHandler, page }: Props) => {
   return (
     <StLayout>
       <Header />
       <StContainer>
-        {navItems && (
-          <Nav
-            navItems={navItems}
-            isBookMarkNav={isBookMarkNav}
-            addBookmarkHandler={addBookmarkHandler}
-          />
-        )}
-        <StContents>
-          {breadcrumb && (
-            <StBreadCrumbWrapper>{breadcrumb}</StBreadCrumbWrapper>
+        {breadcrumb && <StBreadCrumbWrapper>{breadcrumb}</StBreadCrumbWrapper>}
+        <StPostsWrapper>
+          {children}
+          {page && (
+            <Pagination
+              count={page.endPage}
+              page={page.page}
+              onChange={(_, curPage) => {
+                window.scrollTo(0, 0);
+                page.setPage(curPage);
+              }}
+              color="primary"
+            />
           )}
-          <StPostsWrapper>
-            {children}
-            {page && (
-              <Pagination
-                count={page.endPage}
-                page={page.page}
-                onChange={(_, curPage) => {
-                  window.scrollTo(0, 0);
-                  page.setPage(curPage);
-                }}
-                color="primary"
-              />
-            )}
-          </StPostsWrapper>
-        </StContents>
+        </StPostsWrapper>
       </StContainer>
     </StLayout>
   );
@@ -57,22 +39,12 @@ const Layout = ({
 
 export default Layout;
 
-const StLayout = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  padding: 30px;
-`;
+const StLayout = styled.div``;
 
 const StContainer = styled.div`
-  display: flex;
-  gap: 30px;
-`;
-
-const StContents = styled.div`
-  /* height: 80vh; */
-  width: 100%;
-  /* overflow: hidden; */
+  width: 1376px;
+  margin: 0 auto;
+  min-height: calc(100% - 130px);
 `;
 
 const StPostsWrapper = styled.div`

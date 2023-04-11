@@ -38,12 +38,12 @@ const App = () => {
             {/* Login */}
             <Route path="/login" element={<ROUTE.Login />} />
             <Route path="/login/findid" element={<ROUTE.FindId />} />
-            <Route path="/login/findid/code" element={<ROUTE.FindIdCode />} />
             <Route path="/login/findpw" element={<ROUTE.FindPw />} />
-            <Route path="/login/findpw/code" element={<ROUTE.FindPwCode />} />
 
             {/* Mypage */}
+            {/* TODO: 페이지 합치기 */}
             <Route path="/mypage/posts" element={<ROUTE.MyPost />} />
+            <Route path="/mypage" element={<ROUTE.Mypage />} />
 
             {/* Searched */}
             <Route path="/search" element={<ROUTE.Searched />} />
