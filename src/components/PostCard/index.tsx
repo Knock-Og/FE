@@ -17,26 +17,26 @@ const PostCard = (post: Post) => {
   const navigate = useNavigate();
 
   const handleClickPostCard = () => {
-    let temp;
-    const fetchSse = async () => {
-      try {
-        temp = await new EventSource(
-          `${process.env.REACT_APP_SERVER_URL}connect/${post.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${getCookie("access_token")}`,
-            },
-            withCredentials: true,
-          }
-        );
+    // let temp;
+    // const fetchSse = async () => {
+    //   try {
+    //     temp = await new EventSource(
+    //       `${process.env.REACT_APP_SERVER_URL}connect/${post.id}`,
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${getCookie("access_token")}`,
+    //         },
+    //         withCredentials: true,
+    //       }
+    //     );
 
-        temp.onopen = () => console.log("is connected !");
-        temp.onmessage = (event) => console.log(JSON.parse(event.data));
-      } catch (err) {}
-    };
+    //     temp.onopen = () => console.log("is connected !");
+    //     temp.onmessage = (event) => console.log(JSON.parse(event.data));
+    //   } catch (err) {}
+    // };
 
-    fetchSse();
-    // navigate(`/post/${post.id}`);
+    // fetchSse();
+    navigate(`/post/${post.id}`);
   };
 
   // useEffect(() => {
