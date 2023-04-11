@@ -54,7 +54,8 @@ const Category = () => {
   );
   const { mutate: getCategoryData } = useMutation(SEARCH.getCategoryData, {
     onSuccess: (res) => {
-      setSearchedPosts(res.data.searchResponseDtoList as Post[]);
+      // setSearchedPosts(res.data.searchResponseDtoList as Post[]);
+      setSearchedPosts(res.data as Post[]);
       setEndPage(res.data.endPage);
     },
     onError: () => {

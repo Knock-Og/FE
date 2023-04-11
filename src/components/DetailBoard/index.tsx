@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useMutation } from "react-query";
 import { Viewer } from "@toast-ui/react-editor";
 import styled from "styled-components";
@@ -18,8 +18,6 @@ const DetailBoard = (post: PostDetail) => {
   const [isActiveBookmark, setIsActiveBookmark] = useState<boolean>(false);
 
   const location = useLocation();
-  const params = useParams();
-  const postId = parseInt(`${params.postId}`);
 
   const { mutate: addPostToBookmark } = useMutation(BOOKMARK.addPostToBookmark);
   const { mutate: deletePostToBookmark } = useMutation(
@@ -27,9 +25,9 @@ const DetailBoard = (post: PostDetail) => {
   );
 
   const selectComponent: Record<string, JSX.Element> = {
-    comment: <CommentBoard postId={postId} />,
-    log: <LogBoard postId={postId} />,
-    bookmark: <BookmarksBoard postId={postId} />,
+    comment: <CommentBoard postId={post.id} />,
+    log: <LogBoard postId={post.id} />,
+    bookmark: <BookmarksBoard postId={post.id} />,
   };
 
   const handleClickComment = () => {
@@ -52,15 +50,15 @@ const DetailBoard = (post: PostDetail) => {
     setIsActiveLog(false);
     setIsActiveBookmark(true);
 
-    isBookmarkPost
-      ? addPostToBookmark({
-          folderId: location.state.folderId,
-          postId: post.id,
-        })
-      : deletePostToBookmark({
-          folderId: location.state.folderId,
-          postId: post.id,
-        });
+    // isBookmarkPost
+    //   ? addPostToBookmark({
+    //       folderId: location.state.folderId,
+    //       postId: post.id,
+    //     })
+    //   : deletePostToBookmark({
+    //       folderId: location.state.folderId,
+    //       postId: post.id,
+    //     });
   };
 
   useEffect(() => {
