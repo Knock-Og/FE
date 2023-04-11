@@ -198,7 +198,9 @@ export interface SettingProps {
 export interface MypageGetPw {
   password: string;
 }
-
+export interface MypagePutPw {
+  newPassword: string;
+}
 export interface MemberItem {
   email: string;
   id: number;
@@ -211,3 +213,11 @@ export interface UserDataItem {
   position: string;
   id: number;
 }
+
+
+export interface CurrenPw {
+  changPw: boolean;
+  changPwBtn: () => void;
+}
+
+
