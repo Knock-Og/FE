@@ -19,6 +19,7 @@ import {
   GetSearchedArgs,
   EditCommentReq,
   MypageGetPw,
+  MypagePutPw,
   MemberItem,
 } from "types";
 
@@ -83,6 +84,9 @@ export const MYPAGEPW = {
     reqWithAccessToken.post("/check/password", password),
 
   getUserData: () => reqWithAccessToken.get("/mypage"),
+
+  putPwData: (password: MypagePutPw) =>
+    reqWithAccessToken.put("/password", password),
 };
 
 export const BOOKMARK = {

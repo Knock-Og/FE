@@ -30,7 +30,7 @@ const ModifyBoard = (post: PostDetail) => {
     readablePosition: "",
   });
   const [keyword, setKeyword] = useState("");
-
+  
   const navigate = useNavigate();
   const editorRef = useRef<Editor>(null);
 

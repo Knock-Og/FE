@@ -68,9 +68,12 @@ export const defaultTheme: DefaultTheme = {
   redColor: "#FF0F00",
   borderColor: "#AEAEAE",
   scrollColor: "#606060",
-  textwhite : "#fff",
-  textRed:"#ff0000",
-  placeholder:"#bdbdbd"
+  textwhite: "#fff",
+  textblack: "#121212",
+  textRed: "#ff0000",
+  placeholder: "#bdbdbd",
+  blockBorder: "#000",
+  textGrey: "#5a5a5a",
 };
 
 export const darkTheme: DefaultTheme = {
