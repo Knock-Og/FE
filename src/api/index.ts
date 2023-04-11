@@ -15,6 +15,8 @@ import {
   AddPost,
   EditPostReq,
   EditCommentReq,
+  mypageGetPw,
+  memberItem,
 } from "types";
 
 export const LOGIN = {
@@ -28,13 +30,14 @@ export const ADMIN = {
     reqWithAccessToken.get(`/check/email/${email}`),
   checkName: (memberName: string) =>
     reqWithAccessToken.get(`/check/name/${memberName}`),
+  checkPhone: (phoneNum: string) =>
+    reqWithAccessToken.get(`/check/phone/${phoneNum}`),
+
   member: () => reqWithAccessToken.get(`/members`),
-  
+  memberDel: (memberItem: memberItem) =>
+    reqWithAccessToken.delete(`/member/${memberItem.id}`, { data: memberItem }),
   position: (positionItem: PositionItem) =>
-    reqWithAccessToken.put(
-      `/member/${positionItem.id}/position`,
-      positionItem
-    ),
+    reqWithAccessToken.put(`/member/${positionItem.id}/position`, positionItem),
 };
 
 export const CATEGORY = {
@@ -67,8 +70,17 @@ export const MYPAGE = {
   getMyPosts: () =>
     reqWithAccessToken.get("/mypage/posts").then((res) => res.data),
 
- 
+  
 };
+export const MYPAGEPW = {
+  getPwData: (password: mypageGetPw) =>
+    reqWithAccessToken.post("/check/password", password),
+
+  getUserData: () => reqWithAccessToken.get("/mypage"),
+};
+
+
+
 
 export const BOOKMARK = {
   getBookmarks: () =>

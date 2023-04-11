@@ -1,11 +1,14 @@
-import { MypageForm } from "components";
+import { Header, MypageForm } from "components";
 import styled from "styled-components";
 
 const Mypage = ()=>{
     return (
+      <>
+        <Header />
         <Inner>
           <MypageForm />
         </Inner>
+      </>
     );
 }
 export default Mypage;

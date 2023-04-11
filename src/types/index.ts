@@ -87,7 +87,8 @@ export interface SignItem {
 }
 export interface PositionItem {
   id: number;
-  item: string;
+  position: string;
+  email: string;
 }
 
 export interface CategoryItem {
@@ -161,4 +162,23 @@ export interface EditCommentReq {
 export interface SettingProps {
   settingOpen: boolean;
   onClose: () => void;
+}
+
+export interface mypageGetPw {
+  password:string
+}
+
+export interface memberItem {
+  email: string;
+  id: number;
+}
+
+
+
+export interface userDataItem {
+  email: string;
+  memberName: string;
+  phoneNum: string;
+  position: string;
+  id:number
 }

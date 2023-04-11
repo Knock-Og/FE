@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import { SettingProps, NavItem } from "types";
 import { Close } from "assets";
-import {  } from "types";
 interface Props {
   navItems: NavItem[];
   isBookMarkNav?: boolean;

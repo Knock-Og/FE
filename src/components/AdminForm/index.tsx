@@ -1,9 +1,8 @@
 import styled from "styled-components";
-import ModalPortal from "api/portal";
 import { SignUpForm } from "components";
 import { useState,useEffect} from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-// import Reactpage from "react-js-pagination"
+import { Main_arr } from "assets";
 import { ADMIN } from "api";
 import { SignItem } from "types";
 const AdminForm = () => {
@@ -24,9 +23,8 @@ const AdminForm = () => {
   const [isOpen, setIsOpen] = useState<OpenState>();
   const [modalOpen, setModalOpen] = useState(false);
   const [position, setPosition] = useState<PositionState>();
-  const [positionID, setPositionID] = useState(Number);
   const [changeItemId,setChangeItemId] = useState<number>(0);
-  
+  const [selectedOption, setSelectedOption] = useState<string>("");
   const queryClient = useQueryClient();
   
   const { isLoading, isError, data } = useQuery("member", ADMIN.member);
@@ -46,24 +44,44 @@ const AdminForm = () => {
   
   const modalBtn = () => setModalOpen(false);
 
-  const positionChange = (posId: number, itemId:number,changePosition: string) => {
+  const positionChange = (itemId:number,changePosition: string) => {
     setChangeItemId(itemId);
-    setPositionID(posId);
     setPosition({...position,[`${itemId}`]:changePosition});
     setIsOpen({...isOpen,[`${itemId}`]:false});
+    setSelectedOption(changePosition);
   };
 
   const positionSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(position){
+    if (position && selectedOption) {
       positionMutation.mutate({
-        item: position[changeItemId],
+        position: position[changeItemId],
         id: changeItemId,
+        email: data?.data.find((item: any) => item.id === changeItemId)
+          ?.email as string,
       });
       
     }
   };
-  console.log(position);
+  const memberDelMutation = useMutation("memberdel", ADMIN.memberDel, {
+    onSuccess: (response) => {
+      if (response) {
+        queryClient.invalidateQueries("member");
+        
+        return response.data;
+      }
+    },
+  });
+  
+  const memberDel = (id: number,email:string) => {
+    if (window.confirm("삭제하시겠습니까?")) {
+      memberDelMutation.mutate({id, email});
+      alert("삭제되었습니다.");
+    } else {
+      alert("취소되었습니다.");
+    }
+  };
+  
   useEffect(() => {
     if (modalOpen) {
       document.body.style.cssText = `
@@ -86,7 +104,7 @@ const AdminForm = () => {
     setIsOpen(openState)
 
     const positionState = data?.data.reduce((acc:PositionState,v:SignItem)=>{
-      return {...acc,[`${v.id}`]:"Member"}
+      return {...acc,[`${v.id}`]:"MEMBER"}
     },{})
     setPosition(positionState)
 
@@ -96,7 +114,7 @@ const AdminForm = () => {
   if (isError) return <h1>"실패했습니다.!"</h1>;
 
   return (
-    <>
+   
       <StAdminWrap>
         <StTop>
           <StTitle>
@@ -136,6 +154,7 @@ const AdminForm = () => {
                         }
                       >
                         {position && position[item.id]}
+                        <MenuArr />
                       </StSeletLabel>
                       {isOpen && isOpen[`${item.id}`] && (
                         <StSeletUl>
@@ -143,11 +162,7 @@ const AdminForm = () => {
                             <StSeletLi
                               key={`${item.id}-${position.id}`}
                               onClick={() =>
-                                positionChange(
-                                  position.id,
-                                  item.id,
-                                  position.position
-                                )
+                                positionChange(item.id, position.position)
                               }
                             >
                               {position.position}
@@ -157,24 +172,25 @@ const AdminForm = () => {
                       )}
                     </StSelWarp>
                   </StBottomListSel>
-
                   <StBottomListBtn>
                     <StChangeBtn type="submit">직급수정</StChangeBtn>
-                    <StDelBtn type="button">인원삭제</StDelBtn>
+                    <StDelBtn
+                      type="button"
+                      onClick={() => {
+                        memberDel(item.id, item.email);
+                      }}
+                    >
+                      인원삭제
+                    </StDelBtn>
                   </StBottomListBtn>
                 </StOpsion>
               </StContentBottom>
             );
           })}
         </StContent>
-        
+        <SignUpForm onClose={modalBtn} modalOpen={modalOpen} />
       </StAdminWrap>
-      {modalOpen && (
-        <ModalPortal>
-          <SignUpForm onClose={modalBtn} modalOpen={modalOpen} />
-        </ModalPortal>
-      )}
-    </>
+
   );
 };
 export default AdminForm;
@@ -199,13 +215,13 @@ const StTitle = styled.h3`
   align-items: center;
 `;
 const StUser = styled.p`
-  font-size: 1rem;
   margin-left: 45px;
   font-weight: 800;
   font-size: 1.125rem;
   letter-spacing: 0.016em;
   position: relative;
   padding-left: 26px;
+  
   &::before {
     width: 16px;
     height: 16px;
@@ -231,6 +247,7 @@ const StContentTop = styled.div`
   align-items: center;
   width: 100%;
   height: 60px;
+  border-radius: 5px;
   background: ${(props) => props.theme.veryLightGrey};
   text-align: center;
 `;
@@ -249,6 +266,7 @@ const StTopList = styled.p`
   width: 16.66%;
   font-weight: 700;
   font-size: 1.125rem;
+  
 `;
 
 const StContentBottom = styled.div`
@@ -256,6 +274,7 @@ const StContentBottom = styled.div`
   height: 80px;
   align-items: center;
   border: 1px solid ${(props) => props.theme.lightGrey};
+  border-radius: 5px;
   display: flex;
   margin-top: 25px;
 `;
@@ -267,6 +286,7 @@ const StBottomList = styled.p`
   overflow: hidden;
   white-space: normal;
   margin: 0 auto;
+  line-height: 1.3;
 `;
 const StOpsion = styled.form`
   width: 33.32%;
@@ -292,7 +312,14 @@ const StSeletLabel = styled.p`
   margin: 0 auto;
   line-height: 40px;
   font-weight: 500;
-  padding-left: 12px;
+  padding:0 12px;
+  font-size:0.75rem;
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+const MenuArr = styled(Main_arr)`
+  fill: ${(props) => props.theme.lightGrey};
 `;
 const StSeletUl = styled.ul`
   position: absolute;
@@ -306,10 +333,11 @@ const StSeletUl = styled.ul`
 const StSeletLi = styled.li`
   line-height: 40px;
   padding: 0 12px;
+  font-size: 0.75rem;
   cursor: pointer;
   &:hover {
-    background: #f5faff;
-    color: #007fff;
+    background: ${(props) => props.theme.lightBlue};
+    color: ${(props) => props.theme.keyBlue};
   }
 `;
 
@@ -332,10 +360,17 @@ const StChangeBtn = styled.button`
   
 `;
 
-const StDelBtn = styled(StChangeBtn)`
+const StDelBtn = styled.button`
   border: 1px solid ${(props) => props.theme.redColor};
   color: ${(props) => props.theme.redColor};
-  margin-left:10px;
+  margin-left: 10px;
+  text-align: center;
+  width: 90px;
+  height: 38px;
+  background: transparent;
+  font-size: 0.875rem;
+  border-radius: 50px;
+  cursor: pointer;
 `;
 
 
@@ -343,54 +378,3 @@ const StDelBtn = styled(StChangeBtn)`
 
 
 
-
-
-
-
-// const PaginationWrapper = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   margin-top: 35px;
-//   .pagination {
-//     display: flex;
-//     align-items: center;
-//   }
-//   .pagination li {
-//     display: flex;
-//     align-items: center;
-//     width: 30px;
-//     height: 30px;
-//     justify-content: center;
-//   }
-//   .pagination li a {
-//     font-size: 1.125rem;
-//     font-weight: 700;
-//     color: ${(props) => props.theme.lightGrey};
-//   }
-//   .pagination li.active a {
-//     color: ${(props) => props.theme.keyBlue};
-//     text-decoration-line: underline;
-//   }
-// `;
-
-// const PrevButton = styled.button`
-//   background-image: url(${left_arr});
-//   background-size: contain;
-//   width: 18px;
-//   height: 18px;
-//   border: none;
-//   cursor: pointer;
-//   background-color: transparent;
-  
-// `;
-
-// const NextButton = styled.button`
-//   background-image: url(${right_arr});
-//   background-size: contain;
-//   border: none;
-//   width: 18px;
-//   height: 18px;
-//   background-color: transparent;
-//   cursor: pointer;
-// `;

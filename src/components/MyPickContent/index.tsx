@@ -3,13 +3,13 @@ import { MYPAGE } from "api";
 import { useQuery } from "react-query";
 import { Post } from "types";
 const MyPostContent = ()=>{
-    const { isLoading, isError, data } = useQuery<Post[]>(
-      "getMyPosts",
-      MYPAGE.getMyPosts
-    );
-    if (isLoading) return <h1>로딩중...</h1>
-    if (isError) return <h1>로딩중...</h1>;
-    console.log(data);
+    // const { isLoading, isError, data } = useQuery(
+    //   "getMyPosts",
+    //   MYPAGE.getMyPosts
+    // );
+    // if (isLoading) return <h1>로딩중...</h1>
+    // if (isError) return <h1>에러...</h1>;
+    // console.log(data);
       return (
         <StPostContent>
           {/* {data.map((item) => {
