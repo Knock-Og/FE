@@ -142,7 +142,7 @@ const Bookmark = () => {
 export default Bookmark;
 
 const StBreadCrumb = styled.div`
-  font-size: 1.5rem;
+ 
 `;
 
 const StBreadCrumbInput = styled(Input)``;

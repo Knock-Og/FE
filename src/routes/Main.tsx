@@ -153,6 +153,7 @@ const Main = () => {
             onKeyDown={handleKeyDown}
             placeholder="검색어 또는 키워드를 입력"
           />
+          
           <StSearchBtn onClick={handleClickSearchBtn}>찾기</StSearchBtn>
         </StSearchWrapper>
         <StFolder>
@@ -224,6 +225,7 @@ const StSearchBtn = styled(Search)`
   top: 0;
   bottom: 0;
   margin: auto 0;
+  cursor: pointer;
 `;
 
 const StModeToggleBtn = styled.button`
@@ -300,7 +302,7 @@ const MenuArr = styled(MainArr)`
 const StMenu = styled.div`
   position: absolute;
   width: 150px;
-  bottom: -170px;
+  bottom: -130px;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
   background: ${(props) => props.theme.bgColor};
   opacity: 0;

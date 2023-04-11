@@ -22,7 +22,8 @@ export const GlobalStyle = createGlobalStyle`
   body {
     color: ${({ theme }) => theme.textColor};
     background-color: ${({ theme }) => theme.bgColor};
-    transition: all 0.5s;
+    /* transition: all 0.5s; */
+    overflow-x:hidden;
   }
   button{
     padding:0;
@@ -57,7 +58,10 @@ export const GlobalStyle = createGlobalStyle`
 
 export const defaultTheme: DefaultTheme = {
   textColor: "#111",
-  bgColor: "#fff",
+  textwhite: "#fff",
+  textblack: "#121212",
+  textRed: "#ff0000",
+  textGrey: "#5a5a5a",
   keyBlue: "#007FFF",
   grey: "#828282",
   darkGrey: "#121212",
@@ -66,14 +70,20 @@ export const defaultTheme: DefaultTheme = {
   greyLight: "#aeaeae",
   lightBlue: "#F5FAFF",
   redColor: "#FF0F00",
-  borderColor: "#AEAEAE",
+
+  bgBlue: "#007fff",
+  bgColor: "#fff",
+  bgLightBlue: "#F5FAFF",
   scrollColor: "#606060",
-  textwhite: "#fff",
-  textblack: "#121212",
-  textRed: "#ff0000",
+
+  fillWhite: "#fff",
+  stroke: "#007FFF",
+  borderColor: "#AEAEAE",
+  pageBorder: "#DADDE6",
+  borderBlue: "#007fff",
   placeholder: "#bdbdbd",
   blockBorder: "#000",
-  textGrey: "#5a5a5a",
+  greyBorder: "#f9f9f9",
 };
 
 export const darkTheme: DefaultTheme = {

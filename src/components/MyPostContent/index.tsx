@@ -97,6 +97,7 @@ const MyPostContent = () => {
 export default MyPostContent;
 
 const StPostContent = styled.div`
-  width: 100%;
-  border: 1px solid ${(props) => props.theme.greyLight};
+  display:flex;
+  flex-wrap:wrap;
+  justify-content: center;
 `;

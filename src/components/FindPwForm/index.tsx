@@ -29,28 +29,14 @@ const FindPwForm = () => {
       queryClient.invalidateQueries("findpw");
       alert("인증코드가 발송되었습니다.");
       return response.data;
-    },
-    
-    onError: async (response: {
-      response: { data: { message: string } };
-    }): Promise<string> => {
-      queryClient.invalidateQueries("findpw");
-      alert("등록된 회원정보가 없습니다!");
-      return response.response.data.message;
-    },
+    }
   });
   const pwSubmit = async(e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault()
     if (!email || email.trim() === "") return alert("이메일을 적어주세요!");
     if (email.indexOf("@") === -1)return alert("'@'를 포함해서 이메일을 작성해주세요!");
     if (emailBoolean) return alert("이메일형식이 올바르지 않습니다!");
-    try {
-      await emailMutation.mutate({ email });
-      
-    } catch (error) {
-      queryClient.invalidateQueries("findpw");
-      e.stopPropagation();
-    }
+    emailMutation.mutate({ email });
   }
 
 
@@ -66,25 +52,13 @@ const FindPwForm = () => {
       onSuccess: (Response) => {
         queryClient.invalidateQueries("findpw");
         return Response.data;
-      },
-      onError: async (response: {
-        response: { data: { message: string } };
-      }): Promise<string> => {
-        queryClient.invalidateQueries("findpw");
-        alert("인증코드를 다시 확인해주세요!");
-        return response.response.data.message;
-      },
+      }
     }
   );
   const codeSubmit = async(e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault()
     if (authenticationCode.trim() === "") return alert("인증코드를 작성해주세요!");
-    try {
-      await pwFindCodeMutate({ authenticationCode, email });
-      setAuthenticationCode("");
-    } catch (error) {
-      queryClient.invalidateQueries("findpw");
-    }
+    pwFindCodeMutate({ authenticationCode, email });
   }
   const copyPw = data?.data.password;
   const copyCode =()=>{
@@ -172,7 +146,7 @@ const StFindPwWrap = styled.div`
   padding: 0 115px;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
   border-radius: 24px;
-  border: 1px solid #aeaeae;
+  border: 1px solid ${(props) => props.theme.borderColor};
   height: 630px;
   display: flex;
   align-items: center;
@@ -182,8 +156,7 @@ const StFindBox = styled.div`
   width:100%;
   text-align:center;
 `
-//   cursor: pointer;
-// `;
+
 const StTitle = styled.h4`
   font-weight: 800;
   font-size: 20px;
@@ -205,17 +178,17 @@ const StAuthSubmitForm = styled.form`
 const StInput = styled.input`
   width: 100%;
   height: 70px;
-  border: 1px solid #aeaeae;
+  border: 1px solid ${(props) => props.theme.borderColor};
   border-radius: 10px;
   padding: 0 25px;
   font-weight: 500;
   outline: 0;
-  margin-top:15px;
+  margin-top: 15px;
   &::placeholder {
-    color: #c9c9c9;
+    color: ${(props) => props.theme.placeholder};
   }
   &:focus {
-    border: 1px solid #007fff;
+    border: 1px solid ${(props) => props.theme.borderBlue};
   }
 `;
 
@@ -224,35 +197,34 @@ const StInputEmail = styled(StInput)`
   padding:0  175px 0 25px;
   margin-top:0;
 `;
-const StButtonCommon = `
-   background: #007fff;
-   color: #fff;
-  font-weight: 500;
-  cursor: pointer;
-   color:#fff;
-`;
 
 const Stbutton = styled.button`
   width: 150px;
   height: 70px;
-  border: 1px solid #007fff;
+  border: 1px solid ${(props) => props.theme.borderBlue};
   border-radius: 0px 10px 10px 0px;
   position: absolute;
   top: 0;
   right: 0;
-  ${StButtonCommon}
+  background: ${(props) => props.theme.bgBlue};
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
 `;
 const StNextButton = styled.button`
   border-radius: 10px;
+  outline: 0;
   font-weight: 500;
   width: 90px;
   height: 65px;
   border: 0;
   margin-top: 10px;
-  ${StButtonCommon}
+  background: ${(props) => props.theme.bgBlue};
+  color: #fff;
+  cursor: pointer;
 `;
 const StErrorMsg = styled.p`
-  color: #ff0000;
+  color: ${(props) => props.theme.textRed};
   font-size: 0.75rem;
   text-align: left;
   margin-top: 10px;
@@ -269,7 +241,7 @@ const StfondId = styled.p`
 const StfondIdspan = styled.span`
   display: block;
   margin-left: 30px;
-  color: #007fff;
+  color: ${(props) => props.theme.keyBlue};
   font-weight: 700;
   cursor: pointer;
 `;
@@ -297,8 +269,8 @@ margin-left:8px;
 cursor: pointer;
 `;
 const StCopySvg = styled.svg`
-  stroke:#007FFF;
-  fill:#fff;
+  stroke:${(props) => props.theme.stroke};
+  fill:${(props) => props.theme.fillWhite};
 `;
 
 const StLoginbutton = styled.button`
@@ -306,5 +278,7 @@ const StLoginbutton = styled.button`
   width: 100%;
   border-radius: 60px;
   height: 64px;
-  ${StButtonCommon};
+  background: ${(props) => props.theme.bgBlue};
+  color: ${(props) => props.theme.textwhite};
+  cursor: pointer;
 `;

@@ -26,7 +26,6 @@ const StContainer = styled.div`
   text-align: center;
   gap: 40px;
   border: 1px solid ${(props) => props.theme.lightGrey};
-  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
   border-radius: 24px;
 `;
 

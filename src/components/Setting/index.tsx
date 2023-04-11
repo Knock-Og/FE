@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { IconButton, Input } from "@mui/material";
@@ -32,7 +32,19 @@ const Setting = ({
     setAddBookmarkInput("");
     addBookmarkHandler && addBookmarkHandler(addBookmarkInput);
   };
-
+  useEffect(() => {
+    if (open) {
+      document.body.style.cssText = `
+     
+    top: -${window.scrollY}px;
+    width: 100%;`;
+      return () => {
+        const scrollY = document.body.style.top;
+        document.body.style.cssText = "";
+        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+      };
+    }
+  }, [open]);
   return (
     <>
       <StSettingWrap className={open ? "on" : "off"}>
@@ -168,11 +180,13 @@ const StSettingTop = styled.div`
   position: relative;
   height: 100px;
   padding: 0 50px;
+  border-bottom: 1px solid ${(props) => props.theme.borderColor}; ;
 `;
 const StSettingTitle = styled.h4`
   font-weight: 600;
   font-size: 1.75rem;
   line-height: 100px;
+ 
 `;
 const StIoClose = styled(Close)`
   position: absolute;
@@ -232,11 +246,11 @@ const StSettingButton = styled.button<{ active?: boolean }>`
       ${({ active, theme }) => (active ? theme.keyBlue : theme.greyLight)};
   }
   &:before {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     border-radius: 20px;
     position: absolute;
-    left: 38px;
+    left: 39px;
     z-index: 1;
     top: 0px;
     bottom: 0px;
