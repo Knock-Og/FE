@@ -22,3 +22,7 @@ export { default as LogBoard } from "./LogBoard";
 export { default as BookmarksBoard } from "./BookmarksBoard";
 export { default as CommentBoard } from "./CommentBoard";
 export { default as Setting } from "./Setting";
+export { default as CurrentPw } from "./CurrentPw";
+
+
+;

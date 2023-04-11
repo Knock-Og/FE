@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import ModalPortal from "api/portal";
 import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { CATEGORY } from "api";
@@ -168,94 +167,88 @@ const CategoryForm = () => {
         </StContent>
       </StAdminWrap>
       {/* //추가하기 */}
-      <ModalPortal>
-        {modalOpen && (
-          <StCategoryAdd>
-            <StCategoryForm onSubmit={categorySubmit}>
-              <StIoClose
-                width="40"
-                height="40"
-                viewBox="0 0 40 40"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                onClick={modalBtn}
-              >
-                <path
-                  d="M27.5594 11.4419L10.8927 28.1086"
-                  stroke="#C5C5C5"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M10.8927 11.4419L27.5594 28.1086"
-                  stroke="#C5C5C5"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </StIoClose>
-              <StCategoryTitle>카테고리 추가</StCategoryTitle>
-              <StCategory>
-                <StCategoryInput
-                  type="text"
-                  value={categoryName}
-                  placeholder="추가할 카테고리 명"
-                  onChange={(e) => setCategoryName(e.target.value)}
-                />
-                <StCommonButton>추가</StCommonButton>
-              </StCategory>
-            </StCategoryForm>
-            <StSignBg onClick={modalBtn} />
-          </StCategoryAdd>
-        )}
-      </ModalPortal>
+      <StCategoryAdd className={modalOpen ? "on" : "off"}>
+        <StSignBox className={modalOpen ? "on" : "off"}>
+          <StCategoryForm onSubmit={categorySubmit}>
+            <StIoClose
+              width="40"
+              height="40"
+              viewBox="0 0 40 40"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              onClick={modalBtn}
+            >
+              <path
+                d="M27.5594 11.4419L10.8927 28.1086"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M10.8927 11.4419L27.5594 28.1086"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </StIoClose>
+            <StCategoryTitle>카테고리 추가</StCategoryTitle>
+            <StCategory>
+              <StCategoryInput
+                type="text"
+                value={categoryName}
+                placeholder="추가할 카테고리 명"
+                onChange={(e) => setCategoryName(e.target.value)}
+              />
+              <StCommonButton>추가</StCommonButton>
+            </StCategory>
+          </StCategoryForm>
+        </StSignBox>
+        <StSignBg onClick={modalBtn} className={modalOpen ? "on" : "off"} />
+      </StCategoryAdd>
 
       {/* //수정하기 */}
-      <ModalPortal>
-        {modalPutOpen && (
-          <StCategoryAdd>
-            <StCategoryForm onSubmit={categoryPutSubmit}>
-              <StIoClose
-                width="40"
-                height="40"
-                viewBox="0 0 40 40"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                onClick={modalPutBtn}
-              >
-                <path
-                  d="M27.5594 11.4419L10.8927 28.1086"
-                  stroke="#C5C5C5"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M10.8927 11.4419L27.5594 28.1086"
-                  stroke="#C5C5C5"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </StIoClose>
-              <StCategoryTitle onClick={modalPutBtn}>
-                카테고리 수정
-              </StCategoryTitle>
-              <StCategory>
-                <StCategoryInput
-                  type="text"
-                  value={categoryPutName}
-                  placeholder="수정할 카테고리 명"
-                  onChange={(e) => setCategoryPutName(e.target.value)}
-                />
-                <StCommonButton>수정</StCommonButton>
-              </StCategory>
-            </StCategoryForm>
-            <StSignBg onClick={modalPutBtn} />
-          </StCategoryAdd>
-        )}
-      </ModalPortal>
+
+      <StCategoryAdd className={modalPutOpen ? "on" : "off"}>
+        <StSignBox className={modalPutOpen ? "on" : "off"}>
+          <StCategoryForm onSubmit={categoryPutSubmit}>
+            <StIoClose
+              width="40"
+              height="40"
+              viewBox="0 0 40 40"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              onClick={modalPutBtn}
+            >
+              <path
+                d="M27.5594 11.4419L10.8927 28.1086"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M10.8927 11.4419L27.5594 28.1086"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </StIoClose>
+            <StCategoryTitle>카테고리 수정</StCategoryTitle>
+            <StCategory>
+              <StCategoryInput
+                type="text"
+                value={categoryPutName}
+                placeholder="수정할 카테고리명"
+                onChange={(e) => setCategoryPutName(e.target.value)}
+              />
+              <StCommonButton>수정</StCommonButton>
+            </StCategory>
+          </StCategoryForm>
+        </StSignBox>
+        <StSignBg
+          onClick={modalPutBtn}
+          className={modalPutOpen ? "on" : "off"}
+        />
+      </StCategoryAdd>
     </>
   );
 };
@@ -264,13 +257,13 @@ export default CategoryForm;
 const StAdminWrap = styled.div`
   width: calc(100% - 20.21%);
   margin-left: 20.21%;
-  padding: 95px 3.7%;
+  padding: 95px 5.74%;
 `;
 
 const StTop = styled.div`
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   width: 100%;
 `;
@@ -278,23 +271,21 @@ const StTitle = styled.h3`
   display: flex;
   font-size: 2rem;
   font-weight: 800;
-  font-size: 32px;
   letter-spacing: 0.016em;
   align-items: center;
 `;
 const StUser = styled.p`
-  font-size: 1rem;
-  margin-left: 47px;
+  margin-left: 45px;
   font-weight: 800;
   font-size: 1.125rem;
   letter-spacing: 0.016em;
-  color: #121212;
   position: relative;
-  padding-left: 28px;
+  padding-left: 26px;
+
   &::before {
     width: 16px;
     height: 16px;
-    background: #007fff;
+    background: ${(props) => props.theme.keyBlue};
     content: "";
     position: absolute;
     left: 0;
@@ -305,21 +296,23 @@ const StUser = styled.p`
   }
 `;
 const StUserSpan = styled.span`
-  color: #007fff;
+  color: ${(props) => props.theme.keyBlue};
+  font-weight: 800;
 `;
 
 const StContent = styled.div``;
 const StContentTop = styled.div`
   display: flex;
+  align-items: center;
   width: 100%;
   height: 60px;
-  line-height: 60px;
-  background: #f3f3f3;
   border-radius: 5px;
+  background: ${(props) => props.theme.veryLightGrey};
+  text-align: center;
 `;
 const StName = styled.p`
   text-align: left;
-  padding-left: 4.83%;
+  padding-left: 4%;
   font-weight: 700;
   font-size: 1.125rem;
   width: 75%;
@@ -327,32 +320,13 @@ const StName = styled.p`
 const StContentBottom = styled.div`
   width: 100%;
   height: 80px;
-  border: 1px solid #c5c5c5;
-  border-radius: 10px;
+  align-items: center;
+  border: 1px solid ${(props) => props.theme.lightGrey};
+  border-radius: 5px;
   display: flex;
-  line-height: 80px;
-  margin-top: 20px;
+  margin-top: 25px;
 `;
-const StButtonCommon = `
-  text-align: center;
-  width: 130px;
-  height: 26px;
-  background: #fff;
-  font-size: 0.875rem;
-  border-radius: 50px;  
-  cursor: pointer;
 
-`;
-const StChangeBtn = styled.button`
-  border: 2px solid #007fff;
-  color: #007fff;
-  ${StButtonCommon}
-`;
-const StDelBtn = styled.button`
-  border: 2px solid #aeaeae;
-  color: #aeaeae;
-  ${StButtonCommon}
-`;
 const StChange = styled.p`
   width: 25%;
   text-align: center;
@@ -362,40 +336,102 @@ const StChange = styled.p`
 `;
 
 const StButton = styled.button`
-  height: 40px;
   width: 140px;
+  height: 50px;
   font-size: 0.875rem;
-  background: #007fff;
-  color: #fff;
+  background: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.bgColor};
   border: 0;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 50px;
+`;
+
+const StChangeBtn = styled.button`
+  text-align: center;
+  width: 130px;
+  height: 38px;
+  border: 1px solid ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.keyBlue};
+  background: transparent;
+  font-size: 0.875rem;
+  border-radius: 50px;
+  cursor: pointer;
+`;
+
+const StDelBtn = styled.button`
+  border: 1px solid ${(props) => props.theme.redColor};
+  color: ${(props) => props.theme.redColor};
+  margin-left: 10px;
+  text-align: center;
+  width: 130px;
+  height: 38px;
+  background: transparent;
+  font-size: 0.875rem;
+  border-radius: 50px;
+  cursor: pointer;
 `;
 
 //모달부분
 const StCategoryAdd = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
+  bottom: 0;
+  right: 0;
+  z-index: 99;
+  transition: visibility 0.3s ease-in-out;
+  visibility: hidden;
+  &.off {
+    visibility: hidden;
+    transition-delay: 0.5s ease-in-out;
+  }
+  &.on {
+    visibility: visible;
+  }
 `;
 const StSignBg = styled.div`
+  background: rgba(18, 18, 18, 0.4);
+  transition: opacity 0.5s ease-in-out;
+  opacity: 0;
   width: 100%;
-  height: 100000px;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
-  background: rgba(0, 0, 0, 0.4);
+  min-height: 100vh;
+  &.on {
+    opacity: 1;
+  }
+  &.off {
+    transition-delay: 1s ease-in-out;
+    opacity: 0;
+  }
 `;
-const StCategoryForm = styled.form`
+
+const StSignBox = styled.div`
   width: 500px;
-  background: #fff;
-  z-index: 1;
-  border-radius: 10px;
-  padding: 70px 68px 80px;
-  position: fixed;
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
   height: 250px;
+  position: absolute;
+  background: ${(props) => props.theme.bgColor};
+  bottom: 0;
+  top: 0;
+  right: 0;
+  left: 0;
+  border-radius: 10px;
+  margin: auto;
+  overflow: hidden;
+  transition: transform 0.3s ease-out;
+  transform: translateY(100px);
+  transition-delay: 0.3s ease-in-out;
+  z-index: 10;
+  &.on {
+    transition-delay: 0.3s ease-in-out;
+    transform: translateY(0);
+  }
+  &.off {
+    transform: translateY(100px);
+  }
+`;
+
+const StCategoryForm = styled.form`
+  padding: 70px 75px;
 `;
 
 const StCategoryTitle = styled.h3`
@@ -410,9 +446,9 @@ const StCategoryInput = styled.input`
   border: 0;
   outline: 0;
   padding-right: 90px;
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid ${(props) => props.theme.blockBorder};
   &::placeholder {
-    color: #bdbdbd;
+    color: ${(props) => props.theme.placeholder};
   }
 `;
 const StCategory = styled.div`
@@ -424,21 +460,17 @@ const StCommonButton = styled.button`
   height: 44px;
   right: 0px;
   top: 0;
-  background: #007fff;
-  color: #fff;
+  background: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textwhite};
   border: 0;
   outline: 0;
   cursor: pointer;
 `;
 
 const StIoClose = styled.svg`
-  font-size: 22px;
   position: absolute;
   right: 20px;
   top: 20px;
   cursor: pointer;
-  transition: all 0.3s;
-  &:hover {
-    transform: rotatez(180deg);
-  }
+  stroke: ${(props) => props.theme.lightGrey};
 `;
