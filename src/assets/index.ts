@@ -10,7 +10,7 @@ export { ReactComponent as Log } from "./log.svg";
 export { ReactComponent as LogBlue } from "./logBlue.svg";
 export { ReactComponent as Star } from "./star.svg";
 export { ReactComponent as StarBlue } from "./starBlue.svg";
-export { ReactComponent as Dark } from "./dark.svg";
+export { ReactComponent as Dark } from "./darkIcon.svg";
 export { ReactComponent as Folder } from "./folder.svg";
 export { ReactComponent as MainArr } from "./mainArr.svg";
 export { ReactComponent as Bell } from "./bell.svg";
