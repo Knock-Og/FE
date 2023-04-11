@@ -156,3 +156,29 @@ export interface GetBookmarkArgs {
 }
 
 export interface SortItem extends NavItem {}
+export interface Logs {
+  memberName: string;
+  content: string;
+  createDate: string;
+}
+
+export interface Comments {
+  id: number;
+  memberName: string;
+  comment: string;
+  createdAt: string;
+  modifiedAt: string;
+}
+
+export interface AddComment {
+  comment: string;
+}
+
+export interface PostId {
+  postId: number;
+}
+
+export interface EditCommentReq {
+  postId: number;
+  comment: AddComment;
+}

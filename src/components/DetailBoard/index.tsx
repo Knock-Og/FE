@@ -1,24 +1,57 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useMutation } from "react-query";
 import { Viewer } from "@toast-ui/react-editor";
 import styled from "styled-components";
+import { Comment, CommentBlue, LogBlue, Log, StarBlue, Star } from "assets";
 import { BOOKMARK } from "api";
+import { BookmarksBoard, CommentBoard, LogBoard } from "components";
 import { PostDetail } from "types";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
 const DetailBoard = (post: PostDetail) => {
   const [isBookmarkPost, setIsBookmarkPost] = useState(false);
+  const [select, setSelect] = useState<string>();
+  const [isActiveComment, setIsActiveComment] = useState<boolean>(false);
+  const [isActiveLog, setIsActiveLog] = useState<boolean>(false);
+  const [isActiveBookmark, setIsActiveBookmark] = useState<boolean>(false);
 
   const location = useLocation();
+  const params = useParams();
+  const postId = parseInt(`${params.postId}`);
 
   const { mutate: addPostToBookmark } = useMutation(BOOKMARK.addPostToBookmark);
   const { mutate: deletePostToBookmark } = useMutation(
     BOOKMARK.deletePostToBookmark
   );
 
+  const selectComponent: Record<string, JSX.Element> = {
+    comment: <CommentBoard postId={postId} />,
+    log: <LogBoard postId={postId} />,
+    bookmark: <BookmarksBoard postId={postId} />,
+  };
+
+  const handleClickComment = () => {
+    setSelect("comment");
+    setIsActiveComment(true);
+    setIsActiveLog(false);
+    setIsActiveBookmark(false);
+  };
+
+  const handleClickLog = () => {
+    setSelect("log");
+    setIsActiveComment(false);
+    setIsActiveLog(true);
+    setIsActiveBookmark(false);
+  };
+
   const handleClickBookmark = () => {
+    setSelect("bookmark");
+    setIsActiveComment(false);
+    setIsActiveLog(false);
+    setIsActiveBookmark(true);
+
     isBookmarkPost
       ? addPostToBookmark({
           folderId: location.state.folderId,
@@ -37,13 +70,35 @@ const DetailBoard = (post: PostDetail) => {
   }, []);
 
   return (
-    <StContainer>
-      <button onClick={handleClickBookmark}>
-        {isBookmarkPost ? "제거" : "추가"}
-      </button>
-      <StTitle>{post.title}</StTitle>
-      <Viewer initialValue={post.content} />
-    </StContainer>
+    <>
+      <StContainer>
+        <button onClick={handleClickBookmark}>
+          {isBookmarkPost ? "제거" : "추가"}
+        </button>
+        <StTitle>{post.title}</StTitle>
+        <Viewer initialValue={post.content} />
+      </StContainer>
+      <StBox>
+        <StIcon>
+          {isActiveComment ? (
+            <CommentBlue onClick={handleClickComment} />
+          ) : (
+            <Comment onClick={handleClickComment} />
+          )}
+          {isActiveLog ? (
+            <LogBlue onClick={handleClickLog} />
+          ) : (
+            <Log onClick={handleClickLog} />
+          )}
+          {isActiveBookmark ? (
+            <StarBlue onClick={handleClickBookmark} />
+          ) : (
+            <Star onClick={handleClickBookmark} />
+          )}
+        </StIcon>
+        {select && <>{selectComponent[select]}</>}
+      </StBox>
+    </>
   );
 };
 
@@ -53,12 +108,11 @@ const StContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
-  width: 100%;
+  width: 80%;
   height: 80vh;
   background-color: ${(props) => props.theme.veryLightGrey};
   border: 1px solid ${(props) => props.theme.grey};
-  box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
-  border-radius: 10px;
+
   padding: 30px;
 `;
 
@@ -72,4 +126,24 @@ const StTitle = styled.div`
   line-height: 40px;
   padding: 0px 40px;
   box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
+`;
+
+const StBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 25%;
+  height: 80vh;
+
+  border-radius: 10px;
+  padding: 30px;
+  margin-left: 40px;
+`;
+
+const StIcon = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 100px;
+  margin-top: 50px;
 `;

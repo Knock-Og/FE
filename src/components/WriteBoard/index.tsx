@@ -157,7 +157,6 @@ const WriteBoard = () => {
             onKeyUp={handleKeyUp}
           />
         </div>
-
         <StAddBtn onClick={handleClickAddBtn}>작성완료</StAddBtn>
       </StFooter>
     </StContainer>
