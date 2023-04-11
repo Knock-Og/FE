@@ -106,7 +106,7 @@ const CategoryForm = () => {
     onError: (response) => {
       if (response) {
         queryClient.invalidateQueries("getCategories");
-       alert("카테고리삭제을 실패했습니다.");
+        alert("카테고리삭제을 실패했습니다.");
       }
     },
   });
@@ -114,7 +114,7 @@ const CategoryForm = () => {
     if (window.confirm("삭제하시겠습니까?")) {
       categoryDelMutation.mutate({ id });
       alert("삭제되었습니다.");
-    }else{
+    } else {
       alert("취소되었습니다.");
     }
   };
@@ -122,7 +122,7 @@ const CategoryForm = () => {
     "getCategories",
     CATEGORY.getCategories
   );
-  if (isLoading) return <h1>"성공했습니다.</h1>
+  if (isLoading) return <h1>"성공했습니다.</h1>;
   if (isError) return <h1>"실패했습니다.!"</h1>;
 
   return (
@@ -139,7 +139,7 @@ const CategoryForm = () => {
         </StTop>
         <StContent>
           <StContentTop>
-            <StName>카테고리 명</StName>
+            <StName>카테고리명</StName>
           </StContentTop>
           {data.map((item: CategoryItem) => {
             return (

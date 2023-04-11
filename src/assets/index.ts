@@ -21,4 +21,4 @@ export { ReactComponent as FolderPlus } from "./folderPlus.svg";
 export { ReactComponent as Settings } from "./settings.svg";
 export { ReactComponent as Close } from "./close.svg";
 export { ReactComponent as HeaderLogo } from "./headerLogo.svg";
-export { ReactComponent as NoSearch } from "./NoSearch.svg";
+export { ReactComponent as NoSearch } from "./noSearch.svg";

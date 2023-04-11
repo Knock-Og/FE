@@ -96,11 +96,15 @@ const AdminForm = () => {
     }
   }, [modalOpen]);
 
-  useEffect(() => {
+  const resetIsOpen = () => {
     const openState = data?.data.reduce((acc: OpenState, v: SignItem) => {
       return { ...acc, [`${v.id}`]: false };
     }, {});
     setIsOpen(openState);
+  };
+
+  useEffect(() => {
+    resetIsOpen();
 
     const positionState = data?.data.reduce(
       (acc: PositionState, v: SignItem) => {
@@ -109,6 +113,7 @@ const AdminForm = () => {
       {}
     );
     setPosition(positionState);
+    // eslint-disable-next-line
   }, [data]);
 
   if (isLoading) return <h1>"성공했습니다.!"</h1>;
@@ -145,13 +150,15 @@ const AdminForm = () => {
                 <StBottomListSel>
                   <StSelWarp>
                     <StSeletLabel
-                      onClick={() =>
-                        isOpen &&
-                        setIsOpen({
-                          ...isOpen,
-                          [`${item.id}`]: !isOpen[`${item.id}`],
-                        })
-                      }
+                      onClick={() => {
+                        if (isOpen) {
+                          resetIsOpen();
+                          setIsOpen({
+                            ...isOpen,
+                            [`${item.id}`]: !isOpen[`${item.id}`],
+                          });
+                        }
+                      }}
                     >
                       {position && position[item.id]}
                       <MenuArr />

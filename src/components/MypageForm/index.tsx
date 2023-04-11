@@ -16,24 +16,25 @@ const MypageForm = () => {
     setChangPw(!changPw);
     setCurrntPw(false);
   };
+  // const [alert,setAlert] = useState({text:"",isShow:false});
+
   const nextPwBtn = () => {
-    if (password.trim() === "") return alert("현재비밀번호를 적어주세요") 
+    if (password.trim() === "") return alert("현재비밀번호를 적어주세요");
     if (!checkPassword) return alert("현재비밀번호를 적어주세요");
     setCurrntPw(true);
   };
-   const queryClient = useQueryClient();
-   const pwMutation = useMutation("getPw", MYPAGEPW.getPwData, {
-     onSuccess: (response) => {
-       queryClient.invalidateQueries("getPw");
-       alert("비밀번호가 일치합니다.");
-       
-     },
-     onError: (response) => {
-       queryClient.invalidateQueries("getPw");
-       alert("비밀번호가 일치하지 않습니다.");
-       
-     },
-   });
+  const queryClient = useQueryClient();
+  const pwMutation = useMutation("getPw", MYPAGEPW.getPwData, {
+    onSuccess: (response) => {
+      queryClient.invalidateQueries("getPw");
+      alert("비밀번호가 일치합니다.");
+    },
+    onError: (response) => {
+      queryClient.invalidateQueries("getPw");
+      alert("비밀번호가 일치하지 않습니다.");
+      //  setAlert({...alert,isShow : true});
+    },
+  });
   const [password, setPassword] = useState("");
   const [passwordBoolean, setPasswordBoolean] = useState(false);
   const [passwordMsg, setPasswordMsg] = useState("");
@@ -52,16 +53,17 @@ const MypageForm = () => {
     );
   };
   const checkPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
-     e.preventDefault();
+    e.preventDefault();
     if (password.trim() === "") return alert("비밀번호를 입력해주세요!");
-     pwMutation.mutate({ password });
-    
+    pwMutation.mutate({ password });
   };
-  const { isLoading, isError, data } = useQuery("userdata", MYPAGEPW.getUserData);
-  if(isLoading) return <h1>로딩중...</h1>
+  const { isLoading, isError, data } = useQuery(
+    "userdata",
+    MYPAGEPW.getUserData
+  );
+  if (isLoading) return <h1>로딩중...</h1>;
   if (isError) return <h1>에러...</h1>;
-  const userDate = data?.data
-
+  const userDate = data?.data;
 
   return (
     <StMypageWrap>
@@ -86,6 +88,8 @@ const MypageForm = () => {
         </StTapWrap>
         <StContentWrap>{tabs[activeTab].render()}</StContentWrap>
       </StMypageBottom>
+
+      {/* {alert && <Alert text={alert.text}/>} */}
 
       <StChangPwWrap className={changPw ? "on" : "off"}>
         <StChangPw className={changPw ? "on" : "off"}>
@@ -123,10 +127,9 @@ const MypageForm = () => {
 };
 export default MypageForm;
 
-
 const StMypageWrap = styled.div`
-padding:60px 0;
-`
+  padding: 60px 0;
+`;
 const StMypageTop = styled.div`
   text-align: center;
   position: relative;
@@ -136,12 +139,12 @@ const StMypageTop = styled.div`
     width: 910px;
     height: 1px;
     background: ${(props) => props.theme.keyBlue};
-    content: '';
-    position:absolute;
-    left:0;
-    right:0;
-    margin:0 auto;
-    bottom:0;
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    bottom: 0;
   }
 `;
 const StMyname = styled.h4`
@@ -159,8 +162,8 @@ const StMyEmail = styled.em`
 `;
 const StMyEmailSpan = styled.span`
   font-weight: 500;
-  display:block;
-  margin-left:24px;
+  display: block;
+  margin-left: 24px;
 `;
 const StBotton = styled.button`
   font-weight: 700;
@@ -168,17 +171,17 @@ const StBotton = styled.button`
   line-height: 22px;
   color: ${(props) => props.theme.keyBlue};
   text-decoration-line: underline;
-  background:transparent;
-  border:0;
+  background: transparent;
+  border: 0;
   outline: 0;
   cursor: pointer;
 `;
-const StMypageBottom = styled.div``
+const StMypageBottom = styled.div``;
 const StTapWrap = styled.div`
   display: flex;
   gap: 3.63%;
   justify-content: center;
-  margin:30px 0;
+  margin: 30px 0;
 `;
 const StTapLink = styled.button`
   background: none;
@@ -254,15 +257,15 @@ const StTitle = styled.em`
   text-align: center;
   font-weight: 900;
   font-size: 2rem;
-  margin-bottom:50px;
+  margin-bottom: 50px;
 `;
 const StInputWrap = styled.div`
-  position:relative;
+  position: relative;
 `;
 const StSpan = styled.p`
   font-weight: 600;
   font-size: 1.125rem;
-  margin-bottom:10px;
+  margin-bottom: 10px;
 `;
 const StInput = styled.input`
   width: 100%;
@@ -323,7 +326,6 @@ const StNext = styled.button`
   cursor: pointer;
   display: block;
 `;
-
 
 const StCurrntPw = styled.div`
   width: 712px;
