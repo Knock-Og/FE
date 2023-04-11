@@ -94,9 +94,6 @@ const Header = () => {
           <StMenuItem onClick={() => navigate("/mypage")}>
             마이페이지
           </StMenuItem>
-          <StMenuItem onClick={() => navigate("/mypage/posts")}>
-            내 포스트
-          </StMenuItem>
           <StMenuItem onClick={() => navigate("/bookmark")}>
             즐겨찾기
           </StMenuItem>

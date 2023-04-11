@@ -1,22 +1,12 @@
-import styled from "styled-components";
 import { useState } from "react";
-import { MyPostContent, MyPickContent, CurrentPw } from "components";
-import {  useQuery } from "react-query";
+import { useQuery } from "react-query";
+import styled from "styled-components";
 import { MYPAGEPW } from "api";
+import { MyPostContent, CurrentPw } from "components";
 
 const MypageForm = () => {
-  const tabs = [
-    { name: "내 게시물", render: () => <MyPostContent /> },
-    { name: "내 카테고리", render: () => <MyPickContent /> },
-  ];
-  const [activeTab, setActiveTab] = useState(0);
   const [changPw, setChangPw] = useState(false);
-  const changPwBtn = () => {
-    setChangPw(!changPw);
-  };
 
-  
-  //조회부분
   const { isLoading, isError, data } = useQuery(
     "userdata",
     MYPAGEPW.getUserData
@@ -25,7 +15,6 @@ const MypageForm = () => {
   if (isError) return <h1>에러...</h1>;
   const userDate = data?.data;
 
-  // tgr%8H%td2x3YS%z
   return (
     <StMypageWrap>
       <StMypageTop>
@@ -33,23 +22,16 @@ const MypageForm = () => {
         <StMyEmail>
           이메일 주소 <StMyEmailSpan>{userDate.email}</StMyEmailSpan>
         </StMyEmail>
-        <StBotton onClick={() => changPwBtn()}>비밀번호 변경하기</StBotton>
+        <StBotton onClick={() => setChangPw(!changPw)}>
+          비밀번호 변경하기
+        </StBotton>
       </StMypageTop>
       <StMypageBottom>
-        <StTapWrap>
-          {tabs.map((tab, index) => (
-            <StTapLink
-              key={index}
-              onClick={() => setActiveTab(index)}
-              className={activeTab === index ? "active" : ""}
-            >
-              {tab.name}
-            </StTapLink>
-          ))}
-        </StTapWrap>
-        <StContentWrap>{tabs[activeTab].render()}</StContentWrap>
+        <StContentWrap>
+          <MyPostContent />
+        </StContentWrap>
       </StMypageBottom>
-      <CurrentPw changPw={changPw} changPwBtn={changPwBtn} />
+      <CurrentPw changPw={changPw} changPwBtn={() => setChangPw(!changPw)} />
     </StMypageWrap>
   );
 };
@@ -105,21 +87,7 @@ const StBotton = styled.button`
   cursor: pointer;
 `;
 const StMypageBottom = styled.div``;
-const StTapWrap = styled.div`
-  display: flex;
-  gap: 3.63%;
-  justify-content: center;
+
+const StContentWrap = styled.div`
   margin: 30px 0;
 `;
-const StTapLink = styled.button`
-  background: none;
-  border: 0;
-  font-weight: 700;
-  font-size: 1.25rem;
-  cursor: pointer;
-  &.active {
-    color: ${(props) => props.theme.keyBlue};
-    text-decoration-line: underline;
-  }
-`;
-const StContentWrap = styled.div``;

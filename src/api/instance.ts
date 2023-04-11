@@ -48,7 +48,9 @@ reqWithAccessToken.interceptors.response.use(
       console.error(error.response.data.message);
       alert("다시 로그인 해주세요.");
       removeCookie("access_token");
-      window.location.replace("/login");
+      window.location.pathname.includes("admin")
+        ? window.location.replace("/admin/login")
+        : window.location.replace("/login");
     }
 
     if (error.response.data.status === 400) {
