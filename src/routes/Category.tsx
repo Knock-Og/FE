@@ -38,6 +38,7 @@ const Category = () => {
   const [navItems, setNavItems] = useState<NavItem[]>();
   const [page, setPage] = useState<number>(1);
   const [sort, setSort] = useState<string>("");
+  const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
 
   const [searchedPosts, setSearchedPosts] = useRecoilState(searchedPostsState);
   const [searchedCategory, setSearchedCategory] = useRecoilState(
@@ -54,8 +55,7 @@ const Category = () => {
   );
   const { mutate: getCategoryData } = useMutation(SEARCH.getCategoryData, {
     onSuccess: (res) => {
-      // setSearchedPosts(res.data.searchResponseDtoList as Post[]);
-      setSearchedPosts(res.data as Post[]);
+      setSearchedPosts(res.data.searchResponseDtoList as Post[]);
       setEndPage(res.data.endPage);
     },
     onError: () => {
@@ -100,13 +100,15 @@ const Category = () => {
 
   return (
     <Layout
-      navItems={navItems}
       breadcrumb={
         <StBreadCrumbWrapper>
           <StBreadCrumb>{params.categoryName}</StBreadCrumb>
           <Sort sortItems={SORT_ITEMS} sort={sort} setSort={setSort} />
         </StBreadCrumbWrapper>
       }
+      navItems={navItems}
+      isNavOpen={isNavOpen}
+      setIsNavOpen={setIsNavOpen}
       page={{ page, endPage, setPage }}
     >
       {searchedPosts && searchedPosts?.length > 0 ? (

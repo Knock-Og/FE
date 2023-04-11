@@ -65,12 +65,15 @@ const WriteBoard = () => {
   const handleChangeKeywordInput = (e: React.ChangeEvent<HTMLInputElement>) =>
     setKeyword(e.target.value);
 
-  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      if (newPost.keywords.includes(keyword)) {
+        alert("이미 추가한 키워드입니다 !");
+        return;
+      }
       setNewPost({ ...newPost, keywords: [...newPost.keywords, keyword] });
       setKeyword("");
     }
-    return;
   };
 
   return (
@@ -154,7 +157,7 @@ const WriteBoard = () => {
             placeholder="키워드"
             value={keyword}
             onChange={handleChangeKeywordInput}
-            onKeyUp={handleKeyUp}
+            onKeyDown={handleKeyDown}
           />
         </div>
         <StAddBtn onClick={handleClickAddBtn}>작성완료</StAddBtn>

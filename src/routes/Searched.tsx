@@ -39,6 +39,7 @@ const Searched = () => {
   const [navItems, setNavItems] = useState<NavItem[]>();
   const [page, setPage] = useState<number>(1);
   const [sort, setSort] = useState<string>("");
+  const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
 
   const [searchedPosts, setSearchedPosts] = useRecoilState(searchedPostsState);
   const setSearchedCategory = useSetRecoilState(searchedCategoryState);
@@ -119,6 +120,8 @@ const Searched = () => {
         )
       }
       navItems={navItems}
+      isNavOpen={isNavOpen}
+      setIsNavOpen={setIsNavOpen}
       page={{ page, endPage, setPage }}
     >
       {searchedPosts && searchedPosts?.length > 0 ? (

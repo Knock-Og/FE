@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -10,25 +10,28 @@ import {
   Dark,
   Headermenu,
   Folder,
-  FolderPlus,
   MainArr,
   Bell,
   AlarmIcon,
-  Settings,
 } from "assets";
-import { SEARCH } from "api";
+import { BOOKMARK, SEARCH } from "api";
 import { getCookie, removeCookie } from "api/cookies";
 import {
+  endPageState,
   isDarkState,
   searchedKeywordState,
   searchedPostsState,
 } from "store/atoms";
-import { Post } from "types";
-import { Setting } from "components";
+import { Bookmark, NavItem, Post } from "types";
 
-const Header = () => {
+const Main = () => {
+  const [isOn, setIsOn] = useState(false);
+  const [isAlarm, setIsAlarm] = useState(false);
+  const [folders, setFolders] = useState<NavItem[]>();
+
   const setSearchedPosts = useSetRecoilState(searchedPostsState);
   const setSearchedKeyword = useSetRecoilState(searchedKeywordState);
+  const setEndPage = useSetRecoilState(endPageState);
   const [isDark, setIsDark] = useRecoilState(isDarkState);
 
   const navigate = useNavigate();
@@ -38,6 +41,37 @@ const Header = () => {
 
   const { mutate: getSearchedData } = useMutation(SEARCH.getSearchedData, {
     onSuccess: (res) => setSearchedPosts(res.data as Post[]),
+  });
+
+  const { mutate: getBookmarks } = useMutation(BOOKMARK.getBookmarks, {
+    onSuccess: (res) => {
+      const nav = res.data.map((v: Bookmark) => {
+        return {
+          itemValue: v.bookMarkFolderName,
+          handler: () => {
+            navigate(`/bookmark/${v.bookMarkFolderName}`, {
+              state: { folderId: v.id },
+            });
+            getBookmark({ folderId: v.id, page: 1 });
+          },
+        };
+      });
+      setFolders(nav);
+    },
+    onError: () => {
+      setFolders([{ itemValue: "", handler: () => null }]);
+    },
+  });
+
+  const { mutate: getBookmark } = useMutation(BOOKMARK.getBookmark, {
+    onSuccess: (res) => {
+      setSearchedPosts(res.data.postResponseDtoList as Post[]);
+      setEndPage(res.data.endPage);
+    },
+    onError: () => {
+      setSearchedPosts([]);
+      setEndPage(1);
+    },
   });
 
   const handleClickSearchBtn = () => {
@@ -55,16 +89,10 @@ const Header = () => {
       handleClickSearchBtn();
     }
   };
-  const [isOn, setIsOn] = useState(false);
   const handleClickAccountBtn = () => {
     setIsOn(!isOn);
     setIsAlarm(false);
   };
-  const [settingOpen, setSettingOpen] = useState(false);
-  const settingBtn = () => {
-    setSettingOpen(!settingOpen);
-  };
-  const [isAlarm, setIsAlarm] = useState(false);
   const isAlarmBtn = () => {
     setIsAlarm(!isAlarm);
     setIsOn(false);
@@ -73,6 +101,11 @@ const Header = () => {
     navigate("/login");
     removeCookie("access_token");
   };
+
+  useEffect(() => {
+    getBookmarks();
+    //eslint-disable-next-line
+  }, []);
 
   return (
     <StContainer>
@@ -86,9 +119,6 @@ const Header = () => {
             <Menuperson />
             <MenuArr className={isOn ? "on" : ""} />
           </StAccountBtn>
-          <StToggle onClick={settingBtn}>
-            <Settings />
-          </StToggle>
         </StHeaderMeun>
         <StMenu className={isOn ? "on" : ""}>
           <StMenuItem onClick={() => navigate("/mypage")}>
@@ -119,8 +149,6 @@ const Header = () => {
             </StAlarmcontent>
           </StAlarmContentWrap>
         </StAlarm>
-
-        <Setting settingOpen={settingOpen} onClose={settingBtn} />
       </StHeader>
 
       <StMainWrapper>
@@ -134,14 +162,12 @@ const Header = () => {
           <StSearchBtn onClick={handleClickSearchBtn}>찾기</StSearchBtn>
         </StSearchWrapper>
         <StFolder>
-          <StFolderli>
-            <Folder />
-            <StFolderP>폴더이름입니다.</StFolderP>
-          </StFolderli>
-          <StFolderli>
-            <FolderPlus />
-            <StFolderP>폴더이름입니다.</StFolderP>
-          </StFolderli>
+          {folders?.map((folder) => (
+            <StFolderli key={folder.itemValue} onClick={folder.handler}>
+              <Folder />
+              <StFolderP>{folder.itemValue}</StFolderP>
+            </StFolderli>
+          ))}
         </StFolder>
       </StMainWrapper>
       <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
@@ -152,7 +178,7 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Main;
 
 const StContainer = styled.div`
   position: relative;
@@ -380,7 +406,8 @@ const StAlarmcontentP = styled.p`
 `;
 
 const StFolder = styled.div`
-  width: 325px;
+  width: 625px;
+  flex-wrap: wrap;
   display: flex;
   gap: 15px;
   align-items: center;
@@ -402,12 +429,4 @@ const StFolderP = styled.p`
   font-weight: 500;
   font-size: 0.875rem;
   margin-top: 12px;
-`;
-
-const StToggle = styled.button`
-  background: transparent;
-  outline: 0;
-  border: 0;
-  cursor: pointer;
-  font-size: 0;
 `;
