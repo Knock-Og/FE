@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { Setting } from "components";
 import styled from "styled-components";
 import {
   HeaderLogo,
@@ -13,7 +12,6 @@ import {
   MainArr,
   Bell,
   AlarmIcon,
-  Settings,
 } from "assets";
 import { SEARCH } from "api";
 import { getCookie, removeCookie } from "api/cookies";
@@ -25,6 +23,9 @@ import {
 import { Post } from "types";
 
 const Header = () => {
+  const [isOn, setIsOn] = useState(false);
+  const [isAlarm, setIsAlarm] = useState(false);
+
   const setSearchedPosts = useSetRecoilState(searchedPostsState);
   const setSearchedKeyword = useSetRecoilState(searchedKeywordState);
   const [isDark, setIsDark] = useRecoilState(isDarkState);
@@ -54,20 +55,16 @@ const Header = () => {
     }
   };
 
-  const [isOn, setIsOn] = useState(false);
   const handleClickAccountBtn = () => {
     setIsOn(!isOn);
     setIsAlarm(false);
   };
-  const [settingOpen, setSettingOpen] = useState(false);
-  const settingBtn = () => {
-    setSettingOpen(!settingOpen);
-  };
-  const [isAlarm, setIsAlarm] = useState(false);
+
   const isAlarmBtn = () => {
     setIsAlarm(!isAlarm);
     setIsOn(false);
   };
+
   const handleClickLogOut = () => {
     navigate("/login");
     removeCookie("access_token");
@@ -92,9 +89,6 @@ const Header = () => {
             <Menuperson />
             <MenuArr className={isOn ? "on" : ""} />
           </StAccountBtn>
-          <StToggle onClick={settingBtn}>
-            <Settings />
-          </StToggle>
         </StHeaderMeun>
         <StMenu className={isOn ? "on" : ""}>
           <StMenuItem onClick={() => navigate("/mypage")}>
@@ -125,8 +119,6 @@ const Header = () => {
             </StAlarmcontent>
           </StAlarmContentWrap>
         </StAlarm>
-
-        <Setting settingOpen={settingOpen} onClose={settingBtn} />
       </StHeaderRightWrapper>
       <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
         {isDark ? <Sun /> : <Dark />}
@@ -364,12 +356,4 @@ const StAlarmcontentP = styled.p`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-`;
-
-const StToggle = styled.button`
-  background: transparent;
-  outline: 0;
-  border: 0;
-  cursor: pointer;
-  font-size: 0;
 `;

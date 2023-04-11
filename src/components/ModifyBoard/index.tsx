@@ -20,6 +20,7 @@ import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import "@toast-ui/editor/dist/i18n/ko-kr";
 
 const ModifyBoard = (post: PostDetail) => {
+  console.log(post);
   const [newPost, setNewPost] = useState<EditPost>({
     title: "",
     content: "",
@@ -85,13 +86,13 @@ const ModifyBoard = (post: PostDetail) => {
 
   useEffect(() => {
     setNewPost({
-      ...newPost,
       title: post.title,
       content: post.content,
       keywords: post.keywords,
       category: post.category,
+      modifyPermission: post.modifyPermission,
+      readablePosition: post.readablePosition,
     });
-    setKeyword(post.category);
     // eslint-disable-next-line
   }, [post]);
 
@@ -127,6 +128,7 @@ const ModifyBoard = (post: PostDetail) => {
             labelId="modifyPermission"
             label="modifyPermission"
             name="modifyPermission"
+            defaultValue={post.modifyPermission}
             value={newPost.modifyPermission}
             onChange={handleChangeSelectBox}
             autoWidth
@@ -142,6 +144,7 @@ const ModifyBoard = (post: PostDetail) => {
             labelId="readablePosition"
             label="readablePosition"
             name="readablePosition"
+            defaultValue={post.readablePosition}
             value={newPost.readablePosition}
             onChange={handleChangeSelectBox}
             autoWidth

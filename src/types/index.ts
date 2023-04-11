@@ -38,6 +38,9 @@ export interface PostDetail {
   keywords: string[];
   postViews: number;
   editingStatus: string;
+  forlders: number[];
+  modifyPermission: string;
+  readablePosition: string;
 }
 
 export interface EditPostReq {
@@ -85,6 +88,7 @@ export interface SignItem {
   position: string;
   phoneNum: string;
 }
+
 export interface PositionItem {
   id: number;
   position: string;
@@ -104,6 +108,7 @@ export interface Categoriesput {
   categoryName: string;
   id: number;
 }
+
 export interface CategoryDel {
   id: number;
 }
@@ -157,6 +162,7 @@ export interface GetBookmarkArgs {
 }
 
 export interface SortItem extends NavItem {}
+
 export interface Logs {
   memberName: string;
   content: string;

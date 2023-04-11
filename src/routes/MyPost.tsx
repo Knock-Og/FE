@@ -14,6 +14,8 @@ import { Category as ICategory, NavItem, Post } from "types";
 const MyPost = () => {
   const [navItems, setNavItems] = useState<NavItem[]>();
   const [page, setPage] = useState<number>(1);
+  const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
+
   const [searchedPosts, setSearchedPosts] = useRecoilState(searchedPostsState);
   const setSearchedCategory = useSetRecoilState(searchedCategoryState);
   const [endPage, setEndPage] = useRecoilState(endPageState);
@@ -71,7 +73,12 @@ const MyPost = () => {
   }, [categoryData, navigate, mutate, setSearchedCategory]);
 
   return (
-    <Layout navItems={navItems} page={{ page, endPage, setPage }}>
+    <Layout
+      navItems={navItems}
+      isNavOpen={isNavOpen}
+      setIsNavOpen={setIsNavOpen}
+      page={{ page, endPage, setPage }}
+    >
       {searchedPosts && searchedPosts?.length > 0 ? (
         searchedPosts.map((post) => <PostCard key={post.id} {...post} />)
       ) : (
