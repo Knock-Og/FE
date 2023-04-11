@@ -6,7 +6,6 @@ import {
   AdminCategory,
   Categoriesput,
   CategoryDel,
-  EditBookmark,
   PostToBookmark,
   FindIdItem,
   findIdCodeItem,
@@ -14,6 +13,13 @@ import {
   findPwCodeItem,
   AddPost,
   EditPostReq,
+  GetCategoryArgs,
+  GetBookmarkArgs,
+  EditBookmarkArgs,
+  GetSearchedArgs,
+  EditCommentReq,
+  MypageGetPw,
+  MemberItem,
 } from "types";
 
 export const LOGIN = {
@@ -27,12 +33,14 @@ export const ADMIN = {
     reqWithAccessToken.get(`/check/email/${email}`),
   checkName: (memberName: string) =>
     reqWithAccessToken.get(`/check/name/${memberName}`),
+  checkPhone: (phoneNum: string) =>
+    reqWithAccessToken.get(`/check/phone/${phoneNum}`),
+
   member: () => reqWithAccessToken.get(`/members`),
+  memberDel: (MemberItem: MemberItem) =>
+    reqWithAccessToken.delete(`/member/${MemberItem.id}`, { data: MemberItem }),
   position: (positionItem: PositionItem) =>
-    reqWithAccessToken.put(
-      `/member/${positionItem.positionID}/position`,
-      positionItem
-    ),
+    reqWithAccessToken.put(`/member/${positionItem.id}/position`, positionItem),
 };
 
 export const CATEGORY = {
@@ -47,34 +55,43 @@ export const CATEGORY = {
 };
 
 export const FIND = {
-  findId: (findId: FindIdItem) => baseAxios.post("/sms", findId),
+  findId: (findId: FindIdItem) => baseAxios.post("/auth/sms", findId),
   findIdCode: (idcode: findIdCodeItem) =>
     baseAxios.post("/member/email", idcode),
-  findPw: (findPw: FindPwItem) => baseAxios.post("/mail/auth", findPw),
-  findPwCode: (pwcode: findPwCodeItem) =>
-    baseAxios.post(`/member/pwd/${pwcode.authenticationCode}`, pwcode),
+  findPw: (findPw: FindPwItem) => baseAxios.post("/auth/email", findPw),
+  findPwCode: (pwcode: findPwCodeItem) => baseAxios.post(`/member/pwd`, pwcode),
 };
 
 export const SEARCH = {
-  getSearchedData: (keyword: string) =>
-    reqWithAccessToken.get(`/search?k=${keyword}`),
-  getCategoryData: (category: string) =>
-    reqWithAccessToken.get(`/category?c=${category}`),
+  getSearchedData: ({ keyword, page, sort }: GetSearchedArgs) =>
+    reqWithAccessToken.get(
+      `/search?page=${page}&keyword=${keyword}&sort=${sort}`
+    ),
+  getCategoryData: ({ category, page, sort }: GetCategoryArgs) =>
+    reqWithAccessToken.get(
+      `/category?page=${page}&category=${category}&sort=${sort}`
+    ),
 };
 
 export const MYPAGE = {
-  getMyPosts: () =>
-    reqWithAccessToken.get("/mypage/posts").then((res) => res.data),
+  getMyPosts: (page: number) =>
+    reqWithAccessToken.get(`/mypage/posts?p=${page}`),
+};
+
+export const MYPAGEPW = {
+  getPwData: (password: MypageGetPw) =>
+    reqWithAccessToken.post("/check/password", password),
+
+  getUserData: () => reqWithAccessToken.get("/mypage"),
 };
 
 export const BOOKMARK = {
-  getBookmarks: () =>
-    reqWithAccessToken.get("/bookmark/folders").then((res) => res.data),
-  getBookmark: (folderId: number) =>
-    reqWithAccessToken.get(`/bookmark/folder/${folderId}/bookmarks`),
+  getBookmarks: () => reqWithAccessToken.get("/bookmark/folders"),
+  getBookmark: ({ folderId, page }: GetBookmarkArgs) =>
+    reqWithAccessToken.get(`/bookmark/folder/${folderId}/bookmarks?p=${page}`),
   addBookmark: (bookMarkFolderName: string) =>
     reqWithAccessToken.post("/bookmark/folder", { bookMarkFolderName }),
-  editBookmark: ({ folderId, bookMarkFolderName }: EditBookmark) =>
+  editBookmark: ({ folderId, bookMarkFolderName }: EditBookmarkArgs) =>
     reqWithAccessToken.put(`/bookmark/folder/${folderId}`, {
       bookMarkFolderName,
     }),
@@ -89,10 +106,20 @@ export const BOOKMARK = {
 export const POST = {
   getPost: (postId: number) =>
     reqWithAccessToken.get(`/post/${postId}`).then((res) => res.data),
-  switchEditingStatus: (postId: number) =>
-    reqWithAccessToken.put(`post/${postId}/editingStatus`),
   addPost: (post: AddPost) => reqWithAccessToken.post("/post", post),
   editPost: ({ post, postId }: EditPostReq) =>
     reqWithAccessToken.put(`/post/${postId}`, post),
   delPost: (postId: number) => reqWithAccessToken.delete(`/post/${postId}`),
+};
+
+export const LOG = {
+  getLog: (postId: number) =>
+    reqWithAccessToken.get(`/post/${postId}/logs`).then((res) => res.data),
+};
+
+export const COMMENT = {
+  getComments: (postId: number) =>
+    reqWithAccessToken.get(`/post/${postId}/comments`).then((res) => res.data),
+  addComment: ({ postId, comment }: EditCommentReq) =>
+    reqWithAccessToken.post(`/post/${postId}/comment`, comment),
 };

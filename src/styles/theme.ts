@@ -14,7 +14,7 @@ export const GlobalStyle = createGlobalStyle`
     font-family: 'SUIT';
     font-weight: 400;
   }
-  p,button,label,h1,h2,h3,h4,h5,h6{
+  p,button,label,h1,h2,h3,h4,h5,h6,em,span{
     font-family: 'SUIT';
     font-weight: 400;
     font-size:16px;
@@ -24,7 +24,9 @@ export const GlobalStyle = createGlobalStyle`
     background-color: ${({ theme }) => theme.bgColor};
     transition: all 0.5s;
   }
-
+  button{
+    padding:0;
+  }
   
   @font-face {
     font-family: 'SUIT-Bold';
@@ -61,6 +63,14 @@ export const defaultTheme: DefaultTheme = {
   darkGrey: "#121212",
   lightGrey: "#C5C5C5",
   veryLightGrey: "#f9f9f9",
+  greyLight: "#aeaeae",
+  lightBlue: "#F5FAFF",
+  redColor: "#FF0F00",
+  borderColor: "#AEAEAE",
+  scrollColor: "#606060",
+  textwhite : "#fff",
+  textRed:"#ff0000",
+  placeholder:"#bdbdbd"
 };
 
 export const darkTheme: DefaultTheme = {

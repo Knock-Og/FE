@@ -1,5 +1,4 @@
-// import { useEffect, useState } from "react";
-import { useMutation } from "react-query";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   AiOutlineClockCircle,
@@ -9,40 +8,50 @@ import {
 import { CircularProgress } from "@mui/material";
 import styled from "styled-components";
 import { Post } from "types";
-import { POST } from "api";
-// import { EventSourcePolyfill } from "event-source-polyfill";
-// import { getCookie } from "api/cookies";
+import { EventSourcePolyfill, NativeEventSource } from "event-source-polyfill";
+import { getCookie } from "api/cookies";
 
 const PostCard = (post: Post) => {
-  // const EventSource = EventSourcePolyfill;
-  // const [eventSource, setEventSource] = useState<EventSource>();
+  const EventSource = EventSourcePolyfill || NativeEventSource;
+  const [eventSource, setEventSource] = useState<EventSource | null>(null);
   const navigate = useNavigate();
-  const { mutate: switchEditingStatus } = useMutation(POST.switchEditingStatus);
 
   const handleClickPostCard = () => {
-    switchEditingStatus(post.id);
+    // let temp;
+    // const fetchSse = async () => {
+    //   try {
+    //     temp = await new EventSource(
+    //       `${process.env.REACT_APP_SERVER_URL}connect/${post.id}`,
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${getCookie("access_token")}`,
+    //         },
+    //         withCredentials: true,
+    //       }
+    //     );
+
+    //     temp.onopen = () => console.log("is connected !");
+    //     temp.onmessage = (event) => console.log(JSON.parse(event.data));
+    //   } catch (err) {}
+    // };
+
+    // fetchSse();
     navigate(`/post/${post.id}`);
-    // setEventSource(
-    //   new EventSource(`${process.env.React_APP_SERVER_URL}connect/${post.id}`, {
-    //     headers: {
-    //       Authorization: `Bearer ${getCookie("access_token")}`,
-    //     },
-    //     withCredentials: true,
-    //   })
-    // );
   };
 
   // useEffect(() => {
   //   if (eventSource) {
+  //     console.log("render!");
   //     eventSource.onopen = () => console.log("is connected !");
 
   //     eventSource.onmessage = (event) => {
-  //       alert(JSON.parse(event.data));
+  //       console.log(JSON.parse(event.data));
   //     };
   //   }
 
   //   return () => {
   //     if (eventSource) {
+  //       console.log("render bye bye!");
   //       eventSource.close();
   //     }
   //   };
@@ -60,13 +69,13 @@ const PostCard = (post: Post) => {
       </StTitle>
       <StContent>
         {post.content.length > 100
-          ? post.content.slice(0, 99) + "..."
-          : post.content}
+          ? post.content.replace(/<[^>]*>?/g, "").slice(0, 99) + "..."
+          : post.content.replace(/<[^>]*>?/g, "")}
       </StContent>
       <StPostCardFooter>
         <StFooterItem>
           <AiOutlineClockCircle />
-          {post.createdAt.slice(0, 10)}
+          {post.modifiedAt.slice(0, 10)}
         </StFooterItem>
         <StFooterItem>
           <AiOutlineComment />
