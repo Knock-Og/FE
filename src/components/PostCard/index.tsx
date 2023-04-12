@@ -57,14 +57,23 @@ const PostCard = (post: Post) => {
 
   return (
     <StPostCardBox onClick={handleClickPostCard}>
-      <StTitle>
-        {post.title.length > 100 ? post.title.slice(0, 99) + "..." : post.title}
-      </StTitle>
-      <StContent>
-        {post.content.length > 100
-          ? post.content.replace(/<[^>]*>?/g, "").slice(0, 99) + "..."
-          : post.content.replace(/<[^>]*>?/g, "")}
-      </StContent>
+      <StTitle
+        dangerouslySetInnerHTML={{
+          __html:
+            post.title.length > 100
+              ? post.title.slice(0, 99) + "..."
+              : post.title,
+        }}
+      />
+
+      <StContent
+        dangerouslySetInnerHTML={{
+          __html:
+            post.content.length > 100
+              ? post.content.replace(/<[^>]*>?/g, "").slice(0, 99) + "..."
+              : post.content.replace(/<[^>]*>?/g, ""),
+        }}
+      />
       <StEditingWrapper>
         {post.editingStatus === "true" && (
           <>
@@ -73,10 +82,14 @@ const PostCard = (post: Post) => {
           </>
         )}
       </StEditingWrapper>
+
       <StPostCardFooter>
         <StFooterleft>
           {post.keywords.map((keyword) => (
-            <StKeyWord key={keyword}>#{keyword}</StKeyWord>
+            <StKeyWord
+              key={keyword}
+              dangerouslySetInnerHTML={{ __html: `#${keyword}` }}
+            />
           ))}
         </StFooterleft>
         <StFooterRight>
@@ -196,7 +209,7 @@ const StEditingWrapper = styled.div`
 `;
 
 const StEditingCircle = styled.div`
-  transform: translateY(-1.5px);
+  transform: translateY(-2.5px);
   width: 15px;
   height: 15px;
   border-radius: 50%;
