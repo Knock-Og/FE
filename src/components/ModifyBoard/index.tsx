@@ -12,7 +12,8 @@ import {
 } from "@mui/material";
 import styled from "styled-components";
 import { CATEGORY, POST } from "api";
-import { Category, EditPost, PostDetail } from "types";
+import { PostDetailTab } from "components";
+import { ActiveState, Category, EditPost, PostDetail } from "types";
 import { uploadImg } from "utils";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "tui-color-picker/dist/tui-color-picker.css";
@@ -20,7 +21,6 @@ import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import "@toast-ui/editor/dist/i18n/ko-kr";
 
 const ModifyBoard = (post: PostDetail) => {
-  console.log(post);
   const [newPost, setNewPost] = useState<EditPost>({
     title: "",
     content: "",
@@ -30,6 +30,16 @@ const ModifyBoard = (post: PostDetail) => {
     readablePosition: "",
   });
   const [keyword, setKeyword] = useState("");
+  const [activeTab, setActiveTab] = useState<ActiveState>({
+    comment: false,
+    log: false,
+    bookmark: false,
+  });
+
+  const handleClickTab = (name: string) => {
+    const initTabState = { comment: false, log: false, bookmark: false };
+    setActiveTab({ ...initTabState, [name]: true });
+  };
 
   const navigate = useNavigate();
   const editorRef = useRef<Editor>(null);
@@ -103,96 +113,105 @@ const ModifyBoard = (post: PostDetail) => {
   }, [post]);
 
   return (
-    <StContainer>
-      <StTitleInput
-        defaultValue={newPost.title}
-        placeholder="제목"
-        onChange={handleChangeTitle}
-      />
-      <StMidSelet style={{ display: "flex", gap: "10px" }}>
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel id="category">카테고리</InputLabel>
-          <Select
-            labelId="category"
-            label="category"
-            name="category"
-            value={newPost.category}
-            onChange={handleChangeSelectBox}
-            autoWidth
-          >
-            {categoryData?.map((category) => (
-              <MenuItem key={category.id} value={category.categoryName}>
-                {category.categoryName}
-              </MenuItem>
+    <>
+      <StContainer>
+        <StTitleInput
+          defaultValue={newPost.title}
+          placeholder="제목"
+          onChange={handleChangeTitle}
+        />
+        <StMidSelet style={{ display: "flex", gap: "10px" }}>
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel id="category">카테고리</InputLabel>
+            <Select
+              labelId="category"
+              label="category"
+              name="category"
+              value={newPost.category}
+              onChange={handleChangeSelectBox}
+              autoWidth
+            >
+              {categoryData?.map((category) => (
+                <MenuItem key={category.id} value={category.categoryName}>
+                  {category.categoryName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel id="modifyPermission">수정권한</InputLabel>
+            <Select
+              labelId="modifyPermission"
+              label="modifyPermission"
+              name="modifyPermission"
+              defaultValue={post.modifyPermission}
+              value={newPost.modifyPermission}
+              onChange={handleChangeSelectBox}
+              autoWidth
+            >
+              <MenuItem value="Owner">Owner</MenuItem>
+              <MenuItem value="Manager">Manager</MenuItem>
+              <MenuItem value="Member">Member</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel id="readablePosition">읽기권한</InputLabel>
+            <Select
+              labelId="readablePosition"
+              label="readablePosition"
+              name="readablePosition"
+              defaultValue={post.readablePosition}
+              value={newPost.readablePosition}
+              onChange={handleChangeSelectBox}
+              autoWidth
+            >
+              <MenuItem value="Owner">Owner</MenuItem>
+              <MenuItem value="Manager">Manager</MenuItem>
+              <MenuItem value="Member">Member</MenuItem>
+            </Select>
+          </FormControl>
+        </StMidSelet>
+        <Editor
+          initialValue={post.content}
+          previewStyle="vertical"
+          height="100%"
+          initialEditType="wysiwyg"
+          hideModeSwitch={true}
+          useCommandShortcut={false}
+          plugins={[colorSyntax]}
+          language="ko-KR"
+          ref={editorRef}
+          onChange={handleChangeEditor}
+          hooks={{
+            addImageBlobHook: uploadImg,
+          }}
+        />
+        <StFooter>
+          <StkeyWordWrap>
+            {newPost.keywords.map((keyword) => (
+              <StkeyWordP key={keyword}>#{keyword}</StkeyWordP>
             ))}
-          </Select>
-        </FormControl>
+            <StkeyWordInput
+              placeholder="태그를 입력하세요 (엔터로 구분)"
+              value={keyword}
+              onChange={handleChangeKeywordInput}
+              onKeyUp={handleKeyUp}
+            />
+          </StkeyWordWrap>
 
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel id="modifyPermission">수정권한</InputLabel>
-          <Select
-            labelId="modifyPermission"
-            label="modifyPermission"
-            name="modifyPermission"
-            defaultValue={post.modifyPermission}
-            value={newPost.modifyPermission}
-            onChange={handleChangeSelectBox}
-            autoWidth
-          >
-            <MenuItem value="Owner">Owner</MenuItem>
-            <MenuItem value="Manager">Manager</MenuItem>
-            <MenuItem value="Member">Member</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel id="readablePosition">읽기권한</InputLabel>
-          <Select
-            labelId="readablePosition"
-            label="readablePosition"
-            name="readablePosition"
-            defaultValue={post.readablePosition}
-            value={newPost.readablePosition}
-            onChange={handleChangeSelectBox}
-            autoWidth
-          >
-            <MenuItem value="Owner">Owner</MenuItem>
-            <MenuItem value="Manager">Manager</MenuItem>
-            <MenuItem value="Member">Member</MenuItem>
-          </Select>
-        </FormControl>
-      </StMidSelet>
-      <Editor
-        initialValue={post.content}
-        previewStyle="vertical"
-        height="100%"
-        initialEditType="wysiwyg"
-        hideModeSwitch={true}
-        useCommandShortcut={false}
-        plugins={[colorSyntax]}
-        language="ko-KR"
-        ref={editorRef}
-        onChange={handleChangeEditor}
-        hooks={{
-          addImageBlobHook: uploadImg,
-        }}
+          <StDelBtn onClick={handdleClickDelBtn}>삭제하기</StDelBtn>
+          <StAddBtn onClick={handleClickEditBtn}>수정완료</StAddBtn>
+        </StFooter>
+      </StContainer>
+
+      <PostDetailTab
+        activeTab={activeTab}
+        handleClickTab={handleClickTab}
+        postId={post.id}
+        folders={post.folders}
       />
-      <StFooter>
-        <StkeyWordWrap>
-          {newPost.keywords.map((keyword) => (
-            <StkeyWordP key={keyword}>#{keyword}</StkeyWordP>
-          ))}
-          <StkeyWordInput
-            placeholder="태그를 입력하세요 (엔터로 구분)"
-            value={keyword}
-            onChange={handleChangeKeywordInput}
-            onKeyUp={handleKeyUp}
-          />
-        </StkeyWordWrap>
-
-        <StDelBtn onClick={handdleClickDelBtn}>삭제하기</StDelBtn>
-        <StAddBtn onClick={handleClickEditBtn}>수정완료</StAddBtn>
-      </StFooter>
-    </StContainer>
+    </>
   );
 };
 

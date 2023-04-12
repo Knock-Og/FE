@@ -4,30 +4,18 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { IconButton, Input, Snackbar } from "@mui/material";
 import { CreateNewFolder } from "@mui/icons-material";
-import { Bookmark } from "types";
 import { Close } from "assets";
+import { Bookmark, BookmarkNavItem } from "types";
 
 interface Props {
   open: boolean;
-  setOpen: (isOpen: boolean) => void;
+  setOpen: (openTab: string) => void;
   postId: number;
-  selectedFolders: number[];
-  setSelectedFolders: (folders: number[]) => void;
+  folders: number[];
 }
 
-interface BookmarkNavItem {
-  id: number;
-  itemValue: string;
-  handler: (folderId: number, folderName: string) => void;
-}
-
-const BookmarksBoard = ({
-  open,
-  setOpen,
-  postId,
-  selectedFolders,
-  setSelectedFolders,
-}: Props) => {
+const BookmarksBoard = ({ open, setOpen, postId, folders }: Props) => {
+  const [selectedFolders, setSelectedFolders] = useState<number[]>(folders);
   const [navItems, setNavItems] = useState<BookmarkNavItem[]>();
   const [addBookmarkInput, setAddBookmarkInput] = useState("");
   const [snackBarOpen, setSnackBarOpen] = useState<boolean>(false);
@@ -57,13 +45,13 @@ const BookmarksBoard = ({
 
   const handler = (folderId: number, folderName: string) => {
     if (selectedFolders.includes(folderId)) {
-      setSnackBarOpen(true);
       setSnackBarContent(`[${folderName}] 에서 삭제되었습니다.`);
+      setSnackBarOpen(true);
       setSelectedFolders(selectedFolders.filter((x) => x !== folderId));
       deletePostToBookmark({ folderId, postId });
     } else {
-      setSnackBarOpen(true);
       setSnackBarContent(`[${folderName}] 에 추가되었습니다.`);
+      setSnackBarOpen(true);
       setSelectedFolders([...selectedFolders, folderId]);
       addPostToBookmark({ folderId, postId });
     }
@@ -105,14 +93,14 @@ const BookmarksBoard = ({
         >
           <StSettingTop>
             <StSettingTitle>즐겨찾기 추가</StSettingTitle>
-            {setOpen && <StIoClose onClick={() => setOpen(false)} />}
+            {setOpen && <StIoClose onClick={() => setOpen("")} />}
           </StSettingTop>
 
           <StSettingbottom>
             {navItems?.map((item) => (
               <StSettingButton
                 key={item.itemValue}
-                onClick={() => item.handler(item.id, item.itemValue)}
+                onClick={() => handler(item.id, item.itemValue)}
                 active={selectedFolders.includes(item.id)}
               >
                 {item.itemValue}
@@ -135,7 +123,7 @@ const BookmarksBoard = ({
 
         {setOpen && (
           <StSettingBg
-            onClick={() => setOpen(false)}
+            onClick={() => setOpen("")}
             className={open ? "on" : "off"}
           />
         )}
