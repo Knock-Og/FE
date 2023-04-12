@@ -39,7 +39,7 @@ const StCreateBtn = styled.button`
   height: 60px;
   background: ${(props) => props.theme.keyBlue};
   border-radius: 60px;
-  color: #fff;
+  color: ${(props) => props.theme.textwhite};
   border: none;
   cursor: pointer;
 `;

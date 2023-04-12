@@ -30,13 +30,7 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
     onSuccess: (response) => {
       queryClient.invalidateQueries("member");
       return response.data;
-    },
-    onError: async (response: {
-      response: { data: { message: string } };
-    }): Promise<string> => {
-      queryClient.invalidateQueries("member");
-      return response.response.data.message;
-    },
+    }
   });
 
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -61,13 +55,7 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
         queryClient.invalidateQueries("phonenum");
         alert("사용가능한 번호 입니다.");
       }
-    },
-    onError: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("phonenum");
-        alert("중복된 번호 입니다!");
-      }
-    },
+    }
   });
   //휴대폰번호을 서버로 전송..
   const checkPhone = (e: React.MouseEvent<HTMLButtonElement>) => {

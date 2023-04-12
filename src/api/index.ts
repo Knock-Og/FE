@@ -21,6 +21,8 @@ import {
   MypageGetPw,
   MypagePutPw,
   MemberItem,
+  DelComment,
+  PutComment,
 } from "types";
 
 export const LOGIN = {
@@ -126,4 +128,10 @@ export const COMMENT = {
     reqWithAccessToken.get(`/post/${postId}/comments`).then((res) => res.data),
   addComment: ({ postId, comment }: EditCommentReq) =>
     reqWithAccessToken.post(`/post/${postId}/comment`, comment),
+
+  delComment: ({ postId, commentId }: DelComment) =>
+    reqWithAccessToken.delete(`/post/${postId}/comment/${commentId}`),
+
+  putComment: ({ postId, commentId, comment }: PutComment) =>
+    reqWithAccessToken.put(`/post/${postId}/comment/${commentId}`, {comment}),
 };

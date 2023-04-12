@@ -55,29 +55,37 @@ const PostCard = (post: Post) => {
 
   return (
     <StPostCardBox onClick={handleClickPostCard}>
-      <StTitle>
-        {post.title.length > 100 ? post.title.slice(0, 99) + "..." : post.title}
-      </StTitle>
-      <StContent>
-        {post.content.length > 100
-          ? post.content.replace(/<[^>]*>?/g, "").slice(0, 99) + "..."
-          : post.content.replace(/<[^>]*>?/g, "")}
-      </StContent>
+      <StTitle
+        dangerouslySetInnerHTML={{
+          __html:
+            post.title.length > 100
+              ? post.title.slice(0, 99) + "..."
+              : post.title,
+        }}/>
+
+      <StContent
+        dangerouslySetInnerHTML={{
+          __html:
+            post.content.length > 100
+              ? post.content.replace(/<[^>]*>?/g, "").slice(0, 99) + "..."
+              : post.content.replace(/<[^>]*>?/g, ""),
+        }}
+      />
+
       <StPostCardFooter>
         <StFooterleft>
-          {post.keywords.map((keyword) => (
-            <StKeyWord key={keyword}>#{keyword}</StKeyWord>
-          ))}
+          {post.keywords.map((keyword) => ( <StKeyWord key={keyword} dangerouslySetInnerHTML={{ __html:   `#${keyword}` }}/>))}
         </StFooterleft>
         <StFooterRight>
-          <StFooterItem>{
-          new Date(post.modifiedAt)
+          <StFooterItem>
+            {new Date(post.modifiedAt)
               .toLocaleDateString("ko-KR", {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",
               })
-              .replace(/\//g, ".")}</StFooterItem>
+              .replace(/\//g, ".")}
+          </StFooterItem>
           <StFooterItem>
             댓글 <StFooterItemSpan>{post.commentCount}</StFooterItemSpan>개
           </StFooterItem>

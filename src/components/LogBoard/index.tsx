@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { useQuery } from "react-query";
+import { Viewer } from "@toast-ui/react-editor";
 import styled from "styled-components";
 import { LOG } from "api";
 import { Close } from "assets";
 import { Log } from "types";
-
+import "@toast-ui/editor/dist/toastui-editor.css";
+import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 interface Props {
   open: boolean;
   setOpen: (openTab: string) => void;
@@ -18,7 +20,9 @@ const LogBoard = ({ open, setOpen, postId }: Props) => {
     if (open) {
       document.body.style.cssText = `
     top: -${window.scrollY}px;
-    width: 100%;`;
+    width: 100%;
+     position: fixed; 
+     `;
       return () => {
         const scrollY = document.body.style.top;
         document.body.style.cssText = "";
@@ -26,7 +30,7 @@ const LogBoard = ({ open, setOpen, postId }: Props) => {
       };
     }
   }, [open]);
-
+  console.log(logs);
   return (
     <>
       <StSettingWrap className={open ? "on" : "off"}>
@@ -40,11 +44,34 @@ const LogBoard = ({ open, setOpen, postId }: Props) => {
           </StSettingTop>
 
           <StSettingbottom>
-            <StCardContainer>
-              {logs?.map((log, idx) => (
-                <StCard key={idx}>{JSON.stringify(log)}</StCard>
-              ))}
-            </StCardContainer>
+            {logs?.map((log, idx) => (
+              <StCard key={idx}>
+                <StName>
+                  <StNameSpan>{log.memberName}</StNameSpan>
+                  {log.content.slice(-19, -1)}.
+                </StName>
+
+                <StOldText
+                  dangerouslySetInnerHTML={{
+                    __html: `Old : ${log.oldContent}`,
+                  }}
+                />
+                <StNewText
+                  dangerouslySetInnerHTML={{
+                    __html: `New : ${log.newContent}`,
+                  }}
+                />
+                <StDate>
+                  {new Date(log.createDate)
+                    .toLocaleDateString("ko-KR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })
+                    .replace(/\//g, ".")}
+                </StDate>
+              </StCard>
+            ))}
           </StSettingbottom>
         </StSettingBox>
 
@@ -61,26 +88,6 @@ const LogBoard = ({ open, setOpen, postId }: Props) => {
 
 export default LogBoard;
 
-const StCardContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 500px;
-  overflow: auto;
-  gap: 10px;
-`;
-
-const StCard = styled.div`
-  border: 1px solid #e5e5e5;
-  border-radius: 10px;
-  box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
-  background-color: ${(props) => props.theme.veryLightGrey};
-  border: 1px solid ${(props) => props.theme.grey};
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
 
 const StSettingWrap = styled.div`
   position: fixed;
@@ -156,10 +163,15 @@ const StIoClose = styled(Close)`
     transform: rotatez(180deg);
   }
 `;
+
+
 const StSettingbottom = styled.div`
-  padding-bottom: 50px;
-  overflow: auto;
-  height: 55%;
+  height:calc(100% - 100px);
+  overflow-y: scroll;
+  padding:20px 0;
+  /* .toastui-editor-contents {
+    height: 20px ;
+  } */
   &::-webkit-scrollbar {
     width: 10px;
   }
@@ -169,5 +181,49 @@ const StSettingbottom = styled.div`
   }
   &::-webkit-scrollbar-track {
     background-color: ${(props) => props.theme.bgColor};
+  }
+`;
+const StCard = styled.div`
+  border-radius: 5px;
+  background: ${(props) => props.theme.bgGrey};
+  padding: 30px;
+  width: 332px;
+  margin:0 auto 20px;
+  &:last-child{
+    margin-bottom:0;
+  }
+`;
+
+const StName = styled.p`
+  display: block;
+  font-weight: 500;
+  line-height: 1.6;
+`;
+const StNameSpan = styled.span`
+  color: ${(props) => props.theme.keyBlue};
+  font-weight: 600;
+`;
+const StDate = styled.p`
+  font-size: 0.875rem;
+  
+  margin-top:20px;
+`;
+
+const StOldText = styled.p`
+  display: flex;
+  margin-top: 20px;
+  color: ${(props) => props.theme.redLightColor};
+  font-weight: 500;
+  > p > span {
+    color: ${(props) => props.theme.redLightColor} !important;
+  }
+`;
+const StNewText = styled.p`
+  display: flex;
+  margin-top: 15px;
+  color: ${(props) => props.theme.greenColor};
+  font-weight: 500;
+  > p > span {
+    color: ${(props) => props.theme.greenColor} !important;
   }
 `;

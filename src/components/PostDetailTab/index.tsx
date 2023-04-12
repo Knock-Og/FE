@@ -55,12 +55,8 @@ export default PostDetailTab;
 const StBox = styled.div`
   position: fixed;
   right: 80px;
-  top: 0;
-  height: 100vh;
   justify-content: center;
   display: flex;
-  bottom: 0px;
-  margin: auto 0;
   flex-direction: column;
   gap: 40px;
   z-index: 99;
