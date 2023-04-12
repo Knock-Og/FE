@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { IconButton, Input } from "@mui/material";
 import { CreateNewFolder } from "@mui/icons-material";
-import { NavItem } from "types";
+import NavBg from "assets/navBg.png";
 import { Close, NavOpenArrow } from "assets";
-import NoCategory from "components/NoCategory";
+import { NoCategory } from "components";
+import { NavItem } from "types";
+
 interface Props {
   open?: boolean;
   setOpen?: (isOpen: boolean) => void;
@@ -32,19 +34,7 @@ const Setting = ({
     setAddBookmarkInput("");
     addBookmarkHandler && addBookmarkHandler(addBookmarkInput);
   };
-  useEffect(() => {
-    if (open) {
-      document.body.style.cssText = `
-     
-    top: -${window.scrollY}px;
-    width: 100%;`;
-      return () => {
-        const scrollY = document.body.style.top;
-        document.body.style.cssText = "";
-        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
-      };
-    }
-  }, [open]);
+
   return (
     <>
       <StSettingWrap className={open ? "on" : "off"}>
@@ -60,24 +50,27 @@ const Setting = ({
           </StSettingTop>
 
           <StSettingbottom>
-            {navItems ? navItems.map((item) => (
-              <StSettingButton
-                key={item.itemValue}
-                onClick={() => {
-                  item.handler();
-                  setOpen && setOpen(false);
-                }}
-                active={
-                  params.categoryName === item.itemValue ||
-                  params.folderName === item.itemValue
-                }
-              >
-                {item.itemValue}
-              </StSettingButton>
-            )):<NoCategory/>}
-            
+            {navItems ? (
+              navItems.map((item) => (
+                <StSettingButton
+                  key={item.itemValue}
+                  onClick={() => {
+                    item.handler();
+                    setOpen && setOpen(false);
+                  }}
+                  active={
+                    params.categoryName === item.itemValue ||
+                    params.folderName === item.itemValue
+                  }
+                >
+                  {item.itemValue}
+                </StSettingButton>
+              ))
+            ) : (
+              <NoCategory />
+            )}
           </StSettingbottom>
-          {isBookMarkNav && (
+          {isBookMarkNav ? (
             <StBookmarkAddWrapper>
               <StBookmarkAddTitle>즐겨찾기 폴더 생성</StBookmarkAddTitle>
               <Input
@@ -89,6 +82,8 @@ const Setting = ({
                 }
               />
             </StBookmarkAddWrapper>
+          ) : (
+            <StNavBg style={{ backgroundImage: `url(${NavBg})` }} />
           )}
         </StSettingBox>
 
@@ -202,7 +197,7 @@ const StIoClose = styled(Close)`
 const StSettingbottom = styled.div`
   padding-bottom: 50px;
   overflow: auto;
-  height: calc(100% - 400px);
+  height: calc(100% - 550px);
   &::-webkit-scrollbar {
     width: 10px;
   }
@@ -265,6 +260,7 @@ const StBookmarkAddWrapper = styled.div`
   border-top: 1px solid ${({ theme }) => theme.lightGrey};
   height: 300px;
   padding: 0px 50px;
+  margin-top: 150px;
   justify-content: center;
   display: flex;
   flex-direction: column;
@@ -273,7 +269,7 @@ const StBookmarkAddWrapper = styled.div`
 const StBookmarkAddTitle = styled.h5`
   font-weight: 600;
   font-size: 1.75rem;
-  margin-bottom:50px;
+  margin-bottom: 50px;
 `;
 
 const StAddBookMarkBtn = styled(IconButton)`
@@ -281,4 +277,10 @@ const StAddBookMarkBtn = styled(IconButton)`
   top: 50%;
   right: 0%;
   transform: translateY(-50%);
+`;
+
+const StNavBg = styled.div`
+  width: 100%;
+  height: 100%;
+  background-size: contain;
 `;

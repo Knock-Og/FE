@@ -67,20 +67,6 @@ const BookmarksBoard = ({ open, setOpen, postId, folders }: Props) => {
   };
 
   useEffect(() => {
-    if (open) {
-      document.body.style.cssText = `
-    top: -${window.scrollY}px;
-    width: 100%;
-    porition:fixed`;
-      return () => {
-        const scrollY = document.body.style.top;
-        document.body.style.cssText = "";
-        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
-      };
-    }
-  }, [open]);
-
-  useEffect(() => {
     getBookmarks();
     //eslint-disable-next-line
   }, []);
