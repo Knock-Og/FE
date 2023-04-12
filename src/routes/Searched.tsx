@@ -143,7 +143,6 @@ export default Searched;
 const StBreadCrumbWrapper = styled.div`
   width: 100%;
   display: flex;
-  margin: 35px 0 30px;
   gap: 30px;
   align-items: center;
 `;

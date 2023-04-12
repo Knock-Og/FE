@@ -25,3 +25,8 @@ export const endPageState = atom<number>({
   key: "endPageState",
   default: 1,
 });
+
+export const errorState = atom<string | null>({
+  key: "errorState",
+  default: null,
+});

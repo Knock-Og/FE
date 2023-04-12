@@ -70,10 +70,14 @@ export const defaultTheme: DefaultTheme = {
   greyLight: "#aeaeae",
   lightBlue: "#F5FAFF",
   redColor: "#FF0F00",
+  greenColor: "#24CE57",
+  redLightColor: "#EC1A22",
 
   bgBlue: "#007fff",
   bgColor: "#fff",
   bgLightBlue: "#F5FAFF",
+  bgGrey: "#f9f9f9",
+
   scrollColor: "#606060",
 
   fillWhite: "#fff",

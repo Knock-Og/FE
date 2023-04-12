@@ -163,10 +163,13 @@ export interface GetBookmarkArgs {
 
 export interface SortItem extends NavItem {}
 
-export interface Logs {
+export interface Log {
   memberName: string;
   content: string;
   createDate: string;
+  oldContent: string;
+  newContent: string;
+  changedLineNum: number[];
 }
 
 export interface Comments {
@@ -221,4 +224,22 @@ export interface CurrenPw {
 
 export interface ActiveState {
   [key: string]: boolean;
+}
+
+export interface BookmarkNavItem {
+  id: number;
+  itemValue: string;
+  handler: (folderId: number, folderName: string) => void;
+}
+
+
+export interface DelComment {
+  postId: number;
+  commentId: number;
+}
+
+export interface PutComment {
+  postId: number;
+  commentId: number;
+  comment:string;
 }

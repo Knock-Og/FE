@@ -87,7 +87,9 @@ const Bookmark = () => {
   useEffect(() => {
     setEndPage(1);
     getBookmarks();
-    setSearchedPosts([]);
+    params.folderName
+      ? getBookmark({ folderId: location.state.folderId, page: 1 })
+      : setSearchedPosts([]);
     //eslint-disable-next-line
   }, []);
 
