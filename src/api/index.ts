@@ -110,8 +110,7 @@ export const BOOKMARK = {
 };
 
 export const POST = {
-  getPost: (postId: number) =>
-    reqWithAccessToken.get(`/post/${postId}`).then((res) => res.data),
+  getPost: (postId: number) => reqWithAccessToken.get(`/post/${postId}`),
   addPost: (post: AddPost) => reqWithAccessToken.post("/post", post),
   editPost: ({ post, postId }: EditPostReq) =>
     reqWithAccessToken.put(`/post/${postId}`, post),

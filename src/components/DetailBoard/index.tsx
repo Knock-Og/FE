@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Viewer } from "@toast-ui/react-editor";
 import styled from "styled-components";
 import { PostDetailTab } from "components";
@@ -13,15 +14,30 @@ const DetailBoard = (post: PostDetail) => {
     bookmark: false,
   });
 
+  const navigate = useNavigate();
+
   const handleClickTab = (name: string) => {
     const initTabState = { comment: false, log: false, bookmark: false };
     setActiveTab({ ...initTabState, [name]: true });
   };
 
+  const handleClickEditRouteBtn = () => {
+    if (post.editingStatus === "true") {
+      alert("현재 다른 사용자가 편집중입니다. 잠시만 기다려주세요.");
+      return;
+    }
+    navigate(`/post/${post.id}/modify`);
+  };
+
   return (
     <>
       <StContainer>
-        <StTitle>{post.title}</StTitle>
+        <StTitleWrapper>
+          <StTitle>{post.title}</StTitle>
+          <StEditRouteBtn onClick={handleClickEditRouteBtn}>
+            수정하기
+          </StEditRouteBtn>
+        </StTitleWrapper>
         <StOhterUl>
           <StOhterLi>
             <StOhterSpan>작성자명</StOhterSpan> {post.memberName}
@@ -80,7 +96,6 @@ const StContainer = styled.div`
 const StTitle = styled.h4`
   width: 100%;
   line-height: 35px;
-  border: 1px solid ${(props) => props.theme.pageBorder};
   padding: 30px 40px;
   font-size: 1.75rem;
   outline: none;
@@ -88,11 +103,11 @@ const StTitle = styled.h4`
   font-weight: 800;
 `;
 const StOhterUl = styled.ul`
-  border: 1px solid ${(props) => props.theme.pageBorder};
   border-top: 0;
   padding: 30px 40px;
   display: flex;
   gap: 30px;
+  border: 1px solid ${(props) => props.theme.pageBorder};
 `;
 const StOhterLi = styled.li`
   position: relative;
@@ -136,4 +151,23 @@ const StkeyWordWrap = styled.div`
 const StkeyWordP = styled.p`
   color: ${(props) => props.theme.keyBlue};
   word-break: break-word;
+`;
+
+const StTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid ${(props) => props.theme.pageBorder};
+`;
+
+const StEditRouteBtn = styled.button`
+  width: 120px;
+  height: 50px;
+  background: ${(props) => props.theme.keyBlue};
+  border-radius: 10px;
+  color: ${(props) => props.theme.textwhite};
+  border: none;
+  outline: 0;
+  cursor: pointer;
+  margin-right: 30px;
 `;

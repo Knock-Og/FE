@@ -1,8 +1,6 @@
 // import { useEffect, useState } from "react";
-import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
-import { POST } from "api";
 import { Post } from "types";
 // import { EventSourcePolyfill, NativeEventSource } from "event-source-polyfill";
 // import { getCookie } from "api/cookies";
@@ -11,7 +9,6 @@ const PostCard = (post: Post) => {
   // const EventSource = EventSourcePolyfill || NativeEventSource;
   // const [eventSource, setEventSource] = useState<EventSource | null>(null);
   const navigate = useNavigate();
-  const { mutate: updateEditingStatus } = useMutation(POST.updateEditingStatus);
 
   const handleClickPostCard = () => {
     // let temp;
@@ -34,7 +31,6 @@ const PostCard = (post: Post) => {
 
     // fetchSse();
     navigate(`/post/${post.id}`);
-    updateEditingStatus(post.id);
   };
 
   // useEffect(() => {
