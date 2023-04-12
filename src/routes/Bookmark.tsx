@@ -5,8 +5,9 @@ import { useRecoilState } from "recoil";
 import { IconButton, Input } from "@mui/material";
 import { Edit, FolderDelete, Cancel } from "@mui/icons-material";
 import styled from "styled-components";
+import { Folder } from "assets";
 import { BOOKMARK } from "api";
-import { PostCard, Layout, NoSearched } from "components";
+import { PostCard, Layout } from "components";
 import { endPageState, searchedPostsState } from "store/atoms";
 import { Bookmark as IBookmark, NavItem, Post } from "types";
 
@@ -36,7 +37,7 @@ const Bookmark = () => {
             navigate(`/bookmark/${v.bookMarkFolderName}`, {
               state: { folderId: v.id },
             });
-            getBookmark({ folderId: v.id, page });
+            getBookmark({ folderId: v.id, page: 1 });
           },
         };
       });
@@ -133,7 +134,14 @@ const Bookmark = () => {
       {searchedPosts && searchedPosts?.length > 0 ? (
         searchedPosts.map((post) => <PostCard key={post.id} {...post} />)
       ) : (
-        <NoSearched />
+        <StFolder>
+          {navItems?.map((folder) => (
+            <StFolderli key={folder.itemValue} onClick={folder.handler}>
+              <Folder />
+              <StFolderP>{folder.itemValue}</StFolderP>
+            </StFolderli>
+          ))}
+        </StFolder>
       )}
     </Layout>
   );
@@ -144,7 +152,6 @@ export default Bookmark;
 const StBreadCrumb = styled.p`
   font-size: 1.125rem;
   font-weight: 600;
-  margin-right: 30px;
 `;
 
 const StBreadCrumbInput = styled(Input)`
@@ -154,3 +161,29 @@ const StBreadCrumbInput = styled(Input)`
 const StEditBtn = styled(IconButton)``;
 
 const StDelBtn = styled(IconButton)``;
+
+const StFolder = styled.div`
+  width: 625px;
+  flex-wrap: wrap;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
+`;
+const StFolderli = styled.button`
+  width: 120px;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  font-size: 0;
+`;
+const StFolderP = styled.p`
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin-top: 12px;
+`;

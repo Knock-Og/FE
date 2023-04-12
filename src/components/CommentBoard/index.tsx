@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useMutation, useQuery,useQueryClient } from "react-query";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { MdMoreVert } from "react-icons/md";
 import styled from "styled-components";
 import { Close } from "assets";
@@ -16,8 +16,8 @@ const CommentBoard = ({ open, setOpen, postId }: Props) => {
   const [newComment, setNewComment] = useState<AddComment>({
     comment: "",
   });
-  const [isEdit,setIsEdit] = useState(false);
-  const [editCommentId,setEditCommentId] = useState(0);
+  const [isEdit, setIsEdit] = useState(false);
+  const [editCommentId, setEditCommentId] = useState(0);
   const [modalOpen, setModalopen] = useState<number | null>(null);
 
   const queryClient = useQueryClient();
@@ -27,63 +27,50 @@ const CommentBoard = ({ open, setOpen, postId }: Props) => {
   );
 
   const { mutate: addComment } = useMutation(COMMENT.addComment, {
-    onSuccess : () => queryClient.invalidateQueries("getComment")
+    onSuccess: () => queryClient.invalidateQueries("getComment"),
   });
-   const { mutate: putComment } = useMutation(COMMENT.putComment, {
-    onSuccess : () => {
+  const { mutate: putComment } = useMutation(COMMENT.putComment, {
+    onSuccess: () => {
       queryClient.invalidateQueries("getComment");
       setIsEdit(false);
-    }
+    },
   });
-   const { mutate: deleleComment } = useMutation(COMMENT.delComment, {
-    onSuccess : () => queryClient.invalidateQueries("getComment")
+  const { mutate: deleleComment } = useMutation(COMMENT.delComment, {
+    onSuccess: () => queryClient.invalidateQueries("getComment"),
   });
 
-   const handleChangeTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) =>{
+  const handleChangeTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewComment({ ...newComment, comment: e.target.value });
   };
 
   const handleClickSubmitBtn = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setNewComment({comment : ""});
+    setNewComment({ comment: "" });
     addComment({ postId, comment: newComment });
-    putComment({ postId, commentId:editCommentId, comment: newComment.comment });
+    putComment({
+      postId,
+      commentId: editCommentId,
+      comment: newComment.comment,
+    });
   };
 
-  const handleClickEditLi = (existComment:string,commentId:number) => {
+  const handleClickEditLi = (existComment: string, commentId: number) => {
     setModalopen(null);
     setEditCommentId(commentId);
     setIsEdit(true);
-    setNewComment({comment:existComment});
+    setNewComment({ comment: existComment });
   };
 
-   const modalBtn = (id: number) => setModalopen(id);
+  const modalBtn = (id: number) => setModalopen(id);
 
-   const closeModal = () => setModalopen(null);
+  const closeModal = () => setModalopen(null);
 
   //  const putBtn = (commentId: number) => {
   //    putComment({ postId, commentId, comment: newComment.comment });
   //  };
 
-   const delBtn = (commentId:number) => deleleComment({ postId, commentId });
+  const delBtn = (commentId: number) => deleleComment({ postId, commentId });
 
-  useEffect(() => {
-    if (open) {
-      document.body.style.cssText = `
-    top: -${window.scrollY}px;
-    width: 100%;
-    position: fixed; 
-    
-    `;
-    
-      return () => {
-        const scrollY = document.body.style.top;
-        document.body.style.cssText = "";
-        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
-      };
-    }
-  }, [open]);
-  
   return (
     <StSettingWrap className={open ? "on" : "off"}>
       <StSettingBox
@@ -96,7 +83,6 @@ const CommentBoard = ({ open, setOpen, postId }: Props) => {
         </StSettingTop>
         <StCardContainer>
           {comments?.map((comment) => {
-           
             return (
               <StCard key={comment.id}>
                 <StTop>
@@ -109,7 +95,7 @@ const CommentBoard = ({ open, setOpen, postId }: Props) => {
                         day: "2-digit",
                       })
                       .replace(/\//g, ".")}
-                    
+
                     <MdMoreVert onClick={() => modalBtn(comment.id)} />
                     {modalOpen === comment.id && (
                       <StModal>
@@ -232,9 +218,8 @@ const StIoClose = styled(Close)`
   }
 `;
 const StCardContainer = styled.div`
-
   width: 100%;
-  height:calc(100vh - 350px);
+  height: calc(100vh - 350px);
   overflow-y: scroll;
   &::-webkit-scrollbar {
     width: 10px;
@@ -272,7 +257,7 @@ const StTextWrap = styled.form`
 `;
 const StText = styled.textarea`
   width: 100%;
-  margin:0 auto;
+  margin: 0 auto;
   outline: 0;
   border: 0;
   height: 120px !important;
@@ -288,14 +273,14 @@ const StSubmitBtn = styled.button`
   color: rgb(255, 255, 255);
   border: none;
   cursor: pointer;
-  margin-top:20px;
+  margin-top: 20px;
 `;
-const StTop =styled.div`
-  display:flex;
+const StTop = styled.div`
+  display: flex;
   justify-content: space-between;
-  margin-bottom:20px;
-  position:relative;
-`
+  margin-bottom: 20px;
+  position: relative;
+`;
 const StCardName = styled.em`
   display: block;
   font-weight: 700;
@@ -314,7 +299,7 @@ const StCardTime = styled.p`
 const StCardComment = styled.p`
   font-weight: 500;
   line-height: 20px;
-  font-size:0.875rem;
+  font-size: 0.875rem;
   word-break: break-all;
 `;
 

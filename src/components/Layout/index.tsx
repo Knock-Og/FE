@@ -77,4 +77,5 @@ const StBreadCrumbWrapper = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  gap: 10px;
 `;

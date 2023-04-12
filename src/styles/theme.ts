@@ -20,10 +20,9 @@ export const GlobalStyle = createGlobalStyle`
     font-size:16px;
   }
   body {
+    min-width : 1440px;
     color: ${({ theme }) => theme.textColor};
     background-color: ${({ theme }) => theme.bgColor};
-    /* transition: all 0.5s; */
-    overflow-x:hidden;
   }
   button{
     padding:0;
