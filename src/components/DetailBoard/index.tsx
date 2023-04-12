@@ -115,13 +115,13 @@ const StRight = styled.div`
   text-align:center;
 `;
 const StNum = styled.em`
-  color: ${(props) => props.theme.textRed};
+  color: ${(props) => props.theme.redLightColor};
   font-size: 3rem;
   font-weight: 700;
 `;
 const StText = styled.p`
   font-weight: 600;
-  margin-top:20px;
+  margin-top: 15px;
 `;
 
 const StTitle = styled.h4`

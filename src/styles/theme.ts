@@ -87,6 +87,7 @@ export const defaultTheme: DefaultTheme = {
   placeholder: "#bdbdbd",
   blockBorder: "#000",
   greyBorder: "#f9f9f9",
+  greylight: "#C5C5C5",
 };
 
 export const darkTheme: DefaultTheme = {
