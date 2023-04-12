@@ -20,7 +20,7 @@ export const GlobalStyle = createGlobalStyle`
     font-size:16px;
   }
   body {
-    min-width : 1440px;
+    /* min-width : 1440px; */
     color: ${({ theme }) => theme.textColor};
     background-color: ${({ theme }) => theme.bgColor};
   }
@@ -76,7 +76,7 @@ export const defaultTheme: DefaultTheme = {
   bgColor: "#fff",
   bgLightBlue: "#F5FAFF",
   bgGrey: "#f9f9f9",
-
+  bgGreyE: "#767676",
   scrollColor: "#606060",
 
   fillWhite: "#fff",
@@ -87,6 +87,7 @@ export const defaultTheme: DefaultTheme = {
   placeholder: "#bdbdbd",
   blockBorder: "#000",
   greyBorder: "#f9f9f9",
+  greylight: "#C5C5C5",
 };
 
 export const darkTheme: DefaultTheme = {
