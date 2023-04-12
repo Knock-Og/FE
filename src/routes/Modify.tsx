@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { useParams } from "react-router-dom";
 import { POST } from "api";
-import { Layout, DetailBoard } from "components";
+import { Layout, ModifyBoard } from "components";
 import { PostDetail } from "types";
 
-const Detail = () => {
+const Modify = () => {
   const [post, setPost] = useState<PostDetail>();
   const params = useParams();
 
@@ -18,7 +18,7 @@ const Detail = () => {
     //eslint-disable-next-line
   }, []);
 
-  return <Layout>{post && <DetailBoard {...post} />}</Layout>;
+  return <Layout>{post && <ModifyBoard {...post} />}</Layout>;
 };
 
-export default Detail;
+export default Modify;

@@ -67,8 +67,8 @@ const ModifyBoard = (post: PostDetail) => {
     if (newPost.content.length === 0) {
       return alert("내용을 입력해주세요 !");
     }
-    editPost({ postId: post.id, post: newPost });
     updateEditingStatus(post.id);
+    editPost({ postId: post.id, post: newPost });
     navigate(-1);
   };
 
@@ -77,6 +77,7 @@ const ModifyBoard = (post: PostDetail) => {
     const isDel = confirm("삭제하시겠습니까?");
 
     if (isDel) {
+      updateEditingStatus(post.id);
       delPost(post.id);
       navigate(-1);
     }
@@ -115,7 +116,11 @@ const ModifyBoard = (post: PostDetail) => {
   }, [post]);
 
   useEffect(() => {
-    return () => updateEditingStatus(post.id);
+    updateEditingStatus(post.id);
+
+    return () => {
+      updateEditingStatus(post.id);
+    };
     //eslint-disable-next-line
   }, []);
 
@@ -288,6 +293,7 @@ const StAddBtn = styled.button`
   outline: 0;
   cursor: pointer;
 `;
+
 const StDelBtn = styled.button`
   width: 120px;
   height: 50px;

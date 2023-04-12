@@ -12,3 +12,4 @@ export { default as MyPost } from "./MyPost";
 export { default as Searched } from "./Searched";
 export { default as Write } from "./Write";
 export { default as Mypage } from "./Mypage";
+export { default as Modify } from "./Modify";
