@@ -35,14 +35,6 @@ const Sort = ({ sortItems, sort, setSort }: Props) => {
 };
 
 export default Sort;
-const ControlForm = styled(FormControl)`
-  && {
-    width: 150px;
-    background: ${(props) => props.theme.bgColor};
-    box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.05);
-  }
-`;
+const ControlForm = styled(FormControl)``;
 const SelectBox = styled(Select)``;
-const Opsiton = styled(MenuItem)`
-  padding: 0;
-`;
+const Opsiton = styled(MenuItem)``;

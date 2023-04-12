@@ -30,7 +30,7 @@ const ModifyBoard = (post: PostDetail) => {
     readablePosition: "",
   });
   const [keyword, setKeyword] = useState("");
-  
+
   const navigate = useNavigate();
   const editorRef = useRef<Editor>(null);
 
@@ -77,11 +77,17 @@ const ModifyBoard = (post: PostDetail) => {
     setKeyword(e.target.value);
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      setNewPost({ ...newPost, keywords: [...newPost.keywords, keyword] });
+    if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+      if (newPost.keywords.includes(keyword)) {
+        alert("이미 추가한 키워드입니다 !");
+        return;
+      }
+      setNewPost({
+        ...newPost,
+        keywords: [...newPost.keywords, keyword].filter((v) => v !== ""),
+      });
       setKeyword("");
     }
-    return;
   };
 
   useEffect(() => {
@@ -160,6 +166,7 @@ const ModifyBoard = (post: PostDetail) => {
         previewStyle="vertical"
         height="100%"
         initialEditType="wysiwyg"
+        hideModeSwitch={true}
         useCommandShortcut={false}
         plugins={[colorSyntax]}
         language="ko-KR"
@@ -172,7 +179,7 @@ const ModifyBoard = (post: PostDetail) => {
       <StFooter>
         <StkeyWordWrap>
           {newPost.keywords.map((keyword) => (
-            <StkeyWordP key={keyword}>{keyword}</StkeyWordP>
+            <StkeyWordP key={keyword}>#{keyword}</StkeyWordP>
           ))}
           <StkeyWordInput
             placeholder="태그를 입력하세요 (엔터로 구분)"
@@ -233,15 +240,9 @@ const StkeyWordWrap = styled.div`
   flex-wrap: wrap;
   padding: 20px 20px;
   gap: 10px;
-  
 `;
 const StkeyWordP = styled.p`
-  padding: 0px 15px;
-  height: 40px;
-  line-height: 40px;
-  background: ${(props) => props.theme.bgBlue};
-  border-radius: 20px;
-  color: ${(props) => props.theme.textwhite};
+  color: ${(props) => props.theme.keyBlue};
   word-break: break-word;
 `;
 const StkeyWordInput = styled.input`
@@ -268,9 +269,7 @@ const StDelBtn = styled.button`
   border-radius: 10px;
   color: ${(props) => props.theme.keyBlue};
   border: 1px solid ${(props) => props.theme.borderBlue};
-  margin-left:15px;
+  margin-right: 15px;
   outline: 0;
   cursor: pointer;
 `;
-
-;

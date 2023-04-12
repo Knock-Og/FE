@@ -65,13 +65,16 @@ const WriteBoard = () => {
   const handleChangeKeywordInput = (e: React.ChangeEvent<HTMLInputElement>) =>
     setKeyword(e.target.value);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !e.nativeEvent.isComposing) {
       if (newPost.keywords.includes(keyword)) {
         alert("이미 추가한 키워드입니다 !");
         return;
       }
-      setNewPost({ ...newPost, keywords: [...newPost.keywords, keyword] });
+      setNewPost({
+        ...newPost,
+        keywords: [...newPost.keywords, keyword].filter((v) => v !== ""),
+      });
       setKeyword("");
     }
   };
@@ -147,13 +150,13 @@ const WriteBoard = () => {
       <StFooter>
         <StkeyWordWrap>
           {newPost.keywords.map((keyword) => (
-            <StkeyWordP key={keyword}>{keyword}</StkeyWordP>
+            <StkeyWordP key={keyword}>#{keyword}</StkeyWordP>
           ))}
           <StkeyWordInput
             placeholder="태그를 입력하세요 (엔터로 구분)"
             value={keyword}
             onChange={handleChangeKeywordInput}
-            onKeyDown={handleKeyDown}
+            onKeyUp={handleKeyUp}
           />
         </StkeyWordWrap>
         <StAddBtn onClick={handleClickAddBtn}>작성완료</StAddBtn>
@@ -169,8 +172,6 @@ const StContainer = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100vh;
- 
-  
 `;
 const StMidSelet = styled.div`
   border: 1px solid ${(props) => props.theme.pageBorder};
@@ -187,7 +188,7 @@ const StTitleInput = styled.input`
   padding: 20px 30px;
   font-size: 1.125rem;
   outline: none;
-  border-radius: 5px 5px 0 0 ;
+  border-radius: 5px 5px 0 0;
   &::placeholder {
     color: ${(props) => props.theme.placeholder};
   }
@@ -196,7 +197,7 @@ const StFooter = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
 `;
 const StkeyWordWrap = styled.div`
   border: 1px solid ${(props) => props.theme.pageBorder};
@@ -204,18 +205,12 @@ const StkeyWordWrap = styled.div`
   border-top: 0;
   margin-bottom: 30px;
   display: flex;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
   padding: 20px 20px;
   gap: 10px;
- 
 `;
 const StkeyWordP = styled.p`
-  padding: 0px 15px;
-  height: 40px;
-  line-height: 40px;
-  background: ${(props) => props.theme.bgBlue};
-  border-radius: 20px;
-  color: ${(props) => props.theme.textwhite};
+  color: ${(props) => props.theme.keyBlue};
   word-break: break-word;
 `;
 const StkeyWordInput = styled.input`
@@ -223,7 +218,6 @@ const StkeyWordInput = styled.input`
   border: 0;
   width: 200px;
 `;
-
 
 const StAddBtn = styled.button`
   width: 120px;
