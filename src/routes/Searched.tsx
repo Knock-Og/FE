@@ -75,7 +75,11 @@ const Searched = () => {
   });
 
   useEffect(() => {
-    getSearchedData({ keyword: searchedKeyword, page, sort });
+    getSearchedData({
+      keyword: searchedKeyword,
+      page,
+      sort: sort === "" ? "관심도" : sort,
+    });
     //eslint-disable-next-line
   }, [page]);
 
@@ -113,7 +117,7 @@ const Searched = () => {
         searchedPosts.length > 0 && (
           <StBreadCrumbWrapper>
             <StBreadCrumb>
-              총 {searchedPosts.length}개의 결과를 찾았습니다.
+              총 <span>{searchedPosts.length}</span>개의 결과를 찾았습니다.
             </StBreadCrumb>
             <Sort sortItems={SORT_ITEMS} sort={sort} setSort={setSort} />
           </StBreadCrumbWrapper>
@@ -123,6 +127,7 @@ const Searched = () => {
       isNavOpen={isNavOpen}
       setIsNavOpen={setIsNavOpen}
       page={{ page, endPage, setPage }}
+      isPagination={searchedPosts && searchedPosts.length > 0}
     >
       {searchedPosts && searchedPosts?.length > 0 ? (
         searchedPosts.map((post) => <PostCard key={post.id} {...post} />)
@@ -138,10 +143,17 @@ export default Searched;
 const StBreadCrumbWrapper = styled.div`
   width: 100%;
   display: flex;
-  gap: 10px;
+  margin: 35px 0 30px;
+  gap: 30px;
   align-items: center;
 `;
 
-const StBreadCrumb = styled.div`
-  font-size: 1.5rem;
+const StBreadCrumb = styled.p`
+  font-size: 1.125rem;
+  font-weight: 600;
+  > span {
+    color: ${(props) => props.theme.keyBlue};
+    font-weight: 600;
+    font-size: 1.125rem;
+  }
 `;

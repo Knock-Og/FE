@@ -13,23 +13,26 @@ const MypageForm = () => {
   );
   if (isLoading) return <h1>로딩중...</h1>;
   if (isError) return <h1>에러...</h1>;
-  const userDate = data?.data;
 
   return (
     <StMypageWrap>
       <StMypageTop>
-        <StMyname>{userDate.memberName}</StMyname>
+        <StMyname>{data?.data.memberName}</StMyname>
         <StMyEmail>
-          이메일 주소 <StMyEmailSpan>{userDate.email}</StMyEmailSpan>
+          이메일 주소 <StMyEmailSpan>{data?.data.email}</StMyEmailSpan>
+        </StMyEmail>
+        <StMyEmail>
+          직위 <StMyEmailSpan>{data?.data.position}</StMyEmailSpan>
+        </StMyEmail>
+        <StMyEmail>
+          휴대폰번호 <StMyEmailSpan>{data?.data.phoneNum}</StMyEmailSpan>
         </StMyEmail>
         <StBotton onClick={() => setChangPw(!changPw)}>
           비밀번호 변경하기
         </StBotton>
       </StMypageTop>
       <StMypageBottom>
-        <StContentWrap>
-          <MyPostContent />
-        </StContentWrap>
+        <MyPostContent />
       </StMypageBottom>
       <CurrentPw changPw={changPw} changPwBtn={() => setChangPw(!changPw)} />
     </StMypageWrap>
@@ -38,42 +41,35 @@ const MypageForm = () => {
 export default MypageForm;
 
 const StMypageWrap = styled.div`
-  padding: 60px 0;
+  margin: 180px auto 80px;
 `;
 const StMypageTop = styled.div`
   text-align: center;
   position: relative;
   margin-bottom: 30px;
-  padding-bottom: 30px;
-  &::after {
-    width: 910px;
-    height: 1px;
-    background: ${(props) => props.theme.keyBlue};
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    bottom: 0;
-  }
+  padding: 60px 0px;
+  border: 1px solid ${(props) => props.theme.greyBorder};
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
+  border-radius: 10px;
 `;
 const StMyname = styled.h4`
   font-weight: 700;
-  font-size: 36px;
-  line-height: 45px;
+  font-size: 2.25rem;
+  margin-bottom: 50px;
 `;
 const StMyEmail = styled.em`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 35px 0;
+  margin: 30px 0;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 1.125rem;
 `;
 const StMyEmailSpan = styled.span`
   font-weight: 500;
   display: block;
-  margin-left: 24px;
+  margin-left: 20px;
+  font-size: 1.125rem;
 `;
 const StBotton = styled.button`
   font-weight: 700;
@@ -87,7 +83,3 @@ const StBotton = styled.button`
   cursor: pointer;
 `;
 const StMypageBottom = styled.div``;
-
-const StContentWrap = styled.div`
-  margin: 30px 0;
-`;

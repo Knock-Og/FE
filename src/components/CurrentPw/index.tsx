@@ -1,18 +1,19 @@
-import styled from "styled-components"
+import styled from "styled-components";
 import { Close } from "assets";
 import { MYPAGEPW } from "api";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { CurrenPw } from "types";
-const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
-    const [password, setPassword] = useState("");
-    const [passwordBoolean, setPasswordBoolean] = useState(false);
-    const [passwordMsg, setPasswordMsg] = useState("");
-    const [pageChage, setPageChage] = useState(false);
-    const [passwordCorrect, setPasswordCorrect] = useState(false);
 
-    const passwordRegex =
-      /^.*(?=^.{8,32}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
+  const [password, setPassword] = useState("");
+  const [passwordBoolean, setPasswordBoolean] = useState(false);
+  const [passwordMsg, setPasswordMsg] = useState("");
+  const [pageChage, setPageChage] = useState(false);
+  const [passwordCorrect, setPasswordCorrect] = useState(false);
+
+  const passwordRegex =
+    /^.*(?=^.{8,32}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
   const queryClient = useQueryClient();
   const pwMutation = useMutation("getPw", MYPAGEPW.getPwData, {
     onSuccess: (response) => {
@@ -33,13 +34,11 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
     onSuccess: (response) => {
       queryClient.invalidateQueries("getPw");
       alert("비밀번호가 변경되었습니다.");
-       setPageChage(false);
-       changPwBtn();
+      setPageChage(false);
+      changPwBtn();
       return response.data;
     },
   });
-
-  
 
   //비밀번호 서버 일치안하는지...
   const checkPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -51,7 +50,8 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
   const currentPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     const passwordValue = e.target.value;
     setPassword(passwordValue);
-    const isValidPassword = passwordRegex.test(passwordValue);
+    // const isValidPassword = passwordRegex.test(passwordValue);
+    const isValidPassword = true;
     setPasswordBoolean(!isValidPassword);
     setPasswordMsg(
       isValidPassword
@@ -180,8 +180,6 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
   );
 };
 export default CurrentPw;
-
-
 
 const StChangPwWrap = styled.div`
   position: fixed;

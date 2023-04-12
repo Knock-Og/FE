@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  AiOutlineClockCircle,
-  AiOutlineComment,
-  AiOutlineEye,
-} from "react-icons/ai";
+
 import { CircularProgress } from "@mui/material";
 import styled from "styled-components";
 import { Post } from "types";
@@ -59,11 +55,6 @@ const PostCard = (post: Post) => {
 
   return (
     <StPostCardBox onClick={handleClickPostCard}>
-      <StKeyWordsWrapper>
-        {post.keywords.map((keyword) => (
-          <StKeyWord key={keyword}>{keyword}</StKeyWord>
-        ))}
-      </StKeyWordsWrapper>
       <StTitle>
         {post.title.length > 100 ? post.title.slice(0, 99) + "..." : post.title}
       </StTitle>
@@ -73,18 +64,28 @@ const PostCard = (post: Post) => {
           : post.content.replace(/<[^>]*>?/g, "")}
       </StContent>
       <StPostCardFooter>
-        <StFooterItem>
-          <AiOutlineClockCircle />
-          {post.modifiedAt.slice(0, 10)}
-        </StFooterItem>
-        <StFooterItem>
-          <AiOutlineComment />
-          {post.commentCount}
-        </StFooterItem>
-        <StFooterItem>
-          <AiOutlineEye />
-          {post.postViews}
-        </StFooterItem>
+        <StFooterleft>
+          {post.keywords.map((keyword) => (
+            <StKeyWord key={keyword}>#{keyword}</StKeyWord>
+          ))}
+        </StFooterleft>
+        <StFooterRight>
+          <StFooterItem>{
+          new Date(post.modifiedAt)
+              .toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              })
+              .replace(/\//g, ".")}</StFooterItem>
+          <StFooterItem>
+            댓글 <StFooterItemSpan>{post.commentCount}</StFooterItemSpan>개
+          </StFooterItem>
+          <StFooterItem>
+            조회수 <StFooterItemSpan>{post.postViews}</StFooterItemSpan>개
+          </StFooterItem>
+        </StFooterRight>
+
         {post.editingStatus === "true" && <CircularProgress size={13} />}
       </StPostCardFooter>
     </StPostCardBox>
@@ -95,67 +96,75 @@ export default PostCard;
 
 const StPostCardBox = styled.div`
   width: 100%;
-  height: 260px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 30px;
-  border: 1px solid ${(props) => props.theme.grey};
-  box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
-  border-radius: 24px;
+  padding: 45px 45px;
+  border: 1px solid ${(props) => props.theme.greyBorder};
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
+  border-radius: 10px;
+  margin-bottom:30px;
   cursor: pointer;
-  margin-bottom: 10px;
+  background: ${(props) => props.theme.bgColor};
+  transition: all 0.3s;
+  &:hover {
+    background: ${(props) => props.theme.bgLightBlue};
+    box-shadow: none;
+  }
 `;
 
-const StKeyWordsWrapper = styled.div`
-  display: flex;
-  gap: 15px;
-`;
-
-const StKeyWord = styled.div`
-  background-color: ${(props) => props.theme.keyBlue};
-  color: #fff;
-  width: 82px;
-  height: 32px;
-  border-radius: 24px;
-  font-family: "SUIT";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 32px;
-  text-align: center;
-`;
-
-const StTitle = styled.div`
-  font-family: "Pretendard";
-  font-style: normal;
+const StTitle = styled.h4`
   font-weight: 800;
-  font-size: 32px;
-  line-height: 38px;
-  color: ${(props) => props.theme.darkGrey};
+  font-size: 1.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin:0px 0 20px;
 `;
 
-const StContent = styled.div`
-  font-family: "SUIT";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 160%;
-  color: ${(props) => props.theme.darkGrey};
+const StContent = styled.p`
+  line-height: 1.5;
+  overflow: hidden;
+  max-height: 77px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  white-space: normal;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 `;
 
 const StPostCardFooter = styled.div`
   display: flex;
-  gap: 10px;
-  font-family: "SUIT";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  color: ${(props) => props.theme.darkGrey};
+  margin-top: 30px;
+  justify-content: space-between;
 `;
 
-const StFooterItem = styled.div`
+const StFooterleft = styled.div`
+  display:flex;
+  gap:10px;
+  width:60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`
+const StKeyWord = styled.span`
+  color: ${(props) => props.theme.keyBlue};
+  font-weight: 500;
+`;
+const StFooterRight = styled.div`
+  display: flex;
+  justify-content: end;
+  gap: 20px;
+ 
+`;
+const StFooterItem = styled.p`
   display: flex;
   align-items: center;
-  gap: 3px;
+  font-weight: 600;
+`;
+const StFooterItemSpan = styled.span`
+  color: ${(props) => props.theme.keyBlue};
+  display: block;
+  margin: 0 2px 0 5px;
 `;

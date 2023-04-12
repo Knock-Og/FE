@@ -42,9 +42,6 @@ const Bookmark = () => {
       });
       setNavItems(nav);
     },
-    onError: () => {
-      setNavItems([{ itemValue: "", handler: () => null }]);
-    },
   });
 
   const { mutate: getBookmark } = useMutation(BOOKMARK.getBookmark, {
@@ -102,6 +99,7 @@ const Bookmark = () => {
       addBookmarkHandler={addBookmark}
       isBookMarkNav
       page={{ page, endPage, setPage }}
+      isPagination={searchedPosts && searchedPosts.length > 0}
       breadcrumb={
         params.folderName && (
           <>
@@ -141,9 +139,7 @@ const Bookmark = () => {
 
 export default Bookmark;
 
-const StBreadCrumb = styled.div`
-  font-size: 1.5rem;
-`;
+const StBreadCrumb = styled.div``;
 
 const StBreadCrumbInput = styled(Input)``;
 

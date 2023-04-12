@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { IconButton, Input } from "@mui/material";
 import { CreateNewFolder } from "@mui/icons-material";
 import { NavItem } from "types";
 import { Close, NavOpenArrow } from "assets";
-
+import NoCategory from "components/NoCategory";
 interface Props {
   open?: boolean;
   setOpen?: (isOpen: boolean) => void;
@@ -32,7 +32,19 @@ const Setting = ({
     setAddBookmarkInput("");
     addBookmarkHandler && addBookmarkHandler(addBookmarkInput);
   };
-
+  useEffect(() => {
+    if (open) {
+      document.body.style.cssText = `
+     
+    top: -${window.scrollY}px;
+    width: 100%;`;
+      return () => {
+        const scrollY = document.body.style.top;
+        document.body.style.cssText = "";
+        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+      };
+    }
+  }, [open]);
   return (
     <>
       <StSettingWrap className={open ? "on" : "off"}>
@@ -48,7 +60,7 @@ const Setting = ({
           </StSettingTop>
 
           <StSettingbottom>
-            {navItems?.map((item) => (
+            {navItems ? navItems.map((item) => (
               <StSettingButton
                 key={item.itemValue}
                 onClick={() => {
@@ -62,7 +74,8 @@ const Setting = ({
               >
                 {item.itemValue}
               </StSettingButton>
-            ))}
+            )):<NoCategory/>}
+            
           </StSettingbottom>
           {isBookMarkNav && (
             <StBookmarkAddWrapper>
@@ -168,6 +181,7 @@ const StSettingTop = styled.div`
   position: relative;
   height: 100px;
   padding: 0 50px;
+  border-bottom: 1px solid ${(props) => props.theme.borderColor}; ;
 `;
 const StSettingTitle = styled.h4`
   font-weight: 600;
@@ -188,7 +202,7 @@ const StIoClose = styled(Close)`
 const StSettingbottom = styled.div`
   padding-bottom: 50px;
   overflow: auto;
-  height: 55%;
+  height: calc(100% - 400px);
   &::-webkit-scrollbar {
     width: 10px;
   }
@@ -232,11 +246,11 @@ const StSettingButton = styled.button<{ active?: boolean }>`
       ${({ active, theme }) => (active ? theme.keyBlue : theme.greyLight)};
   }
   &:before {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     border-radius: 20px;
     position: absolute;
-    left: 38px;
+    left: 37px;
     z-index: 1;
     top: 0px;
     bottom: 0px;
@@ -249,8 +263,9 @@ const StSettingButton = styled.button<{ active?: boolean }>`
 
 const StBookmarkAddWrapper = styled.div`
   border-top: 1px solid ${({ theme }) => theme.lightGrey};
-  height: 45%;
-  padding: 30px 50px;
+  height: 300px;
+  padding: 0px 50px;
+  justify-content: center;
   display: flex;
   flex-direction: column;
 `;
@@ -258,7 +273,7 @@ const StBookmarkAddWrapper = styled.div`
 const StBookmarkAddTitle = styled.h5`
   font-weight: 600;
   font-size: 1.75rem;
-  line-height: 100px;
+  margin-bottom:50px;
 `;
 
 const StAddBookMarkBtn = styled(IconButton)`

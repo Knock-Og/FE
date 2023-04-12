@@ -103,7 +103,7 @@ const ModifyBoard = (post: PostDetail) => {
         placeholder="제목"
         onChange={handleChangeTitle}
       />
-      <div style={{ display: "flex", gap: "10px" }}>
+      <StMidSelet style={{ display: "flex", gap: "10px" }}>
         <FormControl size="small" sx={{ minWidth: 150 }}>
           <InputLabel id="category">카테고리</InputLabel>
           <Select
@@ -154,7 +154,7 @@ const ModifyBoard = (post: PostDetail) => {
             <MenuItem value="Member">Member</MenuItem>
           </Select>
         </FormControl>
-      </div>
+      </StMidSelet>
       <Editor
         initialValue={post.content}
         previewStyle="vertical"
@@ -170,23 +170,20 @@ const ModifyBoard = (post: PostDetail) => {
         }}
       />
       <StFooter>
-        <div style={{ width: "100%", display: "flex", gap: "10px" }}>
-          <div style={{ display: "flex", gap: "10px" }}>
-            {newPost.keywords.map((keyword) => (
-              <div key={keyword} style={{ border: "1px solid blue" }}>
-                {keyword}
-              </div>
-            ))}
-          </div>
-          <input
-            placeholder="키워드"
+        <StkeyWordWrap>
+          {newPost.keywords.map((keyword) => (
+            <StkeyWordP key={keyword}>{keyword}</StkeyWordP>
+          ))}
+          <StkeyWordInput
+            placeholder="태그를 입력하세요 (엔터로 구분)"
             value={keyword}
             onChange={handleChangeKeywordInput}
             onKeyUp={handleKeyUp}
           />
-        </div>
-        <StBtn onClick={handdleClickDelBtn}>삭제하기</StBtn>
-        <StBtn onClick={handleClickEditBtn}>수정완료</StBtn>
+        </StkeyWordWrap>
+
+        <StDelBtn onClick={handdleClickDelBtn}>삭제하기</StDelBtn>
+        <StAddBtn onClick={handleClickEditBtn}>수정완료</StAddBtn>
       </StFooter>
     </StContainer>
   );
@@ -197,41 +194,83 @@ export default ModifyBoard;
 const StContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 30px;
   width: 100%;
-  height: 80vh;
-  background-color: ${(props) => props.theme.veryLightGrey};
-  border: 1px solid ${(props) => props.theme.grey};
-  box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
-  border-radius: 10px;
-  padding: 30px;
+  height: 100vh;
 `;
-
+const StMidSelet = styled.div`
+  border: 1px solid ${(props) => props.theme.pageBorder};
+  border-top: 0;
+  border-bottom: 0;
+  padding: 20px 20px;
+  display: flex;
+  gap: 20px;
+`;
+const StTitleInput = styled.input`
+  width: 100%;
+  height: 80px;
+  border: 1px solid ${(props) => props.theme.pageBorder};
+  padding: 20px 30px;
+  font-size: 1.125rem;
+  outline: none;
+  border-radius: 5px 5px 0 0;
+  font-weight: 800;
+  &::placeholder {
+    color: ${(props) => props.theme.placeholder};
+  }
+`;
 const StFooter = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  flex-wrap: wrap;
 `;
-
-const StBtn = styled.button`
-  width: 100px;
-  height: 42px;
-  background: ${(props) => props.theme.keyBlue};
-  border-radius: 12px;
-  color: #fff;
-  border: none;
-`;
-
-const StTitleInput = styled.input`
+const StkeyWordWrap = styled.div`
+  border: 1px solid ${(props) => props.theme.pageBorder};
   width: 100%;
-  height: 40px;
-  border: 1px solid ${(props) => props.theme.grey};
-  border-radius: 10px;
-  font-weight: 800;
-  font-size: 24px;
-  line-height: 40px;
-  padding: 20px 40px;
-  outline: none;
-  box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
+  border-top: 0;
+  margin-bottom: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px 20px;
+  gap: 10px;
+  
 `;
+const StkeyWordP = styled.p`
+  padding: 0px 15px;
+  height: 40px;
+  line-height: 40px;
+  background: ${(props) => props.theme.bgBlue};
+  border-radius: 20px;
+  color: ${(props) => props.theme.textwhite};
+  word-break: break-word;
+`;
+const StkeyWordInput = styled.input`
+  outline: 0;
+  border: 0;
+  width: 200px;
+  border-bottom: 1px solid ${(props) => props.theme.pageBorder};
+`;
+
+const StAddBtn = styled.button`
+  width: 120px;
+  height: 50px;
+  background: ${(props) => props.theme.keyBlue};
+  border-radius: 10px;
+  color: ${(props) => props.theme.textwhite};
+  border: none;
+  outline: 0;
+  cursor: pointer;
+`;
+const StDelBtn = styled.button`
+  width: 120px;
+  height: 50px;
+  background: ${(props) => props.theme.bgColor};
+  border-radius: 10px;
+  color: ${(props) => props.theme.keyBlue};
+  border: 1px solid ${(props) => props.theme.borderBlue};
+  margin-left:15px;
+  outline: 0;
+  cursor: pointer;
+`;
+
+;

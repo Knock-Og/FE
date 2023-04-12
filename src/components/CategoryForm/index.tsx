@@ -13,13 +13,7 @@ const CategoryForm = () => {
         queryClient.invalidateQueries("getCategories");
         return response.data;
       }
-    },
-    onError: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("getCategories");
-        alert("카테고리추가를 실패했습니다!");
-      }
-    },
+    }
   });
   const [modalOpen, setModalOpen] = useState(false);
   const modalBtn = () => {
@@ -76,13 +70,7 @@ const CategoryForm = () => {
         console.log("성공햇습니다.");
         return response.data;
       }
-    },
-    onError: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("getCategories");
-        alert("카테고리변경을 실패했습니다.");
-      }
-    },
+    }
   });
   const categoryPutSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     if (categoryPutName.trim() === "") return alert("카테고리명을 적어주세요");
@@ -101,13 +89,7 @@ const CategoryForm = () => {
         console.log("성공햇습니다.");
         return response.data;
       }
-    },
-    onError: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("getCategories");
-        alert("카테고리삭제을 실패했습니다.");
-      }
-    },
+    }
   });
   const categoryDel = (id: number) => {
     if (window.confirm("삭제하시겠습니까?")) {

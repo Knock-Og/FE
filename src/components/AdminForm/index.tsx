@@ -35,12 +35,7 @@ const AdminForm = () => {
       if (response) {
         queryClient.invalidateQueries("member");
       }
-    },
-    onError: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("member");
-      }
-    },
+    }
   });
 
   const modalBtn = () => setModalOpen(false);
@@ -120,7 +115,6 @@ const AdminForm = () => {
       {}
     );
     setPosition(positionState);
-    // eslint-disable-next-line
   }, [data]);
 
   if (isLoading) return <h1>"성공했습니다.!"</h1>;

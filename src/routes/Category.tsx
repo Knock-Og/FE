@@ -65,7 +65,11 @@ const Category = () => {
   });
 
   useEffect(() => {
-    getCategoryData({ category: searchedCategory, page, sort });
+    getCategoryData({
+      category: searchedCategory,
+      page,
+      sort: sort === "" ? "관심도" : sort,
+    });
     //eslint-disable-next-line
   }, [page]);
 
@@ -110,6 +114,7 @@ const Category = () => {
       isNavOpen={isNavOpen}
       setIsNavOpen={setIsNavOpen}
       page={{ page, endPage, setPage }}
+      isPagination={searchedPosts && searchedPosts.length > 0}
     >
       {searchedPosts && searchedPosts?.length > 0 ? (
         searchedPosts.map((post) => <PostCard key={post.id} {...post} />)

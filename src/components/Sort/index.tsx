@@ -1,4 +1,5 @@
 import { FormControl, Select, MenuItem } from "@mui/material";
+import styled from "styled-components";
 import { SortItem } from "types";
 
 interface Props {
@@ -9,27 +10,39 @@ interface Props {
 
 const Sort = ({ sortItems, sort, setSort }: Props) => {
   return (
-    <FormControl size="small">
+    <ControlForm>
       <Select
+        size="small"
         value={sort}
         onChange={(e) => setSort(e.target.value)}
         displayEmpty
       >
-        <MenuItem value="">
+        <Opsiton value="">
           <em>-- 정렬 --</em>
-        </MenuItem>
+        </Opsiton>
         {sortItems.map((item) => (
-          <MenuItem
+          <Opsiton
             key={item.itemValue}
             onClick={item.handler}
             value={item.itemValue}
           >
             {item.itemValue}
-          </MenuItem>
+          </Opsiton>
         ))}
       </Select>
-    </FormControl>
+    </ControlForm>
   );
 };
 
 export default Sort;
+const ControlForm = styled(FormControl)`
+  && {
+    width: 150px;
+    background: ${(props) => props.theme.bgColor};
+    box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.05);
+  }
+`;
+const SelectBox = styled(Select)``;
+const Opsiton = styled(MenuItem)`
+  padding: 0;
+`;

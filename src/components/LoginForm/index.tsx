@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import styled from "styled-components";
 import { setCookie } from "api/cookies";
@@ -8,7 +8,6 @@ import { LOGIN } from "api";
 
 const LoginForm = () => {
   const navigate = useNavigate();
-   const queryClient = useQueryClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
@@ -16,14 +15,7 @@ const LoginForm = () => {
     onSuccess: (response) => {
       setCookie("access_token", response.headers.authorization.substr(7));
       navigate("/");
-    },
-    onError: async (response: {
-      response: { data: { message: string } };
-    }): Promise<string> => {
-      queryClient.invalidateQueries("login");
-      alert("등록된 회원정보가 없습니다.");
-      return response.response.data.message;
-    },
+    }
   });
 
   const onChangePw = () => setShowPw(!showPw);

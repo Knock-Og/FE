@@ -82,21 +82,24 @@ const MyPostContent = () => {
       ) : (
         <NoSearched />
       )}
-      <Pagination
-        count={endPage}
-        page={page}
-        onChange={(_, curPage) => {
-          window.scrollTo(0, 0);
-          setPage(curPage);
-        }}
-        color="primary"
-      />
+      {searchedPosts && searchedPosts.length > 0 && (
+        <Pagination
+          count={endPage}
+          page={page}
+          onChange={(_, curPage) => {
+            window.scrollTo(0, 0);
+            setPage(curPage);
+          }}
+          color="primary"
+        />
+      )}
     </StPostContent>
   );
 };
 export default MyPostContent;
 
 const StPostContent = styled.div`
-  width: 100%;
-  border: 1px solid ${(props) => props.theme.greyLight};
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
