@@ -139,9 +139,15 @@ const Bookmark = () => {
 
 export default Bookmark;
 
-const StBreadCrumb = styled.div``;
+const StBreadCrumb = styled.p`
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-right: 30px;
+`;
 
-const StBreadCrumbInput = styled(Input)``;
+const StBreadCrumbInput = styled(Input)`
+  margin-right: 30px;
+`;
 
 const StEditBtn = styled(IconButton)``;
 
