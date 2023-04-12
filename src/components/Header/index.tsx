@@ -75,7 +75,7 @@ const Header = () => {
   };
 
   const handleClickLogOut = () => {
-    navigate("/login");
+    navigate("/");
     removeCookie("access_token");
   };
   const [headerMove, setHeaderMove] = useState(false);
@@ -105,7 +105,7 @@ const Header = () => {
   return (
     <StContainer className={headerMove ? "on" : ""}>
       <StHeaderLeftWrapper>
-        <StHeaderLogo onClick={() => navigate("/")} />
+        <StHeaderLogo onClick={() => navigate("/main")} />
         <StSearchWrapper>
           <StSearchInput
             ref={searchInputRef}

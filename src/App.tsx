@@ -20,7 +20,7 @@ const App = () => {
             <Route path="/admin/login" element={<ROUTE.AdminLogin />} />
 
             {/* Main */}
-            <Route path="/" element={<ROUTE.Main />} />
+            <Route path="/main" element={<ROUTE.Main />} />
 
             {/* Bookmark */}
             <Route path="/bookmark" element={<ROUTE.Bookmark />} />
@@ -37,7 +37,7 @@ const App = () => {
             <Route path="/post/:postId/modify" element={<ROUTE.Modify />} />
 
             {/* Login */}
-            <Route path="/login" element={<ROUTE.Login />} />
+            <Route path="/" element={<ROUTE.Login />} />
             <Route path="/login/findid" element={<ROUTE.FindId />} />
             <Route path="/login/findpw" element={<ROUTE.FindPw />} />
 
