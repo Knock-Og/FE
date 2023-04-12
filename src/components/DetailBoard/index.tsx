@@ -1,60 +1,21 @@
 import { useState } from "react";
 import { Viewer } from "@toast-ui/react-editor";
 import styled from "styled-components";
-import { Comment, CommentBlue, LogBlue, Log, StarBlue, Star } from "assets";
-import { BookmarksBoard, CommentBoard, LogBoard } from "components";
-import { PostDetail } from "types";
+import { PostDetailTab } from "components";
+import { ActiveState, PostDetail } from "types";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
 const DetailBoard = (post: PostDetail) => {
-  const [select, setSelect] = useState<string>();
-  // const [activeTab, setActiveTab] = useState<ActiveState>();
-  const [isActiveComment, setIsActiveComment] = useState<boolean>(false);
-  const [isActiveLog, setIsActiveLog] = useState<boolean>(false);
-  const [isActiveBookmark, setIsActiveBookmark] = useState<boolean>(false);
-  const [isBookmarksBoardOpen, setIsBookmarksBoardOpen] =
-    useState<boolean>(false);
-  const [selectedFolders, setSelectedFolders] = useState<number[]>(
-    post.folders
-  );
+  const [activeTab, setActiveTab] = useState<ActiveState>({
+    comment: false,
+    log: false,
+    bookmark: false,
+  });
 
-  const selectComponent: Record<string, JSX.Element> = {
-    comment: <CommentBoard postId={post.id} />,
-    log: <LogBoard postId={post.id} />,
-    bookmark: (
-      <BookmarksBoard
-        postId={post.id}
-        open={isBookmarksBoardOpen}
-        setOpen={setIsBookmarksBoardOpen}
-        selectedFolders={selectedFolders}
-        setSelectedFolders={setSelectedFolders}
-      />
-    ),
-  };
-
-  // const handleClickTab = () => {};
-
-  const handleClickComment = () => {
-    setSelect("comment");
-    setIsActiveComment(true);
-    setIsActiveLog(false);
-    setIsActiveBookmark(false);
-  };
-
-  const handleClickLog = () => {
-    setSelect("log");
-    setIsActiveComment(false);
-    setIsActiveLog(true);
-    setIsActiveBookmark(false);
-  };
-
-  const handleClickBookmark = () => {
-    setSelect("bookmark");
-    setIsActiveComment(false);
-    setIsActiveLog(false);
-    setIsActiveBookmark(true);
-    setIsBookmarksBoardOpen(true);
+  const handleClickTab = (name: string) => {
+    const initTabState = { comment: false, log: false, bookmark: false };
+    setActiveTab({ ...initTabState, [name]: true });
   };
 
   return (
@@ -91,30 +52,17 @@ const DetailBoard = (post: PostDetail) => {
 
         <StkeyWordWrap>
           {post.keywords.map((item) => {
-            return <StkeyWordP>#{item}</StkeyWordP>;
+            return <StkeyWordP key={item}>#{item}</StkeyWordP>;
           })}
         </StkeyWordWrap>
       </StContainer>
-      <StBox>
-        <StIcon>
-          {isActiveComment ? (
-            <CommentBlue onClick={handleClickComment} />
-          ) : (
-            <Comment onClick={handleClickComment} />
-          )}
-          {isActiveLog ? (
-            <LogBlue onClick={handleClickLog} />
-          ) : (
-            <Log onClick={handleClickLog} />
-          )}
-          {isActiveBookmark ? (
-            <StarBlue onClick={handleClickBookmark} />
-          ) : (
-            <Star onClick={handleClickBookmark} />
-          )}
-        </StIcon>
-        {select && <>{selectComponent[select]}</>}
-      </StBox>
+
+      <PostDetailTab
+        activeTab={activeTab}
+        handleClickTab={handleClickTab}
+        postId={post.id}
+        folders={post.folders}
+      />
     </>
   );
 };
@@ -189,24 +137,4 @@ const StkeyWordWrap = styled.div`
 const StkeyWordP = styled.p`
   color: ${(props) => props.theme.keyBlue};
   word-break: break-word;
-`;
-
-const StBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  width: 25%;
-  height: 80vh;
-
-  border-radius: 10px;
-  padding: 30px;
-  margin-left: 40px;
-`;
-
-const StIcon = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 100px;
-  margin-top: 50px;
 `;
