@@ -189,24 +189,29 @@ const StNameSpan = styled.span`
 `;
 const StDate = styled.p`
   font-size: 0.875rem;
-
-  margin-top: 20px;
+  margin-top: 30px;
 `;
 
 const StOldText = styled.p`
-  display: flex;
-  margin-top: 20px;
+  margin-top: 30px;
   color: ${(props) => props.theme.redLightColor};
   font-weight: 500;
+  word-wrap: break-word;
+  > p:first-child {
+    margin-top: 10px;
+  }
   > p > span {
     color: ${(props) => props.theme.redLightColor} !important;
   }
 `;
 const StNewText = styled.p`
-  display: flex;
-  margin-top: 15px;
+  margin-top: 30px;
   color: ${(props) => props.theme.greenColor};
   font-weight: 500;
+  word-wrap: break-word;
+  > p:first-child {
+    margin-top: 10px;
+  }
   > p > span {
     color: ${(props) => props.theme.greenColor} !important;
   }

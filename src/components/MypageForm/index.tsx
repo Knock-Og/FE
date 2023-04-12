@@ -41,7 +41,13 @@ const MypageForm = () => {
 export default MypageForm;
 
 const StMypageWrap = styled.div`
-  margin: 180px auto 80px;
+  margin: 200px auto 80px;
+  min-width: 1376px;
+  width: 1376px;
+  @media only screen and (max-width: 1375px) {
+    padding: 0px 60px 0 0;
+    margin: 200px 60px 80px;
+  }
 `;
 const StMypageTop = styled.div`
   text-align: center;

@@ -24,8 +24,9 @@ const StContainer = styled.div`
   justify-content: center;
   text-align: center;
   gap: 40px;
-  border: 1px solid ${(props) => props.theme.lightGrey};
-  border-radius: 24px;
+  border-radius: 10px;
+  border: 1px solid ${(props) => props.theme.greyBorder};
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
 `;
 
 const StLabel = styled.h4`

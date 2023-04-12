@@ -4,10 +4,10 @@ import styled, { keyframes } from "styled-components";
 import { IconButton, Input } from "@mui/material";
 import { CreateNewFolder } from "@mui/icons-material";
 import NavBg from "assets/navBg.png";
-import { Close, NavOpenArrow } from "assets";
+import { Close, Grid } from "assets";
 import { NoCategory } from "components";
 import { NavItem } from "types";
-
+;
 interface Props {
   open?: boolean;
   setOpen?: (isOpen: boolean) => void;
@@ -94,7 +94,16 @@ const Setting = ({
           />
         )}
       </StSettingWrap>
-      {setOpen && <StSettingToggleBtn onClick={() => setOpen(true)} />}
+      {setOpen && (
+        <StSettingToggleBtn onClick={() => setOpen(true)}>
+          <div>
+            <StSettinWrap>
+              <Grid />
+            </StSettinWrap>
+            <StSettingP>카테고리</StSettingP>
+          </div>
+        </StSettingToggleBtn>
+      )}
     </>
   );
 };
@@ -103,23 +112,56 @@ export default Setting;
 
 const bounceFrames = keyframes`
   0%{
-    transform : translate(0px,-50%);
+    transform : translate(-50%,0%);
   }
   50%{
-    transform : translate(10px,-50%);
+    transform : translate(-50%,10px);
   }
   100%{
-    transform : translate(0px,-50%);
+    transform : translate(-50%,0%)
   }
 `;
 
-const StSettingToggleBtn = styled(NavOpenArrow)`
+const StSettingToggleBtn = styled.div`
   position: fixed;
-  top: 50%;
-  right: 5%;
+  top: 300px;
+  font-size: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 150px;
+  margin: auto 0%;
+  border-radius: 100px;
+  width: 100px;
+  right: 50px;
+  text-align: center;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 12px -4px;
   animation: ${bounceFrames} 1s infinite;
 `;
-
+const StSettinWrap = styled.div`
+  border-radius: 100px;
+  width: 60px;
+  display: flex;
+  
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  border: 1px solid ${(props) => props.theme.greylight};
+  > svg {
+    fill: ${(props) => props.theme.keyBlue};
+  }
+  &:hover {
+    border: 1px solid ${(props) => props.theme.borderBlue};
+  }
+`;
+const StSettingP = styled.p`
+  margin-top: 15px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  width:100%;
+`;
 const StSettingWrap = styled.div`
   position: fixed;
   top: 0;
