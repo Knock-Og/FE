@@ -82,9 +82,7 @@ export const MYPAGE = {
 export const MYPAGEPW = {
   getPwData: (password: MypageGetPw) =>
     reqWithAccessToken.post("/check/password", password),
-
   getUserData: () => reqWithAccessToken.get("/mypage"),
-
   putPwData: (password: MypagePutPw) =>
     reqWithAccessToken.put("/password", password),
 };
@@ -114,6 +112,8 @@ export const POST = {
   editPost: ({ post, postId }: EditPostReq) =>
     reqWithAccessToken.put(`/post/${postId}`, post),
   delPost: (postId: number) => reqWithAccessToken.delete(`/post/${postId}`),
+  updateEditingStatus: (postId: number) =>
+    reqWithAccessToken.put(`/post/${postId}/editingStatus`),
 };
 
 export const LOG = {

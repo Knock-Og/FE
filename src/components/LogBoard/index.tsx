@@ -1,9 +1,12 @@
 import { useEffect } from "react";
 import { useQuery } from "react-query";
+import { Viewer } from "@toast-ui/react-editor";
 import styled from "styled-components";
 import { LOG } from "api";
 import { Close } from "assets";
 import { Log } from "types";
+import "@toast-ui/editor/dist/toastui-editor.css";
+import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
 interface Props {
   open: boolean;
@@ -42,7 +45,14 @@ const LogBoard = ({ open, setOpen, postId }: Props) => {
           <StSettingbottom>
             <StCardContainer>
               {logs?.map((log, idx) => (
-                <StCard key={idx}>{JSON.stringify(log)}</StCard>
+                <StCard key={idx}>
+                  <div>{log.memberName}</div>
+                  <div>{log.content}</div>
+                  <Viewer initialValue={log.oldContent} />
+                  <Viewer initialValue={log.newContent} />
+                  <div>{log.changedLineNum}</div>
+                  <div>{log.createDate.slice(0, 10)}</div>
+                </StCard>
               ))}
             </StCardContainer>
           </StSettingbottom>
@@ -169,5 +179,9 @@ const StSettingbottom = styled.div`
   }
   &::-webkit-scrollbar-track {
     background-color: ${(props) => props.theme.bgColor};
+  }
+
+  .toastui-editor-contents {
+    height: 20px !important;
   }
 `;

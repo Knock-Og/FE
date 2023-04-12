@@ -46,7 +46,7 @@ reqWithAccessToken.interceptors.response.use(
   (error) => {
     if (error.response.data.status === 401) {
       console.error(error.response.data.message);
-      alert("다시 로그인 해주세요.");
+      alert("접속 유효 시간이 지났습니다. 다시 로그인 해주세요.");
       removeCookie("access_token");
       window.location.pathname.includes("admin")
         ? window.location.replace("/admin/login")

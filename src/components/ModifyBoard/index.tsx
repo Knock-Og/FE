@@ -50,6 +50,7 @@ const ModifyBoard = (post: PostDetail) => {
   );
   const { mutate: editPost } = useMutation(POST.editPost);
   const { mutate: delPost } = useMutation(POST.delPost);
+  const { mutate: updateEditingStatus } = useMutation(POST.updateEditingStatus);
 
   const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) =>
     setNewPost({ ...newPost, title: e.target.value });
@@ -67,6 +68,7 @@ const ModifyBoard = (post: PostDetail) => {
       return alert("내용을 입력해주세요 !");
     }
     editPost({ postId: post.id, post: newPost });
+    updateEditingStatus(post.id);
     navigate(-1);
   };
 
@@ -111,6 +113,11 @@ const ModifyBoard = (post: PostDetail) => {
     });
     // eslint-disable-next-line
   }, [post]);
+
+  useEffect(() => {
+    return () => updateEditingStatus(post.id);
+    //eslint-disable-next-line
+  }, []);
 
   return (
     <>
