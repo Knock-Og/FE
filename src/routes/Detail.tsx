@@ -14,7 +14,7 @@ const Detail = () => {
   return (
     <Layout>
       {post ? (
-        post.editingStatus === "true" ? (
+        post.editingStatus === "false" ? (
           <>
             <DetailBoard {...post} />
           </>

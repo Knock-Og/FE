@@ -73,4 +73,8 @@ const StPostsWrapper = styled.div`
   justify-content: center;
 `;
 
-const StBreadCrumbWrapper = styled.div``;
+const StBreadCrumbWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+`;

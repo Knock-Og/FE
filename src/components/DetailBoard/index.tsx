@@ -69,6 +69,9 @@ const DetailBoard = (post: PostDetail) => {
             <StOhterSpan>읽기권한</StOhterSpan> {post.readablePosition}
           </StOhterLi>
           <StOhterLi>
+            <StOhterSpan>수정권한</StOhterSpan> {post.modifyPermission}
+          </StOhterLi>
+          <StOhterLi>
             <StOhterSpan>조회수</StOhterSpan> {post.postViews}
           </StOhterLi>
           <StOhterLi>
@@ -88,7 +91,7 @@ const DetailBoard = (post: PostDetail) => {
 
         <StkeyWordWrap>
           {post.keywords.map((item) => {
-            return <StkeyWordP>{item}</StkeyWordP>;
+            return <StkeyWordP>#{item}</StkeyWordP>;
           })}
         </StkeyWordWrap>
       </StContainer>
@@ -184,12 +187,7 @@ const StkeyWordWrap = styled.div`
   gap: 10px;
 `;
 const StkeyWordP = styled.p`
-  padding: 0px 15px;
-  height: 40px;
-  line-height: 40px;
-  background: ${(props) => props.theme.bgBlue};
-  border-radius: 20px;
-  color: ${(props) => props.theme.textwhite};
+  color: ${(props) => props.theme.keyBlue};
   word-break: break-word;
 `;
 

@@ -12,33 +12,33 @@ const FindPwForm = () => {
     navigate("/login");
   };
   //이메일 보내기
-  const [email, setEmail] =useState("")
+  const [email, setEmail] = useState("");
   const [emailBoolean, setEmailBoolean] = useState(false);
   const [emailMsg, setEmailMsg] = useState("");
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const emailChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
-    const emailCheck = e.target.value
+  const emailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const emailCheck = e.target.value;
     setEmail(emailCheck);
     const emailBoolean = emailRegex.test(e.target.value);
     setEmailBoolean(!emailBoolean);
     setEmailMsg(emailBoolean ? "" : "이메일형식이 올바르지 않습니다!");
-  }
-  const queryClient = useQueryClient()
+  };
+  const queryClient = useQueryClient();
   const emailMutation = useMutation("findPw", FIND.findPw, {
     onSuccess: (response) => {
       queryClient.invalidateQueries("findpw");
       alert("인증코드가 발송되었습니다.");
       return response.data;
-    }
+    },
   });
-  const pwSubmit = async(e:React.FormEvent<HTMLFormElement>)=>{
-    e.preventDefault()
+  const pwSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (!email || email.trim() === "") return alert("이메일을 적어주세요!");
-    if (email.indexOf("@") === -1)return alert("'@'를 포함해서 이메일을 작성해주세요!");
+    if (email.indexOf("@") === -1)
+      return alert("'@'를 포함해서 이메일을 작성해주세요!");
     if (emailBoolean) return alert("이메일형식이 올바르지 않습니다!");
     emailMutation.mutate({ email });
-  }
-
+  };
 
   //인증코드
   const [authenticationCode, setAuthenticationCode] = useState("");
@@ -52,20 +52,22 @@ const FindPwForm = () => {
       onSuccess: (Response) => {
         queryClient.invalidateQueries("findpw");
         return Response.data;
-      }
+      },
     }
   );
-  const codeSubmit = async(e:React.FormEvent<HTMLFormElement>)=>{
-    e.preventDefault()
-    if (authenticationCode.trim() === "") return alert("인증코드를 작성해주세요!");
+  const codeSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (authenticationCode.trim() === "")
+      return alert("인증코드를 작성해주세요!");
     pwFindCodeMutate({ authenticationCode, email });
-  }
+  };
   const copyPw = data?.data.password;
-  const copyCode =()=>{
-    navigator.clipboard.writeText(copyPw);
-    alert("임시비밀번호가 복사되었습니다.")
-  }
-  
+  const copyCode = () => {
+    window.navigator.clipboard
+      .writeText(copyPw)
+      .then(() => alert("임시비밀번호가 복사되었습니다."));
+  };
+
   return (
     <StFindPWBg>
       <StFindPwWrap>
@@ -74,12 +76,8 @@ const FindPwForm = () => {
             <StTitle>임시 비밀번호</StTitle>
             <StCode>
               <StCodePw>{data?.data.password}</StCodePw>
-              <StCopy onClick={()=>copyCode()}>
-                <StCopySvg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
+              <StCopy onClick={() => copyCode()}>
+                <StCopySvg width="24" height="24" viewBox="0 0 24 24">
                   <path
                     d="M20 9H11C9.89543 9 9 9.89543 9 11V20C9 21.1046 9.89543 22 11 22H20C21.1046 22 22 21.1046 22 20V11C22 9.89543 21.1046 9 20 9Z"
                     stroke-width="2"
@@ -133,7 +131,6 @@ const FindPwForm = () => {
 
 export default FindPwForm;
 
-
 const StFindPWBg = styled.div`
   width: 100%;
   height: 100vh;
@@ -153,9 +150,9 @@ const StFindPwWrap = styled.div`
   flex-wrap: wrap;
 `;
 const StFindBox = styled.div`
-  width:100%;
-  text-align:center;
-`
+  width: 100%;
+  text-align: center;
+`;
 
 const StTitle = styled.h4`
   font-weight: 800;
@@ -165,8 +162,7 @@ const Stcontent = styled.p`
   margin: 15px auto 25px;
 `;
 const StPwSubmitForm = styled.form`
-position:relative;
-
+  position: relative;
 `;
 
 const StAuthSubmitForm = styled.form`
@@ -192,10 +188,9 @@ const StInput = styled.input`
   }
 `;
 
-
 const StInputEmail = styled(StInput)`
-  padding:0  175px 0 25px;
-  margin-top:0;
+  padding: 0 175px 0 25px;
+  margin-top: 0;
 `;
 
 const Stbutton = styled.button`
@@ -236,7 +231,6 @@ const StfondId = styled.p`
   font-size: 0.875rem;
   margin-top: 35px;
   justify-content: center;
-
 `;
 const StfondIdspan = styled.span`
   display: block;
@@ -246,31 +240,29 @@ const StfondIdspan = styled.span`
   cursor: pointer;
 `;
 
-
-
 const StCodeBox = styled.div`
- text-align: center;
- width:100%;
+  text-align: center;
+  width: 100%;
 `;
 const StCode = styled.div`
-  margin:40px 0;
-  display:flex;
+  margin: 40px 0;
+  display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 const StCodePw = styled.p`
   font-weight: 500;
   font-size: 20px;
 `;
 const StCopy = styled.button`
-background:none;
-border:0;
-margin-left:8px;
-cursor: pointer;
+  background: none;
+  border: 0;
+  margin-left: 8px;
+  cursor: pointer;
 `;
 const StCopySvg = styled.svg`
-  stroke:${(props) => props.theme.stroke};
-  fill:${(props) => props.theme.fillWhite};
+  stroke: ${(props) => props.theme.stroke};
+  fill: ${(props) => props.theme.fillWhite};
 `;
 
 const StLoginbutton = styled.button`
