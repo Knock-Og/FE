@@ -164,6 +164,7 @@ const Header = () => {
 export default Header;
 
 const StContainer = styled.div`
+  min-width: 1440px;
   width: 100%;
   position: absolute;
   top: 0;

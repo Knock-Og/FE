@@ -78,7 +78,7 @@ export const SEARCH = {
 
 export const MYPAGE = {
   getMyPosts: (page: number) =>
-    reqWithAccessToken.get(`/mypage/posts?p=${page}`),
+    reqWithAccessToken.get(`/mypage/posts?page=${page}`),
 };
 
 export const MYPAGEPW = {
@@ -92,7 +92,9 @@ export const MYPAGEPW = {
 export const BOOKMARK = {
   getBookmarks: () => reqWithAccessToken.get("/bookmark/folders"),
   getBookmark: ({ folderId, page }: GetBookmarkArgs) =>
-    reqWithAccessToken.get(`/bookmark/folder/${folderId}/bookmarks?p=${page}`),
+    reqWithAccessToken.get(
+      `/bookmark/folder/${folderId}/bookmarks?page=${page}`
+    ),
   addBookmark: (bookMarkFolderName: string) =>
     reqWithAccessToken.post("/bookmark/folder", { bookMarkFolderName }),
   editBookmark: ({ folderId, bookMarkFolderName }: EditBookmarkArgs) =>
@@ -108,8 +110,7 @@ export const BOOKMARK = {
 };
 
 export const POST = {
-  getPost: (postId: number) =>
-    reqWithAccessToken.get(`/post/${postId}`).then((res) => res.data),
+  getPost: (postId: number) => reqWithAccessToken.get(`/post/${postId}`),
   addPost: (post: AddPost) => reqWithAccessToken.post("/post", post),
   editPost: ({ post, postId }: EditPostReq) =>
     reqWithAccessToken.put(`/post/${postId}`, post),
@@ -133,5 +134,5 @@ export const COMMENT = {
     reqWithAccessToken.delete(`/post/${postId}/comment/${commentId}`),
 
   putComment: ({ postId, commentId, comment }: PutComment) =>
-    reqWithAccessToken.put(`/post/${postId}/comment/${commentId}`, {comment}),
+    reqWithAccessToken.put(`/post/${postId}/comment/${commentId}`, { comment }),
 };

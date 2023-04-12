@@ -34,6 +34,7 @@ const App = () => {
 
             {/* Detail */}
             <Route path="/post/:postId" element={<ROUTE.Detail />} />
+            <Route path="/post/:postId/modify" element={<ROUTE.Modify />} />
 
             {/* Login */}
             <Route path="/login" element={<ROUTE.Login />} />

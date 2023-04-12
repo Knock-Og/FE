@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { LOG } from "api";
@@ -13,21 +12,6 @@ interface Props {
 
 const LogBoard = ({ open, setOpen, postId }: Props) => {
   const { data: logs } = useQuery<Log[]>("getLog", () => LOG.getLog(postId));
-
-  useEffect(() => {
-    if (open) {
-      document.body.style.cssText = `
-    top: -${window.scrollY}px;
-    width: 100%;
-     position: fixed; 
-     `;
-      return () => {
-        const scrollY = document.body.style.top;
-        document.body.style.cssText = "";
-        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
-      };
-    }
-  }, [open]);
 
   return (
     <>

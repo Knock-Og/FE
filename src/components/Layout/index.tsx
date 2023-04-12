@@ -29,13 +29,15 @@ const Layout = ({
   return (
     <StLayout>
       <Header />
-      <Setting
-        open={isNavOpen}
-        setOpen={setIsNavOpen}
-        navItems={navItems}
-        isBookMarkNav={isBookMarkNav}
-        addBookmarkHandler={addBookmarkHandler}
-      />
+      {navItems && (
+        <Setting
+          open={isNavOpen}
+          setOpen={setIsNavOpen}
+          navItems={navItems}
+          isBookMarkNav={isBookMarkNav}
+          addBookmarkHandler={addBookmarkHandler}
+        />
+      )}
       <StContainer>
         {breadcrumb && <StBreadCrumbWrapper>{breadcrumb}</StBreadCrumbWrapper>}
         <StPostsWrapper>
@@ -77,4 +79,5 @@ const StBreadCrumbWrapper = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  gap: 10px;
 `;
