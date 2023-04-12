@@ -50,7 +50,7 @@ reqWithAccessToken.interceptors.response.use(
       removeCookie("access_token");
       window.location.pathname.includes("admin")
         ? window.location.replace("/admin/login")
-        : window.location.replace("/login");
+        : window.location.replace("/");
     }
 
     if (error.response.data.status === 400) {

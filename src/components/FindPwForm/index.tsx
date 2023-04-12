@@ -9,7 +9,7 @@ const FindPwForm = () => {
     navigate("/login/findid");
   };
   const loginPage = () => {
-    navigate("/login");
+    navigate("/");
   };
   //이메일 보내기
   const [email, setEmail] = useState("");
