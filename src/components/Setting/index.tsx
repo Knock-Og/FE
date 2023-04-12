@@ -186,7 +186,6 @@ const StSettingTitle = styled.h4`
   font-weight: 600;
   font-size: 1.75rem;
   line-height: 100px;
- 
 `;
 const StIoClose = styled(Close)`
   position: absolute;
@@ -250,7 +249,7 @@ const StSettingButton = styled.button<{ active?: boolean }>`
     height: 16px;
     border-radius: 20px;
     position: absolute;
-    left: 39px;
+    left: 37px;
     z-index: 1;
     top: 0px;
     bottom: 0px;

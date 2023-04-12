@@ -13,20 +13,19 @@ const MypageForm = () => {
   );
   if (isLoading) return <h1>로딩중...</h1>;
   if (isError) return <h1>에러...</h1>;
-  const userDate = data?.data;
-    console.log(userDate);
+
   return (
     <StMypageWrap>
       <StMypageTop>
-        <StMyname>{userDate.memberName}</StMyname>
+        <StMyname>{data?.data.memberName}</StMyname>
         <StMyEmail>
-          이메일 주소 <StMyEmailSpan>{userDate.email}</StMyEmailSpan>
+          이메일 주소 <StMyEmailSpan>{data?.data.email}</StMyEmailSpan>
         </StMyEmail>
         <StMyEmail>
-          직위 <StMyEmailSpan>{userDate.position}</StMyEmailSpan>
+          직위 <StMyEmailSpan>{data?.data.position}</StMyEmailSpan>
         </StMyEmail>
         <StMyEmail>
-          휴대폰번호 <StMyEmailSpan>{userDate.phoneNum}</StMyEmailSpan>
+          휴대폰번호 <StMyEmailSpan>{data?.data.phoneNum}</StMyEmailSpan>
         </StMyEmail>
         <StBotton onClick={() => setChangPw(!changPw)}>
           비밀번호 변경하기
@@ -56,7 +55,7 @@ const StMypageTop = styled.div`
 const StMyname = styled.h4`
   font-weight: 700;
   font-size: 2.25rem;
-  margin-bottom:50px;
+  margin-bottom: 50px;
 `;
 const StMyEmail = styled.em`
   display: flex;
@@ -84,4 +83,3 @@ const StBotton = styled.button`
   cursor: pointer;
 `;
 const StMypageBottom = styled.div``;
-

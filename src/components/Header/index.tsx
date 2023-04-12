@@ -16,6 +16,7 @@ import {
 import { SEARCH } from "api";
 import { getCookie, removeCookie } from "api/cookies";
 import {
+  endPageState,
   isDarkState,
   searchedKeywordState,
   searchedPostsState,
@@ -28,6 +29,7 @@ const Header = () => {
 
   const setSearchedPosts = useSetRecoilState(searchedPostsState);
   const setSearchedKeyword = useSetRecoilState(searchedKeywordState);
+  const setEndPage = useSetRecoilState(endPageState);
   const [isDark, setIsDark] = useRecoilState(isDarkState);
 
   const navigate = useNavigate();
@@ -36,7 +38,14 @@ const Header = () => {
   const accessToken = getCookie("access_token");
 
   const { mutate: getSearchedData } = useMutation(SEARCH.getSearchedData, {
-    onSuccess: (res) => setSearchedPosts(res.data as Post[]),
+    onSuccess: (res) => {
+      setSearchedPosts(res.data.searchResponseDtoList as Post[]);
+      setEndPage(res.data.endPage);
+    },
+    onError: () => {
+      setSearchedPosts([]);
+      setEndPage(1);
+    },
   });
 
   const handleClickSearchBtn = () => {
@@ -69,36 +78,40 @@ const Header = () => {
     navigate("/login");
     removeCookie("access_token");
   };
-const [headerMove, setHeaderMove] = useState(false);
-const stContainerRef = useRef<HTMLDivElement>(null);
+  const [headerMove, setHeaderMove] = useState(false);
+  const stContainerRef = useRef<HTMLDivElement>(null);
 
-function handleScroll() {
-  if (window.scrollY !== 0) {
-    setHeaderMove(true);
-    if (stContainerRef.current) {
-      stContainerRef.current.classList.add("on");
-    }
-  } else {
-    setHeaderMove(false);
-    if (stContainerRef.current) {
-      stContainerRef.current.classList.remove("on");
+  function handleScroll() {
+    if (window.scrollY !== 0) {
+      setHeaderMove(true);
+      if (stContainerRef.current) {
+        stContainerRef.current.classList.add("on");
+      }
+    } else {
+      setHeaderMove(false);
+      if (stContainerRef.current) {
+        stContainerRef.current.classList.remove("on");
+      }
     }
   }
-}
 
-useEffect(() => {
-  window.addEventListener("scroll", handleScroll);
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []);
-  
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <StContainer className={headerMove ? "on" : ""}>
       <StHeaderLeftWrapper>
         <StHeaderLogo onClick={() => navigate("/")} />
         <StSearchWrapper>
-          <StSearchInput ref={searchInputRef} onKeyDown={handleKeyDown} placeholder="검색어 또는 키워드를 입력"/>
+          <StSearchInput
+            ref={searchInputRef}
+            onKeyDown={handleKeyDown}
+            placeholder="검색어 또는 키워드를 입력"
+          />
           <StSearchBtn onClick={handleClickSearchBtn}>찾기</StSearchBtn>
         </StSearchWrapper>
       </StHeaderLeftWrapper>
@@ -182,8 +195,8 @@ const StHeaderLogo = styled(HeaderLogo)`
   cursor: pointer;
   position: relative;
   top: -5px;
-  width:140px;
-  height:36px;
+  width: 140px;
+  height: 36px;
 `;
 
 const StSearchWrapper = styled.div`
@@ -196,7 +209,7 @@ const StSearchInput = styled.input`
   height: 50px;
   border-radius: 65px;
   border: 1px solid ${(props) => props.theme.lightGrey};
-  box-shadow:  4px 5px 11px -5px rgba(106, 115, 147, 0.4);
+  box-shadow: 4px 5px 11px -5px rgba(106, 115, 147, 0.4);
   padding: 0px 55px 0px 30px;
   outline: none;
 `;
@@ -321,7 +334,7 @@ const StAlarm = styled.div`
   position: absolute;
   width: 350px;
   height: 600px;
-  right:0;
+  right: 0;
   bottom: -625px;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
   background: ${(props) => props.theme.bgColor};

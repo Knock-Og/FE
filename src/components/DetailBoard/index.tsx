@@ -1,34 +1,41 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { useMutation } from "react-query";
+import { useState } from "react";
 import { Viewer } from "@toast-ui/react-editor";
 import styled from "styled-components";
 import { Comment, CommentBlue, LogBlue, Log, StarBlue, Star } from "assets";
-import { BOOKMARK } from "api";
 import { BookmarksBoard, CommentBoard, LogBoard } from "components";
 import { PostDetail } from "types";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
 const DetailBoard = (post: PostDetail) => {
-  const [isBookmarkPost, setIsBookmarkPost] = useState(false);
   const [select, setSelect] = useState<string>();
+  // const [activeTab, setActiveTab] = useState<ActiveState>();
   const [isActiveComment, setIsActiveComment] = useState<boolean>(false);
   const [isActiveLog, setIsActiveLog] = useState<boolean>(false);
   const [isActiveBookmark, setIsActiveBookmark] = useState<boolean>(false);
-
-  const location = useLocation();
-
-  const { mutate: addPostToBookmark } = useMutation(BOOKMARK.addPostToBookmark);
-  const { mutate: deletePostToBookmark } = useMutation(
-    BOOKMARK.deletePostToBookmark
+  const [isBookmarksBoardOpen, setIsBookmarksBoardOpen] =
+    useState<boolean>(false);
+  const [selectedFolders, setSelectedFolders] = useState<number[]>(
+    post.folders
   );
+
+  console.log(selectedFolders);
 
   const selectComponent: Record<string, JSX.Element> = {
     comment: <CommentBoard postId={post.id} />,
     log: <LogBoard postId={post.id} />,
-    bookmark: <BookmarksBoard postId={post.id} />,
+    bookmark: (
+      <BookmarksBoard
+        postId={post.id}
+        open={isBookmarksBoardOpen}
+        setOpen={setIsBookmarksBoardOpen}
+        selectedFolders={selectedFolders}
+        setSelectedFolders={setSelectedFolders}
+      />
+    ),
   };
+
+  // const handleClickTab = () => {};
 
   const handleClickComment = () => {
     setSelect("comment");
@@ -49,30 +56,12 @@ const DetailBoard = (post: PostDetail) => {
     setIsActiveComment(false);
     setIsActiveLog(false);
     setIsActiveBookmark(true);
-
-    // isBookmarkPost
-    //   ? addPostToBookmark({
-    //       folderId: location.state.folderId,
-    //       postId: post.id,
-    //     })
-    //   : deletePostToBookmark({
-    //       folderId: location.state.folderId,
-    //       postId: post.id,
-    //     });
+    setIsBookmarksBoardOpen(true);
   };
-
-  useEffect(() => {
-    // 즐겨찾기에 있는 건지 조회 후 update
-    setIsBookmarkPost(false);
-    //eslint-disable-next-line
-  }, []);
 
   return (
     <>
       <StContainer>
-        <button onClick={handleClickBookmark}>
-          {isBookmarkPost ? "제거" : "추가1"}
-        </button>
         <StTitle>{post.title}1</StTitle>
         <Viewer initialValue={post.content} />
       </StContainer>
