@@ -66,15 +66,43 @@ const DetailBoard = (post: PostDetail) => {
     setIsBookmarkPost(false);
     //eslint-disable-next-line
   }, []);
+  const keyWord = post.keywords;
 
+  console.log(post)
   return (
     <>
       <StContainer>
-        <button onClick={handleClickBookmark}>
-          {isBookmarkPost ? "제거" : "추가1"}
-        </button>
-        <StTitle>{post.title}1</StTitle>
-        <Viewer initialValue={post.content} />
+        <StTitle>{post.title}</StTitle>
+        <StOhterUl>
+          <StOhterLi>
+            <StOhterSpan>작성자명</StOhterSpan> {post.memberName}
+          </StOhterLi>
+          <StOhterLi>
+            <StOhterSpan>읽기권한</StOhterSpan> {post.readablePosition}
+          </StOhterLi>
+          <StOhterLi>
+            <StOhterSpan>조회수</StOhterSpan> {post.postViews}
+          </StOhterLi>
+          <StOhterLi>
+            <StOhterSpan>작성일</StOhterSpan>
+            {new Date(post.createdAt)
+              .toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              })
+              .replace(/\//g, ".")}
+          </StOhterLi>
+        </StOhterUl>
+        <ViewerWrap>
+          <Viewer initialValue={post.content} />
+        </ViewerWrap>
+
+        <StkeyWordWrap>
+          {keyWord.map((item) => {
+            return <StkeyWordP>{item}</StkeyWordP>;
+          })}
+        </StkeyWordWrap>
       </StContainer>
       <StBox>
         <StIcon>
@@ -105,26 +133,86 @@ export default DetailBoard;
 const StContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  width: 80%;
-  height: 80vh;
-  background-color: ${(props) => props.theme.veryLightGrey};
-  border: 1px solid ${(props) => props.theme.grey};
-
-  padding: 30px;
-`;
-
-const StTitle = styled.div`
   width: 100%;
-  height: 40px;
-  border: 1px solid ${(props) => props.theme.grey};
-  border-radius: 10px;
-  font-weight: 800;
-  font-size: 24px;
-  line-height: 40px;
-  padding: 0px 40px;
-  box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
+  height: 100vh;
+  background: ${(props) => props.theme.bgColor};
+  border:20px;
 `;
+
+const StTitle = styled.h4`
+  width: 100%;
+  line-height: 35px;
+  border: 1px solid ${(props) => props.theme.pageBorder};
+  padding: 30px 40px;
+  font-size: 1.75rem;
+  outline: none;
+  border-radius: 5px 5px 0 0;
+  font-weight: 800;
+`;
+const StOhterUl = styled.ul`
+  border: 1px solid ${(props) => props.theme.pageBorder};
+  border-top: 0;
+  padding: 30px 40px;
+  display: flex;
+  gap: 30px;
+  
+`;
+const StOhterLi = styled.li`
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &::after {
+    width: 1px;
+    height: 10px;
+    top:0;
+    bottom:0;
+    margin:auto 0;
+    background: ${(props) => props.theme.pageBorder};
+    content:'';
+    right:-15px;
+    position:absolute;
+
+  }
+`;
+const StOhterSpan = styled.span`
+  font-weight:600;
+ 
+`
+const ViewerWrap = styled.div`
+  border: 1px solid ${(props) => props.theme.pageBorder};
+  width: 100%;
+  border-top: 0;
+  padding:30px 40px;
+  min-height: 670px;
+`;
+
+const StkeyWordWrap = styled.div`
+  border: 1px solid ${(props) => props.theme.pageBorder};
+  width: 100%;
+  border-top: 0;
+  margin-bottom: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px 20px;
+  gap: 10px;
+`;
+const StkeyWordP = styled.p`
+  padding: 0px 15px;
+  height: 40px;
+  line-height: 40px;
+  background: ${(props) => props.theme.bgBlue};
+  border-radius: 20px;
+  color: ${(props) => props.theme.textwhite};
+  word-break: break-word;
+`;
+
+
+
+
+
+
 
 const StBox = styled.div`
   display: flex;

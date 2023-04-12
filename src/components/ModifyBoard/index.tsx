@@ -174,13 +174,13 @@ const ModifyBoard = (post: PostDetail) => {
           {newPost.keywords.map((keyword) => (
             <StkeyWordP key={keyword}>{keyword}</StkeyWordP>
           ))}
+          <StkeyWordInput
+            placeholder="태그를 입력하세요 (엔터로 구분)"
+            value={keyword}
+            onChange={handleChangeKeywordInput}
+            onKeyUp={handleKeyUp}
+          />
         </StkeyWordWrap>
-        <StkeyWordInput
-          placeholder="키워드"
-          value={keyword}
-          onChange={handleChangeKeywordInput}
-          onKeyUp={handleKeyUp}
-        />
 
         <StDelBtn onClick={handdleClickDelBtn}>삭제하기</StDelBtn>
         <StAddBtn onClick={handleClickEditBtn}>수정완료</StAddBtn>
@@ -213,6 +213,7 @@ const StTitleInput = styled.input`
   font-size: 1.125rem;
   outline: none;
   border-radius: 5px 5px 0 0;
+  font-weight: 800;
   &::placeholder {
     color: ${(props) => props.theme.placeholder};
   }
@@ -232,6 +233,7 @@ const StkeyWordWrap = styled.div`
   flex-wrap: wrap;
   padding: 20px 20px;
   gap: 10px;
+  
 `;
 const StkeyWordP = styled.p`
   padding: 0px 15px;
@@ -246,6 +248,7 @@ const StkeyWordInput = styled.input`
   outline: 0;
   border: 0;
   width: 200px;
+  border-bottom: 1px solid ${(props) => props.theme.pageBorder};
 `;
 
 const StAddBtn = styled.button`
@@ -264,7 +267,8 @@ const StDelBtn = styled.button`
   background: ${(props) => props.theme.bgColor};
   border-radius: 10px;
   color: ${(props) => props.theme.keyBlue};
-  border: none;
+  border: 1px solid ${(props) => props.theme.borderBlue};
+  margin-left:15px;
   outline: 0;
   cursor: pointer;
 `;

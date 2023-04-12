@@ -17,14 +17,7 @@ const AdminLoginform = () => {
       setCookie("access_token", response.headers.authorization.substr(7));
       queryClient.invalidateQueries("login");
       navigate("/admin");
-    },
-    onError: async (response: {
-      response: { data: { message: string } };
-    }): Promise<string> => {
-      queryClient.invalidateQueries("login");
-      alert("등록된 회원정보가 없습니다.");
-      return response.response.data.message;
-    },
+    }
   });
 
   const onChangePw = () => setShowPw(!showPw);

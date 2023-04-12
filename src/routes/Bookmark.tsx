@@ -42,9 +42,7 @@ const Bookmark = () => {
       });
       setNavItems(nav);
     },
-    onError: () => {
-      setNavItems([{ itemValue: "", handler: () => null }]);
-    },
+    
   });
 
   const { mutate: getBookmark } = useMutation(BOOKMARK.getBookmark, {

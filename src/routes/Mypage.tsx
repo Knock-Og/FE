@@ -14,6 +14,7 @@ const Mypage = () => {
 export default Mypage;
 
 const Inner = styled.div`
-  width: 1376px;
+  max-width: 1376px;
   margin: 0 auto;
+  
 `;
