@@ -21,6 +21,8 @@ import {
   MypageGetPw,
   MypagePutPw,
   MemberItem,
+  DelComment,
+  PutComment,
 } from "types";
 
 export const LOGIN = {
@@ -82,9 +84,7 @@ export const MYPAGE = {
 export const MYPAGEPW = {
   getPwData: (password: MypageGetPw) =>
     reqWithAccessToken.post("/check/password", password),
-
   getUserData: () => reqWithAccessToken.get("/mypage"),
-
   putPwData: (password: MypagePutPw) =>
     reqWithAccessToken.put("/password", password),
 };
@@ -114,6 +114,8 @@ export const POST = {
   editPost: ({ post, postId }: EditPostReq) =>
     reqWithAccessToken.put(`/post/${postId}`, post),
   delPost: (postId: number) => reqWithAccessToken.delete(`/post/${postId}`),
+  updateEditingStatus: (postId: number) =>
+    reqWithAccessToken.put(`/post/${postId}/editingStatus`),
 };
 
 export const LOG = {
@@ -126,4 +128,10 @@ export const COMMENT = {
     reqWithAccessToken.get(`/post/${postId}/comments`).then((res) => res.data),
   addComment: ({ postId, comment }: EditCommentReq) =>
     reqWithAccessToken.post(`/post/${postId}/comment`, comment),
+
+  delComment: ({ postId, commentId }: DelComment) =>
+    reqWithAccessToken.delete(`/post/${postId}/comment/${commentId}`),
+
+  putComment: ({ postId, commentId, comment }: PutComment) =>
+    reqWithAccessToken.put(`/post/${postId}/comment/${commentId}`, {comment}),
 };

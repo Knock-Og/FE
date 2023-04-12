@@ -148,7 +148,7 @@ const StLoginWrap = styled.div`
   padding: 0 115px;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
   border-radius: 24px;
-  border: 1px solid #aeaeae;
+  border: 1px solid ${(props) => props.theme.borderColor};
   height: 630px;
   display: flex;
   align-items: center;
@@ -161,7 +161,7 @@ const StTop = styled.div`
 const StLogo = styled.svg``;
 const StExplanation = styled.p`
   font-weight: 500;
-  color: #aeaeae;
+  color: ${(props) => props.theme.greyLight};
   margin: 25px auto 0px;
 `;
 const StLogin = styled.div`
@@ -176,7 +176,7 @@ const StLoginLi = styled.li`
 const StInput = styled.input`
   width: 100%;
   height: 70px;
-  border: 1px solid #aeaeae;
+  border: 1px solid ${(props) => props.theme.borderColor};
   border-radius: 10px;
   padding: 0 26px;
   font-weight: 500;
@@ -186,7 +186,7 @@ const StInput = styled.input`
   }
 
   &:focus {
-    border: 1px solid #007fff;
+    border: 1px solid ${(props) => props.theme.borderBlue};
   }
 `;
 const StLoginLabel = styled.label`
@@ -197,11 +197,11 @@ const StLoginLabel = styled.label`
 `;
 const StLoginBtn = styled.button`
   width: 100%;
-  background: #007fff;
+  background: ${(props) => props.theme.bgBlue};
   border-radius: 10px;
   font-weight: 500;
   height: 64px;
   border: 0;
-  color: #fff;
+  color: ${(props) => props.theme.textwhite};
   cursor: pointer;
 `;

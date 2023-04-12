@@ -231,3 +231,15 @@ export interface BookmarkNavItem {
   itemValue: string;
   handler: (folderId: number, folderName: string) => void;
 }
+
+
+export interface DelComment {
+  postId: number;
+  commentId: number;
+}
+
+export interface PutComment {
+  postId: number;
+  commentId: number;
+  comment:string;
+}

@@ -70,7 +70,8 @@ const BookmarksBoard = ({ open, setOpen, postId, folders }: Props) => {
     if (open) {
       document.body.style.cssText = `
     top: -${window.scrollY}px;
-    width: 100%;`;
+    width: 100%;
+    porition:fixed`;
       return () => {
         const scrollY = document.body.style.top;
         document.body.style.cssText = "";
