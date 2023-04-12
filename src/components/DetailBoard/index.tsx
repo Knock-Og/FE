@@ -1,34 +1,39 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { useMutation } from "react-query";
+import { useState } from "react";
 import { Viewer } from "@toast-ui/react-editor";
 import styled from "styled-components";
 import { Comment, CommentBlue, LogBlue, Log, StarBlue, Star } from "assets";
-import { BOOKMARK } from "api";
 import { BookmarksBoard, CommentBoard, LogBoard } from "components";
 import { PostDetail } from "types";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
 const DetailBoard = (post: PostDetail) => {
-  const [isBookmarkPost, setIsBookmarkPost] = useState(false);
   const [select, setSelect] = useState<string>();
+  // const [activeTab, setActiveTab] = useState<ActiveState>();
   const [isActiveComment, setIsActiveComment] = useState<boolean>(false);
   const [isActiveLog, setIsActiveLog] = useState<boolean>(false);
   const [isActiveBookmark, setIsActiveBookmark] = useState<boolean>(false);
-
-  const location = useLocation();
-
-  const { mutate: addPostToBookmark } = useMutation(BOOKMARK.addPostToBookmark);
-  const { mutate: deletePostToBookmark } = useMutation(
-    BOOKMARK.deletePostToBookmark
+  const [isBookmarksBoardOpen, setIsBookmarksBoardOpen] =
+    useState<boolean>(false);
+  const [selectedFolders, setSelectedFolders] = useState<number[]>(
+    post.folders
   );
 
   const selectComponent: Record<string, JSX.Element> = {
     comment: <CommentBoard postId={post.id} />,
     log: <LogBoard postId={post.id} />,
-    bookmark: <BookmarksBoard postId={post.id} />,
+    bookmark: (
+      <BookmarksBoard
+        postId={post.id}
+        open={isBookmarksBoardOpen}
+        setOpen={setIsBookmarksBoardOpen}
+        selectedFolders={selectedFolders}
+        setSelectedFolders={setSelectedFolders}
+      />
+    ),
   };
+
+  // const handleClickTab = () => {};
 
   const handleClickComment = () => {
     setSelect("comment");
@@ -49,32 +54,43 @@ const DetailBoard = (post: PostDetail) => {
     setIsActiveComment(false);
     setIsActiveLog(false);
     setIsActiveBookmark(true);
-
-    // isBookmarkPost
-    //   ? addPostToBookmark({
-    //       folderId: location.state.folderId,
-    //       postId: post.id,
-    //     })
-    //   : deletePostToBookmark({
-    //       folderId: location.state.folderId,
-    //       postId: post.id,
-    //     });
+    setIsBookmarksBoardOpen(true);
   };
-
-  useEffect(() => {
-    // 즐겨찾기에 있는 건지 조회 후 update
-    setIsBookmarkPost(false);
-    //eslint-disable-next-line
-  }, []);
 
   return (
     <>
       <StContainer>
-        <button onClick={handleClickBookmark}>
-          {isBookmarkPost ? "제거" : "추가1"}
-        </button>
-        <StTitle>{post.title}1</StTitle>
-        <Viewer initialValue={post.content} />
+        <StTitle>{post.title}</StTitle>
+        <StOhterUl>
+          <StOhterLi>
+            <StOhterSpan>작성자명</StOhterSpan> {post.memberName}
+          </StOhterLi>
+          <StOhterLi>
+            <StOhterSpan>읽기권한</StOhterSpan> {post.readablePosition}
+          </StOhterLi>
+          <StOhterLi>
+            <StOhterSpan>조회수</StOhterSpan> {post.postViews}
+          </StOhterLi>
+          <StOhterLi>
+            <StOhterSpan>작성일</StOhterSpan>
+            {new Date(post.createdAt)
+              .toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              })
+              .replace(/\//g, ".")}
+          </StOhterLi>
+        </StOhterUl>
+        <ViewerWrap>
+          <Viewer initialValue={post.content} />
+        </ViewerWrap>
+
+        <StkeyWordWrap>
+          {post.keywords.map((item) => {
+            return <StkeyWordP>{item}</StkeyWordP>;
+          })}
+        </StkeyWordWrap>
       </StContainer>
       <StBox>
         <StIcon>
@@ -105,25 +121,76 @@ export default DetailBoard;
 const StContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  width: 80%;
-  height: 80vh;
-  background-color: ${(props) => props.theme.veryLightGrey};
-  border: 1px solid ${(props) => props.theme.grey};
-
-  padding: 30px;
+  width: 100%;
+  height: 100vh;
+  background: ${(props) => props.theme.bgColor};
+  border: 20px;
 `;
 
-const StTitle = styled.div`
+const StTitle = styled.h4`
   width: 100%;
-  height: 40px;
-  border: 1px solid ${(props) => props.theme.grey};
-  border-radius: 10px;
+  line-height: 35px;
+  border: 1px solid ${(props) => props.theme.pageBorder};
+  padding: 30px 40px;
+  font-size: 1.75rem;
+  outline: none;
+  border-radius: 5px 5px 0 0;
   font-weight: 800;
-  font-size: 24px;
+`;
+const StOhterUl = styled.ul`
+  border: 1px solid ${(props) => props.theme.pageBorder};
+  border-top: 0;
+  padding: 30px 40px;
+  display: flex;
+  gap: 30px;
+`;
+const StOhterLi = styled.li`
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &::after {
+    width: 1px;
+    height: 10px;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    background: ${(props) => props.theme.pageBorder};
+    content: "";
+    right: -15px;
+    position: absolute;
+  }
+`;
+const StOhterSpan = styled.span`
+  font-weight: 600;
+`;
+const ViewerWrap = styled.div`
+  border: 1px solid ${(props) => props.theme.pageBorder};
+  width: 100%;
+  border-top: 0;
+  padding: 30px 40px;
+  min-height: 670px;
+`;
+
+const StkeyWordWrap = styled.div`
+  border: 1px solid ${(props) => props.theme.pageBorder};
+  width: 100%;
+  border-top: 0;
+  margin-bottom: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px 20px;
+  gap: 10px;
+`;
+const StkeyWordP = styled.p`
+  padding: 0px 15px;
+  height: 40px;
   line-height: 40px;
-  padding: 0px 40px;
-  box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.14);
+  background: ${(props) => props.theme.bgBlue};
+  border-radius: 20px;
+  color: ${(props) => props.theme.textwhite};
+  word-break: break-word;
 `;
 
 const StBox = styled.div`

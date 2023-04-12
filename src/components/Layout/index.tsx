@@ -12,6 +12,7 @@ interface Props {
   addBookmarkHandler?: (addBookmarkInput: string) => void;
   isNavOpen?: boolean;
   setIsNavOpen?: (isOpen: boolean) => void;
+  isPagination?: boolean | null;
 }
 
 const Layout = ({
@@ -23,6 +24,7 @@ const Layout = ({
   page,
   isNavOpen,
   setIsNavOpen,
+  isPagination,
 }: Props) => {
   return (
     <StLayout>
@@ -38,8 +40,7 @@ const Layout = ({
         {breadcrumb && <StBreadCrumbWrapper>{breadcrumb}</StBreadCrumbWrapper>}
         <StPostsWrapper>
           {children}
-          {page && (
-            
+          {page && isPagination && (
             <Pagination
               count={page.endPage}
               page={page.page}
@@ -47,7 +48,6 @@ const Layout = ({
                 window.scrollTo(0, 0);
                 page.setPage(curPage);
               }}
-              
             />
           )}
         </StPostsWrapper>
@@ -73,6 +73,4 @@ const StPostsWrapper = styled.div`
   justify-content: center;
 `;
 
-const StBreadCrumbWrapper = styled.div`
-
-`;
+const StBreadCrumbWrapper = styled.div``;

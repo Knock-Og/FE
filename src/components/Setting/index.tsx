@@ -5,7 +5,7 @@ import { IconButton, Input } from "@mui/material";
 import { CreateNewFolder } from "@mui/icons-material";
 import { NavItem } from "types";
 import { Close, NavOpenArrow } from "assets";
-
+import NoCategory from "components/NoCategory";
 interface Props {
   open?: boolean;
   setOpen?: (isOpen: boolean) => void;
@@ -60,7 +60,7 @@ const Setting = ({
           </StSettingTop>
 
           <StSettingbottom>
-            {navItems?.map((item) => (
+            {navItems ? navItems.map((item) => (
               <StSettingButton
                 key={item.itemValue}
                 onClick={() => {
@@ -74,7 +74,8 @@ const Setting = ({
               >
                 {item.itemValue}
               </StSettingButton>
-            ))}
+            )):<NoCategory/>}
+            
           </StSettingbottom>
           {isBookMarkNav && (
             <StBookmarkAddWrapper>
@@ -186,7 +187,6 @@ const StSettingTitle = styled.h4`
   font-weight: 600;
   font-size: 1.75rem;
   line-height: 100px;
- 
 `;
 const StIoClose = styled(Close)`
   position: absolute;
@@ -202,7 +202,7 @@ const StIoClose = styled(Close)`
 const StSettingbottom = styled.div`
   padding-bottom: 50px;
   overflow: auto;
-  height: 55%;
+  height: calc(100% - 400px);
   &::-webkit-scrollbar {
     width: 10px;
   }
@@ -250,7 +250,7 @@ const StSettingButton = styled.button<{ active?: boolean }>`
     height: 16px;
     border-radius: 20px;
     position: absolute;
-    left: 39px;
+    left: 37px;
     z-index: 1;
     top: 0px;
     bottom: 0px;
@@ -263,8 +263,9 @@ const StSettingButton = styled.button<{ active?: boolean }>`
 
 const StBookmarkAddWrapper = styled.div`
   border-top: 1px solid ${({ theme }) => theme.lightGrey};
-  height: 45%;
-  padding: 30px 50px;
+  height: 300px;
+  padding: 0px 50px;
+  justify-content: center;
   display: flex;
   flex-direction: column;
 `;
@@ -272,7 +273,7 @@ const StBookmarkAddWrapper = styled.div`
 const StBookmarkAddTitle = styled.h5`
   font-weight: 600;
   font-size: 1.75rem;
-  line-height: 100px;
+  margin-bottom:50px;
 `;
 
 const StAddBookMarkBtn = styled(IconButton)`

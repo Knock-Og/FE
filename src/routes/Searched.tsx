@@ -75,7 +75,11 @@ const Searched = () => {
   });
 
   useEffect(() => {
-    getSearchedData({ keyword: searchedKeyword, page, sort });
+    getSearchedData({
+      keyword: searchedKeyword,
+      page,
+      sort: sort === "" ? "관심도" : sort,
+    });
     //eslint-disable-next-line
   }, [page]);
 
@@ -123,6 +127,7 @@ const Searched = () => {
       isNavOpen={isNavOpen}
       setIsNavOpen={setIsNavOpen}
       page={{ page, endPage, setPage }}
+      isPagination={searchedPosts && searchedPosts.length > 0}
     >
       {searchedPosts && searchedPosts?.length > 0 ? (
         searchedPosts.map((post) => <PostCard key={post.id} {...post} />)
@@ -138,7 +143,7 @@ export default Searched;
 const StBreadCrumbWrapper = styled.div`
   width: 100%;
   display: flex;
-  margin:35px 0 30px;
+  margin: 35px 0 30px;
   gap: 30px;
   align-items: center;
 `;

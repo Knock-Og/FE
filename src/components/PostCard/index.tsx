@@ -70,7 +70,14 @@ const PostCard = (post: Post) => {
           ))}
         </StFooterleft>
         <StFooterRight>
-          <StFooterItem>{post.modifiedAt.slice(0, 10)}</StFooterItem>
+          <StFooterItem>{
+          new Date(post.modifiedAt)
+              .toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              })
+              .replace(/\//g, ".")}</StFooterItem>
           <StFooterItem>
             댓글 <StFooterItemSpan>{post.commentCount}</StFooterItemSpan>개
           </StFooterItem>

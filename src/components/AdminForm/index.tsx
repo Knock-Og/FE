@@ -35,12 +35,7 @@ const AdminForm = () => {
       if (response) {
         queryClient.invalidateQueries("member");
       }
-    },
-    onError: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("member");
-      }
-    },
+    }
   });
 
   const modalBtn = () => setModalOpen(false);

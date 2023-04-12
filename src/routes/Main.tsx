@@ -40,7 +40,14 @@ const Main = () => {
   const accessToken = getCookie("access_token");
 
   const { mutate: getSearchedData } = useMutation(SEARCH.getSearchedData, {
-    onSuccess: (res) => setSearchedPosts(res.data as Post[]),
+    onSuccess: (res) => {
+      setSearchedPosts(res.data.searchResponseDtoList as Post[]);
+      setEndPage(res.data.endPage);
+    },
+    onError: () => {
+      setSearchedPosts([]);
+      setEndPage(1);
+    },
   });
 
   const { mutate: getBookmarks } = useMutation(BOOKMARK.getBookmarks, {
@@ -153,7 +160,7 @@ const Main = () => {
             onKeyDown={handleKeyDown}
             placeholder="검색어 또는 키워드를 입력"
           />
-          
+
           <StSearchBtn onClick={handleClickSearchBtn}>찾기</StSearchBtn>
         </StSearchWrapper>
         <StFolder>

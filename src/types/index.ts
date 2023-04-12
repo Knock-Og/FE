@@ -38,7 +38,7 @@ export interface PostDetail {
   keywords: string[];
   postViews: number;
   editingStatus: string;
-  forlders: number[];
+  folders: number[];
   modifyPermission: string;
   readablePosition: string;
 }
@@ -214,10 +214,11 @@ export interface UserDataItem {
   id: number;
 }
 
-
 export interface CurrenPw {
   changPw: boolean;
   changPwBtn: () => void;
 }
 
-
+export interface ActiveState {
+  [key: string]: boolean;
+}
