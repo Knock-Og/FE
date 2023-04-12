@@ -102,7 +102,7 @@ const Main = () => {
     setIsOn(false);
   };
   const handleClickLogOut = () => {
-    navigate("/login");
+    navigate("/");
     removeCookie("access_token");
   };
 

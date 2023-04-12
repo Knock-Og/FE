@@ -9,7 +9,7 @@ const FindIdForm = () => {
     navigate("/login/findPw");
   };
   const loginPage = () => {
-    navigate("/login");
+    navigate("/");
   };
   //인증번호 받기
   const [memberName, setMemberName] = useState("");
@@ -169,9 +169,9 @@ const FindIdForm = () => {
       </StFindIdWrap>
     </StFindIwBg>
   );
-}
+};
 
-export default FindIdForm
+export default FindIdForm;
 const StFindIwBg = styled.div`
   width: 100%;
   height: 100vh;
@@ -201,7 +201,7 @@ const StTitle = styled.h4`
 const StContent = styled.p`
   margin: 15px auto 35px;
 `;
-const StIdSubmitForm =styled.form``
+const StIdSubmitForm = styled.form``;
 const StAuthSubmitForm = styled.form`
   display: flex;
   flex-wrap: wrap;
@@ -225,8 +225,8 @@ const StInput = styled.input`
   }
 `;
 const StInputbox = styled.div`
-position:relative;
-`
+  position: relative;
+`;
 const StInputNum = styled(StInput)`
   padding: 0 175px 0 25px;
   margin-top: 15px;
@@ -281,8 +281,6 @@ const StfondPwspan = styled.span`
   cursor: pointer;
 `;
 
-
-
 const StCodeBox = styled.div`
   text-align: center;
   width: 100%;
@@ -292,14 +290,13 @@ const StCode = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom:10px;
+  padding-bottom: 10px;
   border-bottom: 3px solid #007fff;
 `;
 const StCodePw = styled.p`
   font-weight: 500;
   font-size: 20px;
 `;
-
 
 const StLoginbutton = styled.button`
   border: 0;
