@@ -7,7 +7,7 @@ import { Edit, FolderDelete, Cancel } from "@mui/icons-material";
 import styled from "styled-components";
 import { Folder, FolderPlus } from "assets";
 import { BOOKMARK } from "api";
-import { PostCard, Layout } from "components";
+import { PostCard, Layout, NoSearched } from "components";
 import { endPageState, searchedPostsState } from "store/atoms";
 import { Bookmark as IBookmark, NavItem, Post } from "types";
 
@@ -199,9 +199,11 @@ const Bookmark = () => {
             </StBreadCrumbWrapper>
           )}
 
-          {searchedPosts &&
-            searchedPosts?.length > 0 &&
-            searchedPosts.map((post) => <PostCard key={post.id} {...post} />)}
+          {searchedPosts && searchedPosts.length > 0 ? (
+            searchedPosts.map((post) => <PostCard key={post.id} {...post} />)
+          ) : (
+            <NoSearched />
+          )}
         </StLayoutChildrenWrapper>
       </Layout>
     </>
