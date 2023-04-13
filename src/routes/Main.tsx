@@ -116,9 +116,9 @@ const Main = () => {
       <StHeader>
         <StHeaderMeun>
           <StWrite onClick={() => navigate("/write")}>게시물작성</StWrite>
-          <StbellWrap onClick={isAlarmBtn}>
+          {/* <StbellWrap onClick={isAlarmBtn}>
             <Bell />
-          </StbellWrap>
+          </StbellWrap> */}
           <StAccountBtn onClick={handleClickAccountBtn}>
             <Menuperson />
             <MenuArr className={isOn ? "on" : ""} />
@@ -135,7 +135,7 @@ const Main = () => {
             {accessToken ? "로그아웃" : "로그인"}
           </StMenuItem>
         </StMenu>
-        <StAlarm className={isAlarm ? "on" : ""}>
+        {/* <StAlarm className={isAlarm ? "on" : ""}>
           <StAlarmTop>
             <StAlarmTitle> 알림</StAlarmTitle>
           </StAlarmTop>
@@ -149,7 +149,7 @@ const Main = () => {
               </StAlarmcontentP>
             </StAlarmcontent>
           </StAlarmContentWrap>
-        </StAlarm>
+        </StAlarm> */}
       </StHeader>
 
       <StMainWrapper>
