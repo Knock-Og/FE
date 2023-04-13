@@ -23,3 +23,7 @@ export { ReactComponent as Close } from "./close.svg";
 export { ReactComponent as HeaderLogo } from "./headerLogo.svg";
 export { ReactComponent as NoSearch } from "./noSearch.svg";
 export { ReactComponent as NavOpenArrow } from "./navOpenArrow.svg";
+export { ReactComponent as Chat } from "./chat.svg";
+export { ReactComponent as Grid } from "./grid.svg";
+
+;

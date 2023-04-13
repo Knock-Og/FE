@@ -32,45 +32,50 @@ const DetailBoard = (post: PostDetail) => {
   return (
     <>
       <StContainer>
-        <StTitleWrapper>
-          <StTitle>{post.title}</StTitle>
-          <StEditRouteBtn onClick={handleClickEditRouteBtn}>
-            수정하기
-          </StEditRouteBtn>
-        </StTitleWrapper>
-        <StOhterUl>
-          <StOhterLi>
-            <StOhterSpan>작성자명</StOhterSpan> {post.memberName}
-          </StOhterLi>
-          <StOhterLi>
-            <StOhterSpan>읽기권한</StOhterSpan> {post.readablePosition}
-          </StOhterLi>
-          <StOhterLi>
-            <StOhterSpan>수정권한</StOhterSpan> {post.modifyPermission}
-          </StOhterLi>
-          <StOhterLi>
-            <StOhterSpan>조회수</StOhterSpan> {post.postViews}
-          </StOhterLi>
-          <StOhterLi>
-            <StOhterSpan>작성일</StOhterSpan>
-            {new Date(post.createdAt)
-              .toLocaleDateString("ko-KR", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-              })
-              .replace(/\//g, ".")}
-          </StOhterLi>
-        </StOhterUl>
+        <StTop>
+          <StLeft>
+            <StkeyWordWrap>
+              {post.keywords.map((item) => {
+                return <StkeyWordP key={item}>#{item}</StkeyWordP>;
+              })}
+            </StkeyWordWrap>
+            <StTitle>{post.title}</StTitle>
+            <StOhterUl>
+              <StOhterLi>
+                <StOhterSpan>작성자</StOhterSpan> {post.memberName}
+              </StOhterLi>
+
+              <StOhterLi>
+                <StOhterSpan>작성일</StOhterSpan>
+                {new Date(post.createdAt)
+                  .toLocaleDateString("ko-KR", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })
+                  .replace(/\//g, ".")}
+              </StOhterLi>
+              <StOhterLi>
+                <StOhterSpan>읽기권한</StOhterSpan> {post.readablePosition}
+              </StOhterLi>
+              <StOhterLi>
+                <StOhterSpan>수정권한</StOhterSpan> {post.modifyPermission}
+              </StOhterLi>
+            </StOhterUl>
+          </StLeft>
+          <StRight>
+            <StNum>{post.postViews}</StNum>
+            <StText>조회수</StText>
+          </StRight>
+        </StTop>
         <ViewerWrap>
           <Viewer initialValue={post.content} />
         </ViewerWrap>
-
-        <StkeyWordWrap>
-          {post.keywords.map((item) => {
-            return <StkeyWordP key={item}>#{item}</StkeyWordP>;
-          })}
-        </StkeyWordWrap>
+        <StBtnWrap>
+          <StEditRouteBtn onClick={handleClickEditRouteBtn}>
+            수정하기
+          </StEditRouteBtn>
+        </StBtnWrap>
       </StContainer>
 
       <PostDetailTab
@@ -89,77 +94,90 @@ const StContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: ${(props) => props.theme.bgColor};
-  border: 20px;
+  
+`;
+const StTop = styled.div`
+  width: 100%;
+  border-radius: 15px;
+  background: ${(props) => props.theme.bgGrey};
+  padding: 50px;
+  margin-bottom: 50px;
+  display:flex;
+  align-items:center;
+`;
+const StLeft = styled.div`
+  width: 90%;
+  border-right: 1px solid ${(props) => props.theme.borderColor};
+  padding-right: 50px;
+`;
+const StRight = styled.div`
+  width:10%;
+  text-align:center;
+`;
+const StNum = styled.em`
+  color: ${(props) => props.theme.redLightColor};
+  font-size: 3rem;
+  font-weight: 700;
+`;
+const StText = styled.p`
+  font-weight: 600;
+  margin-top: 15px;
 `;
 
 const StTitle = styled.h4`
-  width: 100%;
-  line-height: 35px;
-  padding: 30px 40px;
-  font-size: 1.75rem;
-  outline: none;
-  border-radius: 5px 5px 0 0;
-  font-weight: 800;
+  line-height: 45px;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 40px;
 `;
 const StOhterUl = styled.ul`
-  border-top: 0;
-  padding: 30px 40px;
   display: flex;
-  gap: 30px;
-  border: 1px solid ${(props) => props.theme.pageBorder};
+  gap: 32px;
 `;
 const StOhterLi = styled.li`
   position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
-
+  font-weight: 500;
   &::after {
-    width: 1px;
-    height: 10px;
-    top: 0;
-    bottom: 0;
-    margin: auto 0;
-    background: ${(props) => props.theme.pageBorder};
-    content: "";
-    right: -15px;
     position: absolute;
+    right: -16px;
+    border-radius: 10px;
+    width: 3px;
+    height: 3px;
+    content: "";
+    background: ${(props) => props.theme.bgGreyE};
+  }
+  &:last-child::after {
+    content: none;
   }
 `;
 const StOhterSpan = styled.span`
   font-weight: 600;
+  
 `;
 const ViewerWrap = styled.div`
-  border: 1px solid ${(props) => props.theme.pageBorder};
+  padding: 0px 50px 50px;
   width: 100%;
-  border-top: 0;
-  padding: 30px 40px;
-  min-height: 670px;
+  border-bottom: 1px solid ${(props) => props.theme.borderColor};
 `;
 
 const StkeyWordWrap = styled.div`
-  border: 1px solid ${(props) => props.theme.pageBorder};
-  width: 100%;
-  border-top: 0;
-  margin-bottom: 30px;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 20px 20px;
-  gap: 10px;
-`;
+  display:flex;
+  gap:10px;
+`
 const StkeyWordP = styled.p`
   color: ${(props) => props.theme.keyBlue};
   word-break: break-word;
+  margin-bottom:20px
 `;
 
-const StTitleWrapper = styled.div`
+const StBtnWrap = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid ${(props) => props.theme.pageBorder};
+  justify-content: end;
+  margin-top: 30px;
 `;
-
 const StEditRouteBtn = styled.button`
   width: 120px;
   height: 50px;
@@ -169,5 +187,4 @@ const StEditRouteBtn = styled.button`
   border: none;
   outline: 0;
   cursor: pointer;
-  margin-right: 30px;
 `;

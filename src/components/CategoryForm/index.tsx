@@ -20,20 +20,7 @@ const CategoryForm = () => {
     setModalOpen(!modalOpen);
   };
 
-  useEffect(() => {
-    if (modalOpen) {
-      document.body.style.cssText = `
-    position: fixed; 
-    top: -${window.scrollY}px;
-    overflow-y: scroll;
-    width: 100%;`;
-      return () => {
-        const scrollY = document.body.style.top;
-        document.body.style.cssText = "";
-        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
-      };
-    }
-  }, [modalOpen]);
+ 
   const categorySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     if (categoryName.trim() === "") return alert("카테고리명을 적어주세요!");
     e.preventDefault();
@@ -49,20 +36,7 @@ const CategoryForm = () => {
   const modalPutBtn = () => {
     setModalPutOpen(!modalPutOpen);
   };
-  useEffect(() => {
-    if (modalPutOpen) {
-      document.body.style.cssText = `
-    position: fixed; 
-    top: -${window.scrollY}px;
-    overflow-y: scroll;
-    width: 100%;`;
-      return () => {
-        const scrollY = document.body.style.top;
-        document.body.style.cssText = "";
-        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
-      };
-    }
-  }, [modalPutOpen]);
+  
   const categoryPutMutation = useMutation("categoryput", CATEGORY.categoryPut, {
     onSuccess: (response) => {
       if (response) {

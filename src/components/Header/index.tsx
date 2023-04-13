@@ -395,7 +395,6 @@ const StAlarmcontent = styled.div`
 
 const StAlarmcontentP = styled.p`
   width: calc(100% - 60px);
-  padding-right: 30px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Comment, Log, Star } from "assets";
 import { BookmarksBoard, CommentBoard, LogBoard } from "components";
 import { ActiveState } from "types";
@@ -21,13 +21,15 @@ const PostDetailTab = ({
       <StIcon>
         <Comment onClick={() => handleClickTab("comment")} />
       </StIcon>
+      <StIconTxt>댓글</StIconTxt>
       <StIcon>
         <Log onClick={() => handleClickTab("log")} />
       </StIcon>
+      <StIconTxt>로그</StIconTxt>
       <StIcon>
         <Star onClick={() => handleClickTab("bookmark")} />
       </StIcon>
-
+      <StIconTxt>즐겨찾기</StIconTxt>
       <>
         <CommentBoard
           postId={postId}
@@ -51,29 +53,61 @@ const PostDetailTab = ({
 };
 
 export default PostDetailTab;
-
+const bounceFrames = keyframes`
+  0%{
+    transform : translate(-50%,0%);
+  }
+  50%{
+    transform : translate(-50%,10px);
+  }
+  100%{
+    transform : translate(-50%,0%)
+  }
+`;
 const StBox = styled.div`
   position: fixed;
-  top: 350px;
-  right: 80px;
+  top: 300px;
+  right: 50px;
   justify-content: center;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  width: 100px;
+  height: 380px;
+  align-items: center;
+  border-radius: 100px;
   z-index: 99;
+  text-align: center;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 12px -4px;
+  animation: ${bounceFrames} infinite 1s;
 `;
 
 const StIcon = styled.div`
-  box-shadow: rgba(0, 0, 0, 0.3) 0px 5px 7px -4px;
   border-radius: 100px;
   width: 60px;
   height: 60px;
+  background: ${(props) => props.theme.textwhite};
+  border: 1px solid ${(props) => props.theme.greylight};
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  margin-top: 25px;
+  &:first-child {
+    margin-top: 0;
+  }
   > svg {
     stroke: ${(props) => props.theme.borderBlue};
     fill: ${(props) => props.theme.fillWhite};
   }
+  &:hover {
+    border: 1px solid ${(props) => props.theme.borderBlue};
+  }
 `;
+const StIconTxt = styled.p`
+  margin-top: 10px;
+  font-size: 0.875rem;
+  font-weight:500;
+`;
+
+
