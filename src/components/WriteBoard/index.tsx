@@ -55,6 +55,18 @@ const WriteBoard = () => {
     if (newPost.content.length === 0) {
       return alert("내용을 입력해주세요 !");
     }
+    if (newPost.keywords.length === 0) {
+      return alert("키워드를 입력해주세요 !");
+    }
+    if (newPost.category === "") {
+      return alert("카테고리를 선택해주세요 !");
+    }
+    if (newPost.modifyPermission === "") {
+      return alert("수정권한을 선택해주세요 !");
+    }
+    if (newPost.readablePosition === "") {
+      return alert("읽기권한을 선택해주세요 !");
+    }
     addPost(newPost);
     navigate("/main");
   };
