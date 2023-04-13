@@ -74,9 +74,11 @@ baseAxios.interceptors.response.use(
         alert("해당 계정이 존재하지 않습니다.");
       } else if (errorMessage === "The company does not exist.") {
         alert("해당 회사가 존재하지 않습니다.");
-      } else if (errorMessage === "The folder does not exist.") {
-        alert("해당 폴더가 존재하지 않습니다.");
-      } else if (errorMessage === "The post does not exist in the company.") {
+      }
+      // else if (errorMessage === "The folder does not exist.") {
+      //   alert("해당 폴더가 존재하지 않습니다.");
+      // }
+      else if (errorMessage === "The post does not exist in the company.") {
         alert("해당 게시물이 회사에 존재하지 않습니다.");
       } else if (errorMessage === "The post does not exist.") {
         alert("해당 게시글이 존재하지 않습니다.");
@@ -84,9 +86,11 @@ baseAxios.interceptors.response.use(
         alert("읽을 수 있는 권한이 없습니다.");
       } else if (errorMessage === "The category does not exist.") {
         alert("해당 카테고리가 존재하지 않습니다.");
-      } else if (errorMessage === "The comment does not exist.") {
-        alert("해당 댓글이 존재하지 않습니다.");
-      } else if (errorMessage === "Duplicate company exists.") {
+      }
+      // else if (errorMessage === "The comment does not exist.") {
+      //   alert("해당 댓글이 존재하지 않습니다.");
+      // }
+      else if (errorMessage === "Duplicate company exists.") {
         alert("중복된 회사가 존재합니다.");
       } else if (errorMessage === "Duplicate email exists.") {
         alert("중복된 이메일이 존재합니다.");
@@ -189,9 +193,11 @@ reqWithAccessToken.interceptors.response.use(
         alert("해당 계정이 존재하지 않습니다.");
       } else if (errorMessage === "The company does not exist.") {
         alert("해당 회사가 존재하지 않습니다.");
-      } else if (errorMessage === "The folder does not exist.") {
-        alert("해당 폴더가 존재하지 않습니다.");
-      } else if (errorMessage === "The post does not exist in the company.") {
+      }
+      // else if (errorMessage === "The folder does not exist.") {
+      //   alert("해당 폴더가 존재하지 않습니다.");
+      // }
+      else if (errorMessage === "The post does not exist in the company.") {
         alert("해당 게시물이 회사에 존재하지 않습니다.");
       } else if (errorMessage === "The post does not exist.") {
         alert("해당 게시글이 존재하지 않습니다.");
@@ -199,9 +205,11 @@ reqWithAccessToken.interceptors.response.use(
         alert("읽을 수 있는 권한이 없습니다.");
       } else if (errorMessage === "The category does not exist.") {
         alert("해당 카테고리가 존재하지 않습니다.");
-      } else if (errorMessage === "The comment does not exist.") {
-        alert("해당 댓글이 존재하지 않습니다.");
-      } else if (errorMessage === "Duplicate company exists.") {
+      }
+      // else if (errorMessage === "The comment does not exist.") {
+      //   alert("해당 댓글이 존재하지 않습니다.");
+      // }
+      else if (errorMessage === "Duplicate company exists.") {
         alert("중복된 회사가 존재합니다.");
       } else if (errorMessage === "Duplicate email exists.") {
         alert("중복된 이메일이 존재합니다.");

@@ -27,6 +27,7 @@ import {
 
 export const LOGIN = {
   login: (loginReq: LoginReq) => baseAxios.post("/login", loginReq),
+  adminLogin: (loginReq: LoginReq) => baseAxios.post("/admin/login", loginReq),
 };
 
 export const ADMIN = {
