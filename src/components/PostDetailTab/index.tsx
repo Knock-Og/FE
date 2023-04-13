@@ -18,18 +18,21 @@ const PostDetailTab = ({
 }: Props) => {
   return (
     <StBox>
-      <StIcon>
-        <Comment onClick={() => handleClickTab("comment")} />
-      </StIcon>
-      <StIconTxt>댓글</StIconTxt>
-      <StIcon>
-        <Log onClick={() => handleClickTab("log")} />
-      </StIcon>
-      <StIconTxt>로그</StIconTxt>
-      <StIcon>
-        <Star onClick={() => handleClickTab("bookmark")} />
-      </StIcon>
-      <StIconTxt>즐겨찾기</StIconTxt>
+      <StIconBox>
+        <StIcon>
+          <Comment onClick={() => handleClickTab("comment")} />
+        </StIcon>
+        <StIconTxt>댓글</StIconTxt>
+        <StIcon>
+          <Log onClick={() => handleClickTab("log")} />
+        </StIcon>
+        <StIconTxt>로그</StIconTxt>
+        <StIcon>
+          <Star onClick={() => handleClickTab("bookmark")} />
+        </StIcon>
+        <StIconTxt>즐겨찾기</StIconTxt>
+      </StIconBox>
+
       <>
         <CommentBoard
           postId={postId}
@@ -64,22 +67,7 @@ const bounceFrames = keyframes`
     transform : translate(-50%,0%)
   }
 `;
-const StBox = styled.div`
-  position: fixed;
-  top: 300px;
-  right: 50px;
-  justify-content: center;
-  display: flex;
-  flex-direction: column;
-  width: 100px;
-  height: 380px;
-  align-items: center;
-  border-radius: 100px;
-  z-index: 99;
-  text-align: center;
-  box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 12px -4px;
-  animation: ${bounceFrames} infinite 1s;
-`;
+const StBox = styled.div``;
 
 const StIcon = styled.div`
   border-radius: 100px;
@@ -107,7 +95,22 @@ const StIcon = styled.div`
 const StIconTxt = styled.p`
   margin-top: 10px;
   font-size: 0.875rem;
-  font-weight:500;
+  font-weight: 500;
 `;
 
-
+const StIconBox = styled.div`
+  position: fixed;
+  top: 300px;
+  right: 50px;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+  height: 380px;
+  align-items: center;
+  border-radius: 100px;
+  z-index: 99;
+  text-align: center;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 12px -4px;
+  animation: ${bounceFrames} infinite 1s;
+`;
