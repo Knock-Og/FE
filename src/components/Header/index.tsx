@@ -153,10 +153,10 @@ const Header = () => {
           </StAlarmContentWrap>
         </StAlarm>
       </StHeaderRightWrapper>
-      <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
+      {/* <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
         {isDark ? <Sun /> : <Dark />}
         {isDark ? "라이트모드로 전환" : "다크모드로 전환"}
-      </StModeToggleBtn>
+      </StModeToggleBtn> */}
     </StContainer>
   );
 };

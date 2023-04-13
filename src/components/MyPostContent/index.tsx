@@ -58,6 +58,11 @@ const MyPostContent = () => {
   }, []);
 
   useEffect(() => {
+    getMyPosts(page);
+    // eslint-disable-next-line
+  }, [page]);
+
+  useEffect(() => {
     if (categoryData) {
       const categories: NavItem[] = categoryData.map((v) => {
         return {

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
 import { Viewer } from "@toast-ui/react-editor";
 import styled from "styled-components";
+import { POST } from "api";
 import { PostDetailTab } from "components";
 import { ActiveState, PostDetail } from "types";
 import "@toast-ui/editor/dist/toastui-editor.css";
@@ -16,6 +18,8 @@ const DetailBoard = (post: PostDetail) => {
 
   const navigate = useNavigate();
 
+  const { mutate: delPost } = useMutation(POST.delPost);
+
   const handleClickTab = (name: string) => {
     const initTabState = { comment: false, log: false, bookmark: false };
     setActiveTab({ ...initTabState, [name]: true });
@@ -27,6 +31,16 @@ const DetailBoard = (post: PostDetail) => {
       return;
     }
     navigate(`/post/${post.id}/modify`);
+  };
+
+  const handdleClickDelBtn = () => {
+    // eslint-disable-next-line
+    const isDel = confirm("삭제하시겠습니까?");
+
+    if (isDel) {
+      delPost(post.id);
+      navigate("/main");
+    }
   };
 
   return (
@@ -72,6 +86,7 @@ const DetailBoard = (post: PostDetail) => {
           <Viewer initialValue={post.content} />
         </ViewerWrap>
         <StBtnWrap>
+          <StDelBtn onClick={handdleClickDelBtn}>삭제하기</StDelBtn>
           <StEditRouteBtn onClick={handleClickEditRouteBtn}>
             수정하기
           </StEditRouteBtn>
@@ -94,7 +109,6 @@ const StContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  
 `;
 const StTop = styled.div`
   width: 100%;
@@ -102,8 +116,8 @@ const StTop = styled.div`
   background: ${(props) => props.theme.bgGrey};
   padding: 50px;
   margin-bottom: 50px;
-  display:flex;
-  align-items:center;
+  display: flex;
+  align-items: center;
 `;
 const StLeft = styled.div`
   width: 90%;
@@ -111,8 +125,8 @@ const StLeft = styled.div`
   padding-right: 50px;
 `;
 const StRight = styled.div`
-  width:10%;
-  text-align:center;
+  width: 10%;
+  text-align: center;
 `;
 const StNum = styled.em`
   color: ${(props) => props.theme.redLightColor};
@@ -155,7 +169,6 @@ const StOhterLi = styled.li`
 `;
 const StOhterSpan = styled.span`
   font-weight: 600;
-  
 `;
 const ViewerWrap = styled.div`
   padding: 0px 50px 50px;
@@ -164,13 +177,13 @@ const ViewerWrap = styled.div`
 `;
 
 const StkeyWordWrap = styled.div`
-  display:flex;
-  gap:10px;
-`
+  display: flex;
+  gap: 10px;
+`;
 const StkeyWordP = styled.p`
   color: ${(props) => props.theme.keyBlue};
   word-break: break-word;
-  margin-bottom:20px
+  margin-bottom: 20px;
 `;
 
 const StBtnWrap = styled.div`
@@ -185,6 +198,18 @@ const StEditRouteBtn = styled.button`
   border-radius: 10px;
   color: ${(props) => props.theme.textwhite};
   border: none;
+  outline: 0;
+  cursor: pointer;
+`;
+
+const StDelBtn = styled.button`
+  width: 120px;
+  height: 50px;
+  background: ${(props) => props.theme.bgColor};
+  border-radius: 10px;
+  color: ${(props) => props.theme.keyBlue};
+  border: 1px solid ${(props) => props.theme.borderBlue};
+  margin-right: 15px;
   outline: 0;
   cursor: pointer;
 `;
