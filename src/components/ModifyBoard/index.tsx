@@ -10,6 +10,7 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
+import { createBrowserHistory } from "history";
 import styled from "styled-components";
 import { CATEGORY, POST } from "api";
 import { PostDetailTab } from "components";
@@ -43,6 +44,7 @@ const ModifyBoard = (post: PostDetail) => {
 
   const navigate = useNavigate();
   const editorRef = useRef<Editor>(null);
+  const history = createBrowserHistory();
 
   const { data: categoryData } = useQuery<Category[]>(
     "getCategories",
@@ -69,7 +71,7 @@ const ModifyBoard = (post: PostDetail) => {
     }
     updateEditingStatus(post.id);
     editPost({ postId: post.id, post: newPost });
-    navigate(-1);
+    navigate("/main");
   };
 
   const handdleClickDelBtn = () => {
@@ -79,7 +81,7 @@ const ModifyBoard = (post: PostDetail) => {
     if (isDel) {
       updateEditingStatus(post.id);
       delPost(post.id);
-      navigate(-1);
+      navigate("/main");
     }
   };
 
@@ -104,6 +106,8 @@ const ModifyBoard = (post: PostDetail) => {
   };
 
   useEffect(() => {
+    updateEditingStatus(post.id);
+
     setNewPost({
       title: post.title,
       content: post.content,
@@ -113,15 +117,15 @@ const ModifyBoard = (post: PostDetail) => {
       readablePosition: post.readablePosition,
     });
     // eslint-disable-next-line
-  }, [post]);
+  }, []);
 
   useEffect(() => {
-    updateEditingStatus(post.id);
-
     return () => {
-      updateEditingStatus(post.id);
+      if (history.action === "POP") {
+        updateEditingStatus(post.id);
+      }
     };
-    //eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
 
   return (
