@@ -113,4 +113,5 @@ const StIconBox = styled.div`
   text-align: center;
   box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 12px -4px;
   animation: ${bounceFrames} infinite 1s;
+  background: ${(props) => props.theme.textwhite};
 `;

@@ -56,7 +56,7 @@ const WriteBoard = () => {
       return alert("내용을 입력해주세요 !");
     }
     addPost(newPost);
-    navigate(-1);
+    navigate("/main");
   };
 
   const handleChangeSelectBox = (e: SelectChangeEvent) =>
