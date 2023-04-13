@@ -158,7 +158,7 @@ const StPostCardFooter = styled.div`
 `;
 
 const StFooterleft = styled.div`
-  display: flex;
+  display: block;
   gap: 10px;
   width: 60%;
   overflow: hidden;
