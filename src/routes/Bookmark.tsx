@@ -29,6 +29,7 @@ const Bookmark = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const [folderId, setFolderId] = useState<number>(0);
 
   const { mutate: getBookmarks } = useMutation(BOOKMARK.getBookmarks, {
     onSuccess: (res) => {
@@ -45,6 +46,7 @@ const Bookmark = () => {
       });
       setNavItems(nav);
     },
+    onError: () => setNavItems([]),
   });
 
   const { mutate: getBookmark } = useMutation(BOOKMARK.getBookmark, {
@@ -74,25 +76,32 @@ const Bookmark = () => {
 
   const handleEditSubmit = () => {
     editBookmark({
-      folderId: location.state.folderId,
+      folderId,
       bookMarkFolderName: editedFolderName,
     });
     navigate(`/bookmark/${editedFolderName}`);
     handleClickEditBtn();
+    setAddInput("");
   };
 
   const handleClickDelBtn = () => {
-    deleteBookmark(location.state.folderId);
+    deleteBookmark(folderId);
     navigate("/bookmark");
     handleClickEditBtn();
+    setAddInput("");
   };
 
   useEffect(() => {
     setEndPage(1);
     getBookmarks();
     params.folderName
-      ? getBookmark({ folderId: location.state.folderId, page: 1 })
+      ? getBookmark({ folderId, page: 1 })
       : setSearchedPosts([]);
+
+    return () => {
+      setAddInput("");
+      setEditedFolderName("");
+    };
     //eslint-disable-next-line
   }, []);
 
@@ -102,6 +111,11 @@ const Bookmark = () => {
     }
     //eslint-disable-next-line
   }, [params]);
+
+  useEffect(() => {
+    const folId = location?.state?.folderId;
+    setFolderId(folId ? folId : 0);
+  }, [location.state]);
 
   return (
     <>

@@ -79,7 +79,7 @@ const BookmarksBoard = ({ open, setOpen, postId, folders }: Props) => {
           className={open ? "on" : "off"}
         >
           <StSettingTop>
-            <StSettingTitle>즐겨찾기 추가</StSettingTitle>
+            <StSettingTitle>즐겨찾기</StSettingTitle>
             {setOpen && <StIoClose onClick={() => setOpen("")} />}
           </StSettingTop>
 
