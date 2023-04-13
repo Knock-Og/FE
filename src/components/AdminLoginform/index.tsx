@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation,useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import styled from "styled-components";
 import { setCookie } from "api/cookies";
@@ -8,29 +8,28 @@ import { LOGIN } from "api";
 
 const AdminLoginform = () => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
-  const loginMutation = useMutation("login", LOGIN.login, {
+  const loginMutation = useMutation("adminLogin", LOGIN.adminLogin, {
     onSuccess: (response) => {
       setCookie("access_token", response.headers.authorization.substr(7));
-      queryClient.invalidateQueries("login");
+      queryClient.invalidateQueries("adminLogin");
       navigate("/admin");
-    }
+    },
   });
 
   const onChangePw = () => setShowPw(!showPw);
 
-  const loginHandler =  (e: React.FormEvent<HTMLFormElement>) => {
+  const loginHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (email.trim() === "") return alert("이메일을 입력해주세요!");
     if (password.trim() === "") return alert("비밀번호를 입력해주세요!");
- loginMutation.mutate({ email, password });
-      setEmail("");
-      setPassword("");
-   
+    loginMutation.mutate({ email, password });
+    setEmail("");
+    setPassword("");
   };
 
   return (
@@ -127,7 +126,6 @@ const AdminLoginform = () => {
             </StLoginUl>
             <StLoginBtn>로그인</StLoginBtn>
           </StLoginForm>
-          
         </StLogin>
       </StLoginWrap>
     </StLoginBg>
