@@ -125,18 +125,18 @@ const bounceFrames = keyframes`
 const StSettingToggleBtn = styled.div`
   position: fixed;
   top: 300px;
-  font-size: 18px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  height: 150px;
-  margin: auto 0%;
+  height: 180px;
+  margin: auto 0;
   border-radius: 100px;
   width: 100px;
   right: 50px;
   text-align: center;
+  background: ${(props) => props.theme.bgwhite};
   box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 12px -4px;
   animation: ${bounceFrames} 1s infinite;
 `;
@@ -144,16 +144,15 @@ const StSettinWrap = styled.div`
   border-radius: 100px;
   width: 60px;
   display: flex;
-  
   align-items: center;
   justify-content: center;
   height: 60px;
-  border: 1px solid ${(props) => props.theme.greylight};
+  border: 1px solid ${(props) => props.theme.borderGray};
   > svg {
-    fill: ${(props) => props.theme.keyBlue};
+    fill: ${(props) => props.theme.textBlue};
   }
   &:hover {
-    border: 1px solid ${(props) => props.theme.borderBlue};
+    border: 1px solid ${(props) => props.theme.textBlue};
   }
 `;
 const StSettingP = styled.p`
@@ -184,7 +183,7 @@ const StSettingBox = styled.div`
   width: 400px;
   height: 100vh;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bglightblack};
   right: 0;
   top: 0;
   transition: transform 0.3s ease-out;
@@ -231,7 +230,7 @@ const StIoClose = styled(Close)`
   top: 10px;
   cursor: pointer;
   transition: all 0.3s;
-  stroke: ${(props) => props.theme.lightGrey};
+  stroke: ${(props) => props.theme.borderGray};
   &:hover {
     transform: rotatez(180deg);
   }
@@ -241,14 +240,15 @@ const StSettingbottom = styled.div`
   overflow: auto;
   height: calc(100% - 550px);
   &::-webkit-scrollbar {
-    width: 10px;
+    width: 5px;
+    background: ${(props) => props.theme.bgToggle};
   }
   &::-webkit-scrollbar-thumb {
-    background-color: ${(props) => props.theme.scrollColor};
+    background: ${(props) => props.theme.scrollColor};
     border-radius: 10px;
   }
   &::-webkit-scrollbar-track {
-    background-color: ${(props) => props.theme.bgColor};
+    background: ${(props) => props.theme.bgToggle};
   }
 `;
 const StSettingButton = styled.button<{ active?: boolean }>`
@@ -256,9 +256,9 @@ const StSettingButton = styled.button<{ active?: boolean }>`
   display: block;
   padding: 0 50px 0 65px;
   background: ${({ active, theme }) =>
-    active ? theme.lightBlue : "transparent"};
+    active ? theme.bgLightBlue : "transparent"};
   text-align: left;
-  color: ${({ active, theme }) => (active ? theme.keyBlue : theme.greyLight)};
+  color: ${({ active, theme }) => (active ? theme.textBlue : theme.textColor)};
   font-weight: 500;
   border: 0;
   outline: 0;
@@ -269,6 +269,9 @@ const StSettingButton = styled.button<{ active?: boolean }>`
   white-space: nowrap;
   text-overflow: ellipsis;
   cursor: pointer;
+  &:hover {
+    background: ${(props) => props.theme.bgLightBlue};
+  }
   &:after {
     width: 10px;
     height: 10px;
@@ -278,9 +281,10 @@ const StSettingButton = styled.button<{ active?: boolean }>`
     top: 0;
     bottom: 0;
     margin: auto 0;
+    
     content: "";
     border: 5px solid
-      ${({ active, theme }) => (active ? theme.keyBlue : theme.greyLight)};
+      ${({ active, theme }) => (active ? theme.textBlue : theme.borderGray)};
   }
   &:before {
     width: 16px;
@@ -294,12 +298,12 @@ const StSettingButton = styled.button<{ active?: boolean }>`
     margin: auto 0px;
     content: "";
     background: ${({ active, theme }) =>
-      active ? "transparent" : theme.bgColor};
+      active ? "transparent" : theme.radius};
   }
 `;
 
 const StBookmarkAddWrapper = styled.div`
-  border-top: 1px solid ${({ theme }) => theme.lightGrey};
+  border-top: 1px solid ${({ theme }) => theme.borderColor};
   height: 300px;
   padding: 0px 50px;
   margin-top: 150px;

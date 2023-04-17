@@ -92,7 +92,7 @@ const StSettingBox = styled.div`
   width: 400px;
   height: 100vh;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bglightblack};
   right: 0;
   top: 0;
   transition: transform 0.3s ease-out;
@@ -139,7 +139,7 @@ const StIoClose = styled(Close)`
   top: 10px;
   cursor: pointer;
   transition: all 0.3s;
-  stroke: ${(props) => props.theme.lightGrey};
+  stroke: ${(props) => props.theme.borderGray};
   &:hover {
     transform: rotatez(180deg);
   }
@@ -149,22 +149,16 @@ const StSettingbottom = styled.div`
   height: calc(100% - 100px);
   overflow-y: scroll;
   padding: 20px 0;
-  /* .toastui-editor-contents {
-    height: 20px ;
-  } */
   &::-webkit-scrollbar {
-    width: 10px;
+    width: 5px;
+    background: ${(props) => props.theme.bgToggle};
   }
   &::-webkit-scrollbar-thumb {
-    background-color: ${(props) => props.theme.scrollColor};
+    background: ${(props) => props.theme.scrollColor};
     border-radius: 10px;
   }
   &::-webkit-scrollbar-track {
-    background-color: ${(props) => props.theme.bgColor};
-  }
-
-  .toastui-editor-contents {
-    height: 20px !important;
+    background: ${(props) => props.theme.bgToggle};
   }
 `;
 const StCard = styled.div`
@@ -184,7 +178,7 @@ const StName = styled.p`
   line-height: 1.6;
 `;
 const StNameSpan = styled.span`
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textBlue};
   font-weight: 600;
 `;
 const StDate = styled.p`
@@ -201,7 +195,7 @@ const StOldText = styled.p`
     margin-top: 10px;
   }
   > p > span {
-    color: ${(props) => props.theme.redLightColor} !important;
+    color: ${(props) => props.theme.redLightColor} 
   }
 `;
 const StNewText = styled.p`
@@ -213,6 +207,6 @@ const StNewText = styled.p`
     margin-top: 10px;
   }
   > p > span {
-    color: ${(props) => props.theme.greenColor} !important;
+    color: ${(props) => props.theme.greenColor} 
   }
-`;
+`

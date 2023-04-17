@@ -118,16 +118,15 @@ const StPostCardBox = styled.div`
   flex-direction: column;
   justify-content: space-between;
   padding: 45px 45px;
-  border: 1px solid ${(props) => props.theme.greyBorder};
+  
   box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
   border-radius: 10px;
   margin-bottom: 30px;
   cursor: pointer;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   transition: all 0.3s;
   &:hover {
     background: ${(props) => props.theme.bgLightBlue};
-    box-shadow: none;
   }
 `;
 
@@ -166,7 +165,7 @@ const StFooterleft = styled.div`
   white-space: nowrap;
 `;
 const StKeyWord = styled.span`
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textBlue};
   font-weight: 500;
 `;
 const StFooterRight = styled.div`
@@ -177,10 +176,10 @@ const StFooterRight = styled.div`
 const StFooterItem = styled.p`
   display: flex;
   align-items: center;
-  font-weight: 600;
+  font-weight: 500;
 `;
 const StFooterItemSpan = styled.span`
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textBlue};
   display: block;
   margin: 0 2px 0 5px;
 `;
@@ -201,15 +200,14 @@ const StEditingWrapper = styled.div`
   display: flex;
   align-items: center;
   height: 70px;
-  color: ${({ theme }) => theme.redColor};
+  color: ${({ theme }) => theme.textRed};
 `;
 
 const StEditingCircle = styled.div`
-  transform: translateY(-2.5px);
-  width: 15px;
-  height: 15px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.redColor};
-  margin-right: 5px;
+  background-color: ${({ theme }) => theme.textRed};
+  margin-right: 10px;
   animation: ${circleKeyframes} infinite 1s;
 `;

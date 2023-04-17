@@ -165,7 +165,7 @@ const StSettingBox = styled.div`
   width: 400px;
   height: 100vh;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bglightblack};
   right: 0;
   top: 0;
   transition: transform 0.3s ease-out;
@@ -212,7 +212,7 @@ const StIoClose = styled(Close)`
   top: 10px;
   cursor: pointer;
   transition: all 0.3s;
-  stroke: ${(props) => props.theme.lightGrey};
+  stroke: ${(props) => props.theme.borderGray};
   &:hover {
     transform: rotatez(180deg);
   }
@@ -222,14 +222,15 @@ const StCardContainer = styled.div`
   height: calc(100vh - 350px);
   overflow-y: scroll;
   &::-webkit-scrollbar {
-    width: 10px;
+    width: 5px;
+    background: ${(props) => props.theme.bgToggle};
   }
   &::-webkit-scrollbar-thumb {
-    background-color: ${(props) => props.theme.scrollColor};
+    background: ${(props) => props.theme.scrollColor};
     border-radius: 10px;
   }
   &::-webkit-scrollbar-track {
-    background-color: ${(props) => props.theme.bgColor};
+    background: ${(props) => props.theme.bgToggle};
   }
 `;
 const StCard = styled.div`
@@ -242,7 +243,7 @@ const StCard = styled.div`
 
 const StSettingbottom = styled.div`
   height: 250px;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bglightblack};
   width: 100%;
   display: flex;
   justify-content: center;
@@ -261,16 +262,18 @@ const StText = styled.textarea`
   outline: 0;
   border: 0;
   height: 120px !important;
+  background: transparent;
   padding: 20px 20px;
+  color: ${(props) => props.theme.textColor};
   border: 1px solid ${(props) => props.theme.borderColor};
 `;
 
 const StSubmitBtn = styled.button`
   width: 100px;
   height: 50px;
-  background: rgb(0, 127, 255);
+  background: ${(props) => props.theme.bgBlue};
   border-radius: 12px;
-  color: rgb(255, 255, 255);
+  color: ${(props) => props.theme.textwhite};
   border: none;
   cursor: pointer;
   margin-top: 20px;
@@ -304,9 +307,9 @@ const StCardComment = styled.p`
 `;
 
 const StModal = styled.div`
-  width: 100px;
+  width: 130px;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bglightblack};
   right: 0;
   top: 30px;
   z-index: 1;
@@ -316,16 +319,17 @@ const StModal = styled.div`
 const StModalLi = styled.button`
   width: 100%;
   background: transparent;
-  height: 40px;
-  line-height: 40px;
+  height: 50px;
+  line-height: 50px;
   border: 0;
   outline: 0;
   text-align: left;
-  padding: 0 10px;
+  padding: 0 15px;
   font-size: 0.875rem;
   cursor: pointer;
+  color: ${(props) => props.theme.textColor};
   &:hover {
-    color: ${(props) => props.theme.keyBlue};
     background: ${(props) => props.theme.bgLightBlue};
+    color: ${(props) => props.theme.textBlue};
   }
 `;

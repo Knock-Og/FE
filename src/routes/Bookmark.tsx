@@ -319,7 +319,7 @@ const StSignBox = styled.div`
   width: 500px;
   height: 250px;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   bottom: 0;
   top: 0;
   right: 0;
@@ -352,11 +352,13 @@ const StCategoryTitle = styled.h3`
 `;
 const StCategoryInput = styled.input`
   width: 100%;
-  height: 44px;
+  height: 45px;
   border: 0;
   outline: 0;
   padding-right: 90px;
-  border-bottom: 1px solid ${(props) => props.theme.blockBorder};
+  border-bottom: 1px solid ${(props) => props.theme.bgBlue};
+  background: transparent;
+  color: ${(props) => props.theme.textColor};
   &::placeholder {
     color: ${(props) => props.theme.placeholder};
   }
@@ -366,11 +368,11 @@ const StCategory = styled.div`
 `;
 const StCommonButton = styled.button`
   position: absolute;
-  width: 84px;
-  height: 44px;
+  width: 85px;
+  height: 45px;
   right: 0px;
   top: 0;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   color: ${(props) => props.theme.textwhite};
   border: 0;
   outline: 0;
@@ -379,8 +381,12 @@ const StCommonButton = styled.button`
 
 const StIoClose = styled.svg`
   position: absolute;
-  right: 20px;
-  top: 20px;
+  right: 15px;
+  top: 15px;
   cursor: pointer;
-  stroke: ${(props) => props.theme.lightGrey};
+  transition: all 0.3s;
+  stroke: ${(props) => props.theme.borderGray};
+  &:hover {
+    transform: rotatez(180deg);
+  }
 `;

@@ -203,7 +203,7 @@ const StChangPw = styled.div`
   width: 712px;
   height: 390px;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   bottom: 0;
   top: 0;
   right: 0;
@@ -257,11 +257,13 @@ const StInput = styled.input`
   width: 100%;
   height: 57px;
   padding: 0 15px;
-  border: 1px solid ${(props) => props.theme.lightGrey};
+  border: 1px solid ${(props) => props.theme.placeholder};
   border-radius: 10px;
   outline: 0;
+  background: ${(props) => props.theme.bgwhite};
+  color: ${(props) => props.theme.textColor};
   &:focus {
-    border: 1px solid ${(props) => props.theme.keyBlue};
+    border: 1px solid ${(props) => props.theme.bgBlue};
   }
   &::placeholder {
     color: ${(props) => props.theme.placeholder};
@@ -280,7 +282,7 @@ const StButton = styled.button`
   outline: 0;
   border: 0;
   cursor: pointer;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
 `;
 
 const StErrorMsg = styled.p`
@@ -295,7 +297,7 @@ const StIoClose = styled(Close)`
   top: 10px;
   cursor: pointer;
   transition: all 0.3s;
-  stroke: ${(props) => props.theme.lightGrey};
+  stroke: ${(props) => props.theme.borderGray};
   &:hover {
     transform: rotatez(180deg);
   }
@@ -305,7 +307,7 @@ const StNext = styled.button`
   width: 95px;
   height: 57px;
   color: ${(props) => props.theme.textwhite};
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   border: 0;
   border-radius: 10px;
   margin: 30px auto 0;
@@ -317,7 +319,7 @@ const StCurrntPw = styled.div`
   width: 712px;
   height: 650px;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   bottom: 0;
   top: 0;
   right: 0;
@@ -341,14 +343,12 @@ const StCurrntPwEm = styled.em`
   display: block;
   font-weight: 700;
   font-size: 1.125rem;
-  color: ${(props) => props.theme.textblack};
   margin-bottom: 15px;
 `;
 const StCurrntPwContent = styled.p`
   margin-top: 10px;
   font-weight: 500;
   font-size: 0.875rem;
-  color: ${(props) => props.theme.textGrey};
 `;
 
 const StSCurrntpan = styled.p`

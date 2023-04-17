@@ -54,7 +54,7 @@ const StMypageTop = styled.div`
   position: relative;
   margin-bottom: 30px;
   padding: 60px 0px;
-  border: 1px solid ${(props) => props.theme.greyBorder};
+  background: ${(props) => props.theme.bgwhite};
   box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
   border-radius: 10px;
 `;
@@ -81,7 +81,7 @@ const StBotton = styled.button`
   font-weight: 700;
   font-size: 1.125rem;
   line-height: 22px;
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.bgBlue};
   text-decoration-line: underline;
   background: transparent;
   border: 0;

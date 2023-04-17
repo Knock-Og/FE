@@ -151,7 +151,7 @@ const StBreadCrumb = styled.p`
   font-size: 1.125rem;
   font-weight: 600;
   > span {
-    color: ${(props) => props.theme.keyBlue};
+    color: ${(props) => props.theme.textBlue};
     font-weight: 600;
     font-size: 1.125rem;
   }

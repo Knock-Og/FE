@@ -19,18 +19,20 @@ const PostDetailTab = ({
   return (
     <StBox>
       <StIconBox>
-        <StIcon>
-          <Comment onClick={() => handleClickTab("comment")} />
+        <StIcon onClick={() => handleClickTab("comment")}>
+          <Comment />
         </StIcon>
-        <StIconTxt>댓글</StIconTxt>
-        <StIcon>
-          <Log onClick={() => handleClickTab("log")} />
+        <StIconTxt onClick={() => handleClickTab("comment")}>댓글</StIconTxt>
+        <StIcon onClick={() => handleClickTab("log")}>
+          <Log />
         </StIcon>
-        <StIconTxt>로그</StIconTxt>
-        <StIcon>
-          <Star onClick={() => handleClickTab("bookmark")} />
+        <StIconTxt onClick={() => handleClickTab("log")}>로그</StIconTxt>
+        <StIcon onClick={() => handleClickTab("bookmark")}>
+          <Star />
         </StIcon>
-        <StIconTxt>즐겨찾기</StIconTxt>
+        <StIconTxt onClick={() => handleClickTab("bookmark")}>
+          즐겨찾기
+        </StIconTxt>
       </StIconBox>
 
       <>
@@ -72,24 +74,21 @@ const StBox = styled.div``;
 const StIcon = styled.div`
   border-radius: 100px;
   width: 60px;
-  height: 60px;
-  background: ${(props) => props.theme.textwhite};
-  border: 1px solid ${(props) => props.theme.greylight};
-  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  height: 60px;
+  border: 1px solid ${(props) => props.theme.borderGray};
+  &:hover {
+    border: 1px solid ${(props) => props.theme.textBlue};
+  }
   margin-top: 25px;
   &:first-child {
     margin-top: 0;
   }
   > svg {
-    stroke: ${(props) => props.theme.borderBlue};
+    stroke: ${(props) => props.theme.textBlue};
     fill: ${(props) => props.theme.fillWhite};
-  }
-  &:hover {
-    border: 1px solid ${(props) => props.theme.borderBlue};
   }
 `;
 const StIconTxt = styled.p`
@@ -99,19 +98,21 @@ const StIconTxt = styled.p`
 `;
 
 const StIconBox = styled.div`
+
   position: fixed;
   top: 300px;
-  right: 50px;
+  width: 100px;
+  height: 380px;
   justify-content: center;
   display: flex;
   flex-direction: column;
-  width: 100px;
-  height: 380px;
   align-items: center;
-  border-radius: 100px;
+  cursor: pointer;
   z-index: 99;
+  border-radius: 100px;
+  right: 50px;
   text-align: center;
+  background: ${(props) => props.theme.bgwhite};
   box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 12px -4px;
-  animation: ${bounceFrames} infinite 1s;
-  background: ${(props) => props.theme.textwhite};
+  animation: ${bounceFrames} 1s infinite;
 `;
