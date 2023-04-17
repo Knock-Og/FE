@@ -110,9 +110,9 @@ const StIconBox = styled.div`
   cursor: pointer;
   z-index: 99;
   border-radius: 100px;
-  right: 50px;
+  right: 70px;
   text-align: center;
   background: ${(props) => props.theme.bgwhite};
   box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 12px -4px;
-  animation: ${bounceFrames} 1s infinite;
+  //animation: ${bounceFrames} 1s infinite;
 `;

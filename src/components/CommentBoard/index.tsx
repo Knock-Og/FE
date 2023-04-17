@@ -11,7 +11,12 @@ interface Props {
   setOpen: (openTab: string) => void;
   postId: number;
 }
-
+interface CommentDate {
+  id: number;
+  memberName: string;
+  comment: string;
+  createdAt: string;
+}
 const CommentBoard = ({ open, setOpen, postId }: Props) => {
   const [newComment, setNewComment] = useState<AddComment>({
     comment: "",
@@ -47,34 +52,35 @@ const CommentBoard = ({ open, setOpen, postId }: Props) => {
     e.preventDefault();
     setNewComment({ comment: "" });
     addComment({ postId, comment: newComment });
-    putComment({
-      postId,
-      commentId: editCommentId,
-      comment: newComment.comment,
-    });
+    
   };
-
+   const handleClickPutSubmitBtn = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setNewComment({ comment: "" });
+     putComment({
+       postId,
+       commentId: editCommentId,
+       comment: newComment.comment,
+     });
+   };
   const handleClickEditLi = (existComment: string, commentId: number) => {
     setModalopen(null);
     setEditCommentId(commentId);
     setIsEdit(true);
     setNewComment({ comment: existComment });
   };
-
+ 
   const modalBtn = (id: number) => setModalopen(id);
 
   const closeModal = () => setModalopen(null);
 
-  //  const putBtn = (commentId: number) => {
-  //    putComment({ postId, commentId, comment: newComment.comment });
-  //  };
 
   const delBtn = (commentId: number) => deleleComment({ postId, commentId });
 
   return (
-    <StSettingWrap className={open ? "on" : "off"}>
+    <StSettingWrap className={open ? "on" : "off"} onClick={() => closeModal()}>
       <StSettingBox
-        onClick={(e) => e.stopPropagation()}
+        onClick={() => closeModal()}
         className={open ? "on" : "off"}
       >
         <StSettingTop>
@@ -82,21 +88,33 @@ const CommentBoard = ({ open, setOpen, postId }: Props) => {
           {setOpen && <StIoClose onClick={() => setOpen("")} />}
         </StSettingTop>
         <StCardContainer>
-          {comments?.map((comment) => {
-            return (
-              <StCard key={comment.id}>
-                <StTop>
-                  <StCardName>{comment.memberName}</StCardName>
-                  <StCardTime>
-                    {new Date(comment.createdAt)
-                      .toLocaleDateString("ko-KR", {
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                      })
-                      .replace(/\//g, ".")}
+          {comments
+            ?.sort(
+              (a: CommentDate, b: CommentDate) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            )
+            .map((comment, idx) => {
+              return (
+                <StCard key={idx}>
+                  <StTop>
+                    <StCardName>{comment.memberName}</StCardName>
+                    <StCardTime>
+                      {new Date(comment.createdAt)
+                        .toLocaleDateString("ko-KR", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                        })
+                        .replace(/\//g, ".")}
 
-                    <MdMoreVert onClick={() => modalBtn(comment.id)} />
+                      <MdMoreVert
+                        onClick={(e) => {
+                          modalBtn(comment.id);
+                          e.stopPropagation();
+                        }}
+                      />
+                    </StCardTime>
                     {modalOpen === comment.id && (
                       <StModal>
                         <StModalLi onClick={() => delBtn(comment.id)}>
@@ -109,25 +127,42 @@ const CommentBoard = ({ open, setOpen, postId }: Props) => {
                         >
                           수정
                         </StModalLi>
-                        <StModalLi onClick={() => closeModal()}>닫기</StModalLi>
                       </StModal>
                     )}
-                  </StCardTime>
-                </StTop>
-                <StCardComment>{comment.comment}</StCardComment>
-              </StCard>
-            );
-          })}
+                  </StTop>
+                  <StCardComment>{comment.comment}</StCardComment>
+                </StCard>
+              );
+            })}
         </StCardContainer>
         <StSettingbottom>
-          <StTextWrap onSubmit={handleClickSubmitBtn}>
-            <StText
-              placeholder="댓글을 입력해주세요"
-              onChange={handleChangeTitle}
-              value={newComment.comment}
-            />
-            <StSubmitBtn>{isEdit ? "수정완료" : "작성완료"}</StSubmitBtn>
-          </StTextWrap>
+          {isEdit ? (
+            <StTextWrap onSubmit={handleClickPutSubmitBtn}>
+              <StTextBox>
+                <StText
+                  placeholder="댓글을 입력해주세요"
+                  onChange={handleChangeTitle}
+                  value={newComment.comment}
+                  maxLength={299}
+                />
+                <StTextLength>{newComment.comment.length} / 300</StTextLength>
+              </StTextBox>
+              <StSubmitBtn>수정완료</StSubmitBtn>
+            </StTextWrap>
+          ) : (
+            <StTextWrap onSubmit={handleClickSubmitBtn}>
+              <StTextBox>
+                <StText
+                  placeholder="댓글을 입력해주세요"
+                  onChange={handleChangeTitle}
+                  value={newComment.comment}
+                  maxLength={299}
+                />
+                <StTextLength>{newComment.comment.length} / 300</StTextLength>
+              </StTextBox>
+              <StSubmitBtn>작성완료</StSubmitBtn>
+            </StTextWrap>
+          )}
         </StSettingbottom>
       </StSettingBox>
 
@@ -261,22 +296,35 @@ const StText = styled.textarea`
   margin: 0 auto;
   outline: 0;
   border: 0;
-  height: 120px !important;
+  height: 90px !important;
   background: transparent;
-  padding: 20px 20px;
+  padding: 15px 15px;
+  overflow: hidden;
+  resize:none;
   color: ${(props) => props.theme.textColor};
-  border: 1px solid ${(props) => props.theme.borderColor};
+  
 `;
-
+const StTextBox = styled.div`
+  height: 130px;
+  border: 1px solid ${(props) => props.theme.borderColor};
+  width: 100%;
+`;
+const StTextLength = styled.p`
+  font-size: 0.75rem;
+  color: ${(props) => props.theme.textColor};
+  text-align: right;
+  margin-top: 10px;
+  padding-right: 15px;
+`;
 const StSubmitBtn = styled.button`
   width: 100px;
   height: 50px;
   background: ${(props) => props.theme.bgBlue};
-  border-radius: 12px;
+  border-radius: 5px;
   color: ${(props) => props.theme.textwhite};
   border: none;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 10px;
 `;
 const StTop = styled.div`
   display: flex;

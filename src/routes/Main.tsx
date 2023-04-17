@@ -37,7 +37,9 @@ const Main = () => {
   const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const accessToken = getCookie("access_token");
+  const accessToken = getCookie("reqWithToken");
+
+ 
 
   const { mutate: getSearchedData } = useMutation(SEARCH.getSearchedData, {
     onSuccess: (res) => {
@@ -49,7 +51,7 @@ const Main = () => {
       setEndPage(1);
     },
   });
-
+  
   const { mutate: getBookmarks } = useMutation(BOOKMARK.getBookmarks, {
     onSuccess: (res) => {
       const nav = res.data.map((v: Bookmark) => {
@@ -66,7 +68,7 @@ const Main = () => {
       setFolders(nav);
     },
   });
-
+  
   const { mutate: getBookmark } = useMutation(BOOKMARK.getBookmark, {
     onSuccess: (res) => {
       setSearchedPosts(res.data.postResponseDtoList as Post[]);
@@ -102,10 +104,14 @@ const Main = () => {
     setIsOn(false);
   };
   const handleClickLogOut = () => {
+    alert("로그아웃되셨습니다.");
     navigate("/");
-    removeCookie("access_token");
+    removeCookie("reqWithToken");
   };
 
+  
+
+  
   useEffect(() => {
     getBookmarks();
   }, []);
@@ -220,7 +226,7 @@ const StSearchInput = styled.input`
   width: 100%;
   height: 65px;
   border-radius: 65px;
-  border: 1px solid ${(props) => props.theme.borderColor};
+  border:0;
   background: ${(props) => props.theme.bgwhite};
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 3px 2px;
   padding: 0px 55px 0px 30px;

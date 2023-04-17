@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import styled from "styled-components";
-import { setCookie } from "api/cookies";
+import { setCookie, getCookie } from "api/cookies";
 import { LOGIN } from "api";
 
 const AdminLoginform = () => {
@@ -14,9 +14,9 @@ const AdminLoginform = () => {
   const [showPw, setShowPw] = useState(false);
   const loginMutation = useMutation("adminLogin", LOGIN.adminLogin, {
     onSuccess: (response) => {
-      setCookie("access_token", response.headers.authorization.substr(7));
+      setCookie("reqWithToken", response.headers.authorization.substr(7));
       queryClient.invalidateQueries("adminLogin");
-      navigate("/admin");
+      navigate("/admin", { replace: true });
     },
   });
 
@@ -24,14 +24,21 @@ const AdminLoginform = () => {
 
   const loginHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+     const isValidEmail = emailRegex.test(email);
+     if (!isValidEmail) return alert("이메일형식이 올바르지 않습니다!");
     if (email.trim() === "") return alert("이메일을 입력해주세요!");
     if (password.trim() === "") return alert("비밀번호를 입력해주세요!");
     loginMutation.mutate({ email, password });
     setEmail("");
     setPassword("");
   };
-
+useEffect(() => {
+  // 로그인 페이지를 보여주고 있으므로, 로그인되어 있으면 메인 페이지로 이동
+  if (getCookie("reqWithToken")) {
+    navigate("/admin", { replace: true });
+  }
+}, [navigate]);
   return (
     <StLoginBg>
       <StLoginWrap>
@@ -95,7 +102,7 @@ const AdminLoginform = () => {
                 />
               </g>
             </StLogo>
-            <StExplanation>e-mail을 사용하여 로그인 하세요</StExplanation>
+            <StExplanation>e-mail을 사용하여 관리자페이지에 로그인 하세요</StExplanation>
           </StTop>
           <StLoginForm onSubmit={loginHandler}>
             <StLoginUl>

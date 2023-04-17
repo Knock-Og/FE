@@ -62,7 +62,7 @@ const Searched = () => {
       setEndPage(1);
     },
   });
-
+  
   const { mutate: getSearchedData } = useMutation(SEARCH.getSearchedData, {
     onSuccess: (res) => {
       setSearchedPosts(res.data.searchResponseDtoList as Post[]);

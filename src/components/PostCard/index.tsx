@@ -50,7 +50,7 @@ const PostCard = (post: Post) => {
   //     }
   //   };
   // }, [eventSource]);
-
+  console.log(post)
   return (
     <StPostCardBox onClick={handleClickPostCard}>
       <StTitle
@@ -90,7 +90,7 @@ const PostCard = (post: Post) => {
         </StFooterleft>
         <StFooterRight>
           <StFooterItem>
-            {new Date(post.modifiedAt)
+            {new Date(post.createdAt)
               .toLocaleDateString("ko-KR", {
                 year: "numeric",
                 month: "2-digit",

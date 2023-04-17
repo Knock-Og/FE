@@ -20,7 +20,7 @@ import "@toast-ui/editor/dist/toastui-editor.css";
 import "tui-color-picker/dist/tui-color-picker.css";
 import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
 import "@toast-ui/editor/dist/i18n/ko-kr";
-
+import { DelIcon } from "assets";
 const ModifyBoard = (post: PostDetail) => {
   const [newPost, setNewPost] = useState<EditPost>({
     title: "",
@@ -139,7 +139,12 @@ const ModifyBoard = (post: PostDetail) => {
     };
     // eslint-disable-next-line
   }, []);
-
+ const delKeyword = (keywordToDelete: string) => {
+   const updatedKeywords = newPost.keywords.filter(
+     (keyword) => keyword !== keywordToDelete
+   );
+   setNewPost({ ...newPost, keywords: updatedKeywords });
+ };
   return (
     <>
       <StContainer>
@@ -218,10 +223,15 @@ const ModifyBoard = (post: PostDetail) => {
         <StFooter>
           <StkeyWordWrap>
             {newPost.keywords.map((keyword) => (
-              <StkeyWordP key={keyword}>#{keyword}</StkeyWordP>
+              <StKeyword>
+                <StkeyWordP key={keyword}>#{keyword}</StkeyWordP>
+                <Stbutton onClick={() => delKeyword(keyword)}>
+                  <StDelIcon />
+                </Stbutton>
+              </StKeyword>
             ))}
             <StkeyWordInput
-              placeholder="태그를 입력하세요 (엔터로 구분)"
+              placeholder="키워드를 입력하세요 (엔터로 구분)"
               value={keyword}
               onChange={handleChangeKeywordInput}
               onKeyUp={handleKeyUp}
@@ -295,10 +305,32 @@ const StkeyWordP = styled.p`
   color: ${(props) => props.theme.textBlue};
   word-break: break-word;
 `;
+const StKeyword = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+`;
+const StDelIcon = styled(DelIcon)`
+  fill: ${(props) => props.theme.textwhite}; ;
+`;
+const Stbutton = styled.button`
+  background: transparent;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${(props) => props.theme.bgBlue};
+`;
+
 const StkeyWordInput = styled.input`
   outline: 0;
   border: 0;
-  width: 200px;
+  width: 210px;
   background: transparent;
   color: ${(props) => props.theme.textColor};
 `;

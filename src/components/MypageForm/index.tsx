@@ -6,7 +6,11 @@ import { MyPostContent, CurrentPw } from "components";
 
 const MypageForm = () => {
   const [changPw, setChangPw] = useState(false);
-
+  const [password, setPassword] = useState("");
+  const changPwBtn =()=>{
+    setChangPw(!changPw);
+    setPassword("")
+  }
   const { isLoading, isError, data } = useQuery(
     "userdata",
     MYPAGEPW.getUserData
@@ -34,7 +38,12 @@ const MypageForm = () => {
       <StMypageBottom>
         <MyPostContent />
       </StMypageBottom>
-      <CurrentPw changPw={changPw} changPwBtn={() => setChangPw(!changPw)} />
+      <CurrentPw
+        changPw={changPw}
+        changPwBtn={changPwBtn}
+        password={password}
+        setPassword={setPassword}
+      />
     </StMypageWrap>
   );
 };

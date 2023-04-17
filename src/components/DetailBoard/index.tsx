@@ -42,7 +42,7 @@ const DetailBoard = (post: PostDetail) => {
       navigate("/main");
     }
   };
-
+  
   return (
     <>
       <StContainer>
@@ -130,19 +130,19 @@ const StRight = styled.div`
 `;
 const StNum = styled.em`
   color: ${(props) => props.theme.redLightColor};
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 700;
 `;
 const StText = styled.p`
-  font-weight: 600;
-  margin-top: 15px;
+  font-weight: 500;
+  margin-top: 12px;
 `;
 
 const StTitle = styled.h4`
   line-height: 45px;
-  font-size: 2rem;
+  font-size: 1.875rem;
   font-weight: 700;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 `;
 const StOhterUl = styled.ul`
   display: flex;

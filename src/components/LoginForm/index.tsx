@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import styled from "styled-components";
-import { setCookie } from "api/cookies";
+import { setCookie, getCookie } from "api/cookies";
 import { LOGIN } from "api";
 
 const LoginForm = () => {
@@ -13,21 +13,25 @@ const LoginForm = () => {
   const [showPw, setShowPw] = useState(false);
   const loginMutation = useMutation("login", LOGIN.login, {
     onSuccess: (response) => {
-      setCookie("access_token", response.headers.authorization.substr(7));
-      navigate("/main");
+      setCookie("reqWithToken", response.headers.authorization.substr(7));
+       navigate("/main", { replace: true });
     },
   });
-
+  
   const onChangePw = () => setShowPw(!showPw);
 
   const loginHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    
     e.preventDefault();
-
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const isValidEmail = emailRegex.test(email);
+    if (!isValidEmail) return alert("이메일형식이 올바르지 않습니다!");
     if (!email.trim() || email.trim() === "")
       return alert("이메일을 입력해주세요!");
     if (password.trim() === "") return alert("비밀번호를 입력해주세요!");
 
     loginMutation.mutate({ email, password });
+    
     setEmail("");
     setPassword("");
   };
@@ -37,6 +41,12 @@ const LoginForm = () => {
   const findPw = () => {
     navigate("/login/findPw");
   };
+  useEffect(() => {
+    // 로그인 페이지를 보여주고 있으므로, 로그인되어 있으면 메인 페이지로 이동
+    if (getCookie("reqWithToken")) {
+      navigate("/main", { replace: true });
+    }
+  }, [navigate]);
   return (
     <StLoginBg>
       <StLoginWrap>

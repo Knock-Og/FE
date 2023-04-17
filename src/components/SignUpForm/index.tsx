@@ -98,19 +98,13 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   };
 
   //이메일 중복확인
-  const checkEmailMutation = useMutation("checkEmail", ADMIN.checkEmail, {
+  const checkEmailMutation = useMutation(ADMIN.checkEmail, {
     onSuccess: (response) => {
       if (response) {
         queryClient.invalidateQueries("email");
-        alert("사용가능한 이메일 입니다.");
+       
       }
-    },
-    onError: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("email");
-        alert("중복된 이메일 입니다!");
-      }
-    },
+    }
   });
   //이메일을 서버로 전송..
   const checkEmail = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -141,13 +135,7 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
         queryClient.invalidateQueries("name");
         alert("사용가능한 이름 입니다!");
       }
-    },
-    onError: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("name");
-        alert("중복된 이름 입니다!");
-      }
-    },
+    }
   });
   const signupSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -172,25 +160,20 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
     if (password !== passwordCheck)
       return alert("비밀번호가 일치하지 않습니다!");
 
-    try {
-      await signUpMutation.mutateAsync({
-        position,
-        memberName,
-        password,
-        email,
-        phoneNum,
-      });
-      setPhoneNum("");
-      setMemberName("");
-      setPosition("");
-      setPassword("");
-      setPasswordCheck("");
-      setEmail("");
-      onClose();
-    } catch (error) {
-      queryClient.invalidateQueries("member");
-      e.stopPropagation();
-    }
+     signUpMutation.mutateAsync({
+       position,
+       memberName,
+       password,
+       email,
+       phoneNum,
+     });
+     setPhoneNum("");
+     setMemberName("");
+     setPosition("");
+     setPassword("");
+     setPasswordCheck("");
+     setEmail("");
+     onClose();
   };
   const positionList = [
     { id: 0, position: "MEMBER" },
@@ -205,9 +188,16 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
     setIsOpen(false);
   };
 
+
   return (
-    <StSignWrap className={modalOpen ? "on" : "off"}>
-      <StSignBox className={modalOpen ? "on" : "off"}>
+    <StSignWrap
+      className={modalOpen ? "on" : "off"}
+      onClick={() => setIsOpen(false)}
+    >
+      <StSignBox
+        className={modalOpen ? "on" : "off"}
+        onClick={() => setIsOpen(false)}
+      >
         <StSignForm onSubmit={signupSubmit}>
           <StTop>
             <StSignTitle>계정생성</StSignTitle>
@@ -217,22 +207,26 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
             <StSignLi>
               <StSignLeft>직급</StSignLeft>
               <StSignRight>
-                <StSeletLabel onClick={() => setIsOpen(!isOpen)}>
+                <StSeletLabel
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsOpen(!isOpen);
+                  }}
+                >
                   {position}
                   <MenuArr />
                 </StSeletLabel>
-                {isOpen && (
-                  <StSeletUl>
-                    {positionList.map((item) => (
-                      <StSeletLi
-                        key={item.id}
-                        onClick={() => handleOptionClick(item.position)}
-                      >
-                        {item.position}
-                      </StSeletLi>
-                    ))}
-                  </StSeletUl>
-                )}
+
+                <StSeletUl className={isOpen ? "on" : "off"}>
+                  {positionList.map((item) => (
+                    <StSeletLi
+                      key={item.id}
+                      onClick={() => handleOptionClick(item.position)}
+                    >
+                      {item.position}
+                    </StSeletLi>
+                  ))}
+                </StSeletUl>
               </StSignRight>
             </StSignLi>
             <StSignLi>
@@ -361,7 +355,7 @@ const StSignBox = styled.div`
   width: 650px;
   height: 700px;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   bottom: 0;
   top: 0;
   right: 0;
@@ -381,20 +375,22 @@ const StSignBox = styled.div`
     transform: translateY(100px);
     transition-delay: 0.3s ease-in-out;
   }
+
 `;
 const StSignForm = styled.form`
   overflow-y: scroll;
   height: 100%;
   padding: 65px 65px;
   &::-webkit-scrollbar {
-    width: 10px;
+    width: 5px;
+    background: ${(props) => props.theme.bgToggle};
   }
   &::-webkit-scrollbar-thumb {
-    background-color: ${(props) => props.theme.scrollColor};
+    background: ${(props) => props.theme.scrollColor};
     border-radius: 10px;
   }
   &::-webkit-scrollbar-track {
-    background-color: ${(props) => props.theme.bgColor};
+    background: ${(props) => props.theme.bgToggle};
   }
 `;
 const StTop = styled.div`
@@ -411,7 +407,7 @@ const StIoClose = styled(Close)`
   top: 20px;
   cursor: pointer;
   transition: all 0.3s;
-  stroke: ${(props) => props.theme.lightGrey};
+  stroke: ${(props) => props.theme.fillGrey};
   &:hover {
     transform: rotatez(180deg);
   }
@@ -438,11 +434,12 @@ const StSignInput = styled.input`
   width: 100%;
   height: 57px;
   padding: 0 15px;
-  border: 1px solid ${(props) => props.theme.lightGrey};
-  border-radius: 10px;
+  border: 1px solid ${(props) => props.theme.borderGray};
+  border-radius: 5px;
   outline: 0;
+  background: ${(props) => props.theme.bgwhite};
   &:focus {
-    border: 1px solid ${(props) => props.theme.keyBlue};
+    border: 1px solid ${(props) => props.theme.bgBlue};
   }
   &::placeholder {
     color: ${(props) => props.theme.placeholder};
@@ -464,7 +461,7 @@ const StCheckBtn = styled.button`
   outline: 0;
   border: 0;
   cursor: pointer;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
 `;
 const StErrorMsg = styled.p`
   color: ${(props) => props.theme.textRed};
@@ -472,7 +469,7 @@ const StErrorMsg = styled.p`
   margin-top: 10px;
 `;
 const StSuccessMsg = styled.p`
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textBlue};
   font-size: 0.75rem;
   margin-top: 10px;
 `;
@@ -483,7 +480,7 @@ const StButton = styled.button`
   outline: 0;
   border: 0;
   cursor: pointer;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   font-size: 1.25rem;
   border-radius: 57px;
   margin: 45px auto 0;
@@ -493,8 +490,8 @@ const StButton = styled.button`
 `;
 
 const StSeletLabel = styled.p`
-  border: 1px solid ${(props) => props.theme.lightGrey};
-  border-radius: 10px;
+  border: 1px solid ${(props) => props.theme.borderGray};
+  border-radius: 5px;
   width: 100%;
   height: 57px;
   margin: 0 auto;
@@ -506,16 +503,26 @@ const StSeletLabel = styled.p`
   justify-content: space-between;
 `;
 const MenuArr = styled(MainArr)`
-  fill: ${(props) => props.theme.lightGrey};
+  fill: ${(props) => props.theme.borderGray};
 `;
 const StSeletUl = styled.ul`
   position: absolute;
-  bottom: -175px;
-  left: 0;
-  background: ${(props) => props.theme.bgColor};
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 3px 2px 1px;
+  top: 54px;
+  height: 0;
+  left: 0px;
+  border-radius: 0px 0px 5px 5px;
+  background: ${(props) => props.theme.bgwhite};
+  border: 1px solid ${(props) => props.theme.borderGray};
   z-index: 1;
   width: 100%;
+  transition: all 0.3s ease;
+  border-top: 0;
+  border-bottom: 0;
+  overflow: hidden;
+  &.on {
+    height: 172px;
+    border-bottom: 1px solid ${(props) => props.theme.borderGray};
+  }
 `;
 const StSeletLi = styled.li`
   line-height: 57px;
@@ -523,7 +530,7 @@ const StSeletLi = styled.li`
 
   cursor: pointer;
   &:hover {
-    background: ${(props) => props.theme.lightBlue};
-    color: ${(props) => props.theme.keyBlue};
+    background: ${(props) => props.theme.bgLightBlue};
+    color: ${(props) => props.theme.textBlue};
   }
 `;

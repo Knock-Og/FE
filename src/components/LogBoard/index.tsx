@@ -12,7 +12,7 @@ interface Props {
 
 const LogBoard = ({ open, setOpen, postId }: Props) => {
   const { data: logs } = useQuery<Log[]>("getLog", () => LOG.getLog(postId));
-
+  
   return (
     <>
       <StSettingWrap className={open ? "on" : "off"}>
@@ -35,12 +35,18 @@ const LogBoard = ({ open, setOpen, postId }: Props) => {
 
                 <StOldText
                   dangerouslySetInnerHTML={{
-                    __html: `Old : ${log.oldContent}`,
+                    __html: `Old : ${log.oldContent.replace(
+                      /<img\s[^>]*>/gi,
+                      ""
+                    )}`,
                   }}
                 />
                 <StNewText
                   dangerouslySetInnerHTML={{
-                    __html: `New : ${log.newContent}`,
+                    __html: `New : ${log.newContent.replace(
+                      /<img\s[^>]*>/gi,
+                      ""
+                    )}`,
                   }}
                 />
                 <StDate>
@@ -49,8 +55,14 @@ const LogBoard = ({ open, setOpen, postId }: Props) => {
                       year: "numeric",
                       month: "2-digit",
                       day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
                     })
-                    .replace(/\//g, ".")}
+                    .replace(/\//g, ".")
+                    .replace(",", "")   }
+
+                  
                 </StDate>
               </StCard>
             ))}
@@ -183,11 +195,11 @@ const StNameSpan = styled.span`
 `;
 const StDate = styled.p`
   font-size: 0.875rem;
-  margin-top: 30px;
+  margin-top: 20px;
 `;
 
 const StOldText = styled.p`
-  margin-top: 30px;
+  margin-top: 20px;
   color: ${(props) => props.theme.redLightColor};
   font-weight: 500;
   word-wrap: break-word;
@@ -199,7 +211,7 @@ const StOldText = styled.p`
   }
 `;
 const StNewText = styled.p`
-  margin-top: 30px;
+  margin-top: 20px;
   color: ${(props) => props.theme.greenColor};
   font-weight: 500;
   word-wrap: break-word;

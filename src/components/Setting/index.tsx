@@ -134,11 +134,11 @@ const StSettingToggleBtn = styled.div`
   margin: auto 0;
   border-radius: 100px;
   width: 100px;
-  right: 50px;
+  right: 70px;
   text-align: center;
   background: ${(props) => props.theme.bgwhite};
   box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 12px -4px;
-  animation: ${bounceFrames} 1s infinite;
+  //animation: ${bounceFrames} 1s infinite;
 `;
 const StSettinWrap = styled.div`
   border-radius: 100px;

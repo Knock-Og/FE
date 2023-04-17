@@ -219,6 +219,8 @@ export interface UserDataItem {
 
 export interface CurrenPw {
   changPw: boolean;
+  password: string;
+  setPassword: (newValue: string) => void;
   changPwBtn: () => void;
 }
 

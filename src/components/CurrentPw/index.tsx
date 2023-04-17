@@ -4,38 +4,33 @@ import { MYPAGEPW } from "api";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { CurrenPw } from "types";
-
-const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
-  const [password, setPassword] = useState("");
+import {removeCookie } from "api/cookies";
+import { useNavigate } from "react-router-dom";
+const CurrentPw = ({
+  changPw,
+  changPwBtn,
+  password,
+  setPassword,
+}: CurrenPw) => {
+  
   const [passwordBoolean, setPasswordBoolean] = useState(false);
   const [passwordMsg, setPasswordMsg] = useState("");
   const [pageChage, setPageChage] = useState(false);
   const [passwordCorrect, setPasswordCorrect] = useState(false);
-
+  const navigate = useNavigate();
   const passwordRegex =
     /^.*(?=^.{8,32}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
   const queryClient = useQueryClient();
-  const pwMutation = useMutation("getPw", MYPAGEPW.getPwData, {
+  const pwMutation = useMutation(MYPAGEPW.getPwData, {
     onSuccess: (response) => {
       queryClient.invalidateQueries("getPw");
-      alert("비밀번호가 일치합니다.");
       setPasswordCorrect(true);
       return response.data;
     },
-    onError: async (response: {
-      response: { data: { message: string } };
-    }): Promise<string> => {
-      queryClient.invalidateQueries("getPw");
-      alert("비밀번호가 일치하지 않습니다.");
-      return response.response.data.message;
-    },
   });
-  const pwPutMutation = useMutation("getPw", MYPAGEPW.putPwData, {
+  const pwPutMutation = useMutation(MYPAGEPW.putPwData, {
     onSuccess: (response) => {
       queryClient.invalidateQueries("getPw");
-      alert("비밀번호가 변경되었습니다.");
-      setPageChage(false);
-      changPwBtn();
       return response.data;
     },
   });
@@ -92,25 +87,39 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
   };
 
   const nextPwBtn = () => {
-    if (!passwordCorrect) return alert("비밀번호 확인을 수행해주세요!");
-    if (password.trim() === "") return alert("비밀번호를 입력해주세요");
+    if (!passwordCorrect) return alert("비밀번호를 확인해주세요!");
+    if (password.trim() === "") return alert("비밀번호를 입력해주세요!");
     setPassword("");
     setPageChage(true);
   };
-  const putPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const putPassword = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const isValidPassword = passwordRegex.test(newPassword);
-    if (!isValidPassword)
-      return alert(
+    if (!isValidPassword) {
+      alert(
         "비밀번호는 대소문자, 숫자, 특수문자를 포함하여 8-32자 이내로 입력해주세요!"
       );
-    if (newPassword.trim() === "") return alert("비밀번호를 입력해주세요!");
-    if (passwordCheck.trim() === "")
-      return alert("비밀번호 확인란을 입력해주세요!");
+      return;
+    }
+    if (newPassword.trim() === "") {
+      alert("비밀번호를 입력해주세요!");
+      return;
+    }
+    if (passwordCheck.trim() === "") {
+      alert("비밀번호 확인란을 입력해주세요!");
+      return;
+    }
 
-    if (newPassword !== passwordCheck)
-      return alert("비밀번호가 일치하지 않습니다!");
-    pwPutMutation.mutate({ newPassword });
+    if (newPassword !== passwordCheck) {
+      alert("비밀번호가 일치하지 않습니다!");
+      return;
+    }
+    try {
+      await pwPutMutation.mutateAsync({ newPassword });
+      await Promise.all([navigate("/"), removeCookie("reqWithToken")]);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <>
@@ -145,9 +154,9 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
             {passwordCheckBoolean && (
               <StErrorMsg>{passwordCheckMsg}</StErrorMsg>
             )}
-            <StNext type="button" onClick={putPassword}>
-              변경
-            </StNext>
+            <StNextLogin type="button" onClick={putPassword}>
+              로그인으로 이동
+            </StNextLogin>
             <StIoClose onClick={() => changPwBtn()} />
           </StCurrntPw>
         ) : (
@@ -271,7 +280,6 @@ const StInput = styled.input`
 `;
 const StButton = styled.button`
   position: absolute;
-  position: absolute;
   right: 0;
   top: 0px;
   font-size: 0.875rem;
@@ -314,7 +322,17 @@ const StNext = styled.button`
   cursor: pointer;
   display: block;
 `;
-
+const StNextLogin = styled.button`
+  width: 145px;
+  height: 57px;
+  color: ${(props) => props.theme.textwhite};
+  background: ${(props) => props.theme.bgBlue};
+  border: 0;
+  border-radius: 10px;
+  margin: 30px auto 0;
+  cursor: pointer;
+  display: block;
+`;
 const StCurrntPw = styled.div`
   width: 712px;
   height: 650px;

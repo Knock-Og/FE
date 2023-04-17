@@ -35,7 +35,7 @@ const Header = () => {
   const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const accessToken = getCookie("access_token");
+  const accessToken = getCookie("reqWithToken");
 
   const { mutate: getSearchedData } = useMutation(SEARCH.getSearchedData, {
     onSuccess: (res) => {
@@ -75,8 +75,9 @@ const Header = () => {
   };
 
   const handleClickLogOut = () => {
+    alert("로그아웃되셨습니다.");
     navigate("/");
-    removeCookie("access_token");
+    removeCookie("reqWithToken");
   };
   const [headerMove, setHeaderMove] = useState(false);
   const stContainerRef = useRef<HTMLDivElement>(null);
@@ -209,7 +210,7 @@ const StSearchInput = styled.input`
   width: 100%;
   height: 50px;
   border-radius: 65px;
-  border: 1px solid ${(props) => props.theme.borderColor};
+  border:0;
   background: ${(props) => props.theme.bgwhite};
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 3px 2px;
   color: ${(props) => props.theme.textColor};

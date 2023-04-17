@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { getCookie } from "api/cookies";
 import { FIND } from "api";
 const FindPwForm = () => {
   const navigate = useNavigate();
@@ -11,6 +12,12 @@ const FindPwForm = () => {
   const loginPage = () => {
     navigate("/");
   };
+ useEffect(() => {
+   // 로그인 페이지를 보여주고 있으므로, 로그인되어 있으면 메인 페이지로 이동
+   if (getCookie("access_token")) {
+     navigate("/main", { replace: true });
+   }
+ }, [navigate]);
   //이메일 보내기
   const [email, setEmail] = useState("");
   const [emailBoolean, setEmailBoolean] = useState(false);
