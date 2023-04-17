@@ -1,35 +1,37 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "react-query";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { IconButton, Input } from "@mui/material";
 import { Edit, FolderDelete, Cancel } from "@mui/icons-material";
 import styled from "styled-components";
 import { Folder, FolderPlus } from "assets";
 import { BOOKMARK } from "api";
-import { PostCard, Layout, NoSearched } from "components";
-import { endPageState, searchedPostsState } from "store/atoms";
+import { PostCard, Layout, NoSearched, Alert } from "components";
+import {
+  endPageState,
+  errorState,
+  folderIdState,
+  searchedPostsState,
+} from "store/atoms";
 import { Bookmark as IBookmark, NavItem, Post } from "types";
 
 const Bookmark = () => {
-  const params = useParams();
-
   const [page, setPage] = useState<number>(1);
   const [isEdit, setIsEdit] = useState(false);
   const [navItems, setNavItems] = useState<NavItem[]>();
-  const [editedFolderName, setEditedFolderName] = useState(
-    params.folderName as string
-  );
+  const [editedFolderName, setEditedFolderName] = useState("");
   const [isShowAddFolderModal, setIsShowAddFolderModal] =
     useState<boolean>(false);
   const [addInput, setAddInput] = useState<string>("");
 
+  const [folderId, setFolderId] = useRecoilState(folderIdState);
   const [searchedPosts, setSearchedPosts] = useRecoilState(searchedPostsState);
   const [endPage, setEndPage] = useRecoilState(endPageState);
+  const setError = useSetRecoilState(errorState);
 
+  const params = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  const [folderId, setFolderId] = useState<number>(0);
 
   const { mutate: getBookmarks } = useMutation(BOOKMARK.getBookmarks, {
     onSuccess: (res) => {
@@ -37,10 +39,12 @@ const Bookmark = () => {
         return {
           itemValue: v.bookMarkFolderName,
           handler: () => {
-            navigate(`/bookmark/${v.bookMarkFolderName}`, {
-              state: { folderId: v.id },
-            });
+            setFolderId(v.id);
+            navigate(`/bookmark/${v.bookMarkFolderName}`);
             getBookmark({ folderId: v.id, page: 1 });
+            setIsEdit(false);
+            setEditedFolderName(v.bookMarkFolderName);
+            setAddInput("");
           },
         };
       });
@@ -75,20 +79,30 @@ const Bookmark = () => {
   const handleClickEditBtn = () => setIsEdit((prev) => !prev);
 
   const handleEditSubmit = () => {
+    if (editedFolderName === "")
+      return setError("편집할 폴더명을 입력해주세요.");
+
     editBookmark({
       folderId,
       bookMarkFolderName: editedFolderName,
     });
-    navigate(`/bookmark/${editedFolderName}`);
+    navigate(`/bookmark/${editedFolderName}`, { replace: true });
     handleClickEditBtn();
     setAddInput("");
   };
 
   const handleClickDelBtn = () => {
     deleteBookmark(folderId);
-    navigate("/bookmark");
+    navigate("/bookmark", { replace: true });
     handleClickEditBtn();
     setAddInput("");
+  };
+
+  const handleSubmitAddForm = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (addInput === "") return setError("추가할 폴더명을 입력해주세요.");
+    addBookmark(addInput);
+    setIsShowAddFolderModal(false);
   };
 
   useEffect(() => {
@@ -103,32 +117,15 @@ const Bookmark = () => {
       setEditedFolderName("");
     };
     //eslint-disable-next-line
-  }, []);
-
-  useEffect(() => {
-    if (!params.folderName) {
-      setSearchedPosts([]);
-    }
-    //eslint-disable-next-line
   }, [params]);
-
-  useEffect(() => {
-    const folId = location?.state?.folderId;
-    setFolderId(folId ? folId : 0);
-  }, [location.state]);
 
   return (
     <>
-      <StCategoryAdd className={isShowAddFolderModal ? "on" : "off"}>
-        <StSignBox className={isShowAddFolderModal ? "on" : "off"}>
-          <StCategoryForm
-            onSubmit={(e) => {
-              e.preventDefault();
-              addBookmark(addInput);
-              setIsShowAddFolderModal(false);
-            }}
-          >
-            <StIoClose
+      <Alert />
+      <StBookmarkAdd className={isShowAddFolderModal ? "on" : "off"}>
+        <StBookmarkAddModal className={isShowAddFolderModal ? "on" : "off"}>
+          <StForm onSubmit={handleSubmitAddForm}>
+            <StCloseBtn
               width="40"
               height="40"
               viewBox="0 0 40 40"
@@ -148,24 +145,24 @@ const Bookmark = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-            </StIoClose>
-            <StCategoryTitle>즐겨찾기 폴더 추가</StCategoryTitle>
-            <StCategory>
-              <StCategoryInput
+            </StCloseBtn>
+            <StModalTitle>즐겨찾기 폴더 추가</StModalTitle>
+            <StInputWrapper>
+              <StInput
                 type="text"
                 value={addInput}
                 placeholder="추가할 폴더 명"
                 onChange={(e) => setAddInput(e.target.value)}
               />
-              <StCommonButton>추가</StCommonButton>
-            </StCategory>
-          </StCategoryForm>
-        </StSignBox>
-        <StSignBg
+              <StSubmitBtn>추가</StSubmitBtn>
+            </StInputWrapper>
+          </StForm>
+        </StBookmarkAddModal>
+        <StModalBg
           onClick={() => setIsShowAddFolderModal(!isShowAddFolderModal)}
           className={isShowAddFolderModal ? "on" : "off"}
         />
-      </StCategoryAdd>
+      </StBookmarkAdd>
 
       <Layout
         page={{ page, endPage, setPage }}
@@ -192,7 +189,6 @@ const Bookmark = () => {
               {isEdit ? (
                 <StBreadCrumbInput
                   type="text"
-                  defaultValue={editedFolderName}
                   value={editedFolderName}
                   onChange={handleChangeEditInput}
                   endAdornment={
@@ -282,7 +278,7 @@ const StFolderP = styled.p`
   margin-top: 12px;
 `;
 
-const StCategoryAdd = styled.div`
+const StBookmarkAdd = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -300,7 +296,7 @@ const StCategoryAdd = styled.div`
     visibility: visible;
   }
 `;
-const StSignBg = styled.div`
+const StModalBg = styled.div`
   background: rgba(18, 18, 18, 0.4);
   transition: opacity 0.5s ease-in-out;
   opacity: 0;
@@ -315,7 +311,7 @@ const StSignBg = styled.div`
   }
 `;
 
-const StSignBox = styled.div`
+const StBookmarkAddModal = styled.div`
   width: 500px;
   height: 250px;
   position: absolute;
@@ -340,17 +336,17 @@ const StSignBox = styled.div`
   }
 `;
 
-const StCategoryForm = styled.form`
+const StForm = styled.form`
   padding: 70px 75px;
 `;
 
-const StCategoryTitle = styled.h3`
+const StModalTitle = styled.h3`
   font-weight: 800;
   font-size: 1.25rem;
   margin-bottom: 35px;
   text-align: center;
 `;
-const StCategoryInput = styled.input`
+const StInput = styled.input`
   width: 100%;
   height: 44px;
   border: 0;
@@ -361,10 +357,10 @@ const StCategoryInput = styled.input`
     color: ${(props) => props.theme.placeholder};
   }
 `;
-const StCategory = styled.div`
+const StInputWrapper = styled.div`
   position: relative;
 `;
-const StCommonButton = styled.button`
+const StSubmitBtn = styled.button`
   position: absolute;
   width: 84px;
   height: 44px;
@@ -377,7 +373,7 @@ const StCommonButton = styled.button`
   cursor: pointer;
 `;
 
-const StIoClose = styled.svg`
+const StCloseBtn = styled.svg`
   position: absolute;
   right: 20px;
   top: 20px;

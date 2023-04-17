@@ -1,56 +1,63 @@
-import styled from "styled-components";
-import { Close } from "assets";
-import { MYPAGEPW } from "api";
 import { useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
+import { useSetRecoilState } from "recoil";
+import styled from "styled-components";
+import { MYPAGEPW } from "api";
+import { Close } from "assets";
+import { errorState, successState } from "store/atoms";
+import { Alert } from "components";
 import { CurrenPw } from "types";
 
 const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
+  const passwordRegex =
+    /^.*(?=^.{8,32}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+
   const [password, setPassword] = useState("");
   const [passwordBoolean, setPasswordBoolean] = useState(false);
   const [passwordMsg, setPasswordMsg] = useState("");
   const [pageChage, setPageChage] = useState(false);
   const [passwordCorrect, setPasswordCorrect] = useState(false);
 
-  const passwordRegex =
-    /^.*(?=^.{8,32}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
-  const queryClient = useQueryClient();
-  const pwMutation = useMutation("getPw", MYPAGEPW.getPwData, {
+  const setError = useSetRecoilState(errorState);
+  const setSuccess = useSetRecoilState(successState);
+
+  const pwMutation = useMutation(MYPAGEPW.getPwData, {
     onSuccess: (response) => {
-      queryClient.invalidateQueries("getPw");
-      alert("비밀번호가 일치합니다.");
+      if (`${response}`.includes("Error")) {
+        return setError(`${response}`);
+      }
+      setSuccess("비밀번호가 일치합니다.");
       setPasswordCorrect(true);
       return response.data;
     },
     onError: async (response: {
       response: { data: { message: string } };
     }): Promise<string> => {
-      queryClient.invalidateQueries("getPw");
-      alert("비밀번호가 일치하지 않습니다.");
+      setError("비밀번호가 일치하지 않습니다.");
       return response.response.data.message;
     },
   });
-  const pwPutMutation = useMutation("getPw", MYPAGEPW.putPwData, {
+  const pwPutMutation = useMutation(MYPAGEPW.putPwData, {
     onSuccess: (response) => {
-      queryClient.invalidateQueries("getPw");
-      alert("비밀번호가 변경되었습니다.");
+      if (`${response}`.includes("Error")) {
+        return setError(`${response}`);
+      }
+      setSuccess("비밀번호가 변경되었습니다.");
       setPageChage(false);
       changPwBtn();
       return response.data;
     },
   });
 
-  //비밀번호 서버 일치안하는지...
   const checkPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (passwordBoolean) return alert("올바른 형식의 비밀번호가 아닙니다.");
+    if (passwordBoolean) return setError("올바른 형식의 비밀번호가 아닙니다.");
     pwMutation.mutate({ password });
   };
-  //비밀번호확인란 유효성검사
+
   const currentPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     const passwordValue = e.target.value;
     setPassword(passwordValue);
-    // const isValidPassword = passwordRegex.test(passwordValue);
     const isValidPassword = true;
     setPasswordBoolean(!isValidPassword);
     setPasswordMsg(
@@ -92,8 +99,8 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
   };
 
   const nextPwBtn = () => {
-    if (!passwordCorrect) return alert("비밀번호 확인을 수행해주세요!");
-    if (password.trim() === "") return alert("비밀번호를 입력해주세요");
+    if (!passwordCorrect) return setError("비밀번호 확인을 수행해주세요!");
+    if (password.trim() === "") return setError("비밀번호를 입력해주세요");
     setPassword("");
     setPageChage(true);
   };
@@ -101,19 +108,20 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
     e.preventDefault();
     const isValidPassword = passwordRegex.test(newPassword);
     if (!isValidPassword)
-      return alert(
+      return setError(
         "비밀번호는 대소문자, 숫자, 특수문자를 포함하여 8-32자 이내로 입력해주세요!"
       );
-    if (newPassword.trim() === "") return alert("비밀번호를 입력해주세요!");
+    if (newPassword.trim() === "") return setError("비밀번호를 입력해주세요!");
     if (passwordCheck.trim() === "")
-      return alert("비밀번호 확인란을 입력해주세요!");
+      return setError("비밀번호 확인란을 입력해주세요!");
 
     if (newPassword !== passwordCheck)
-      return alert("비밀번호가 일치하지 않습니다!");
+      return setError("비밀번호가 일치하지 않습니다!");
     pwPutMutation.mutate({ newPassword });
   };
   return (
     <>
+      <Alert />
       <StChangPwWrap className={changPw ? "on" : "off"}>
         {pageChage ? (
           <StCurrntPw className={changPw ? "on" : "off"}>

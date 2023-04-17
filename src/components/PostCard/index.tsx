@@ -1,13 +1,14 @@
-// import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { Post } from "types";
-// import { EventSourcePolyfill, NativeEventSource } from "event-source-polyfill";
-// import { getCookie } from "api/cookies";
+import { EventSourcePolyfill, NativeEventSource } from "event-source-polyfill";
+import { getCookie } from "api/cookies";
 
 const PostCard = (post: Post) => {
   // const EventSource = EventSourcePolyfill || NativeEventSource;
   // const [eventSource, setEventSource] = useState<EventSource | null>(null);
+
   const navigate = useNavigate();
 
   const handleClickPostCard = () => {
@@ -24,9 +25,10 @@ const PostCard = (post: Post) => {
     //       }
     //     );
 
-    //     temp.onopen = () => console.log("is connected !");
-    //     temp.onmessage = (event) => console.log(JSON.parse(event.data));
-    //   } catch (err) {}
+    //     setEventSource(temp);
+    //   } catch (err) {
+    //     console.error("SSE에러:", err);
+    //   }
     // };
 
     // fetchSse();
@@ -35,7 +37,6 @@ const PostCard = (post: Post) => {
 
   // useEffect(() => {
   //   if (eventSource) {
-  //     console.log("render!");
   //     eventSource.onopen = () => console.log("is connected !");
 
   //     eventSource.onmessage = (event) => {

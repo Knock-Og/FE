@@ -118,9 +118,9 @@ const Header = () => {
       <StHeaderRightWrapper>
         <StHeaderMeun>
           <StWrite onClick={() => navigate("/write")}>게시물작성</StWrite>
-          {/* <StbellWrap onClick={isAlarmBtn}>
+          <StbellWrap onClick={isAlarmBtn}>
             <Bell />
-          </StbellWrap> */}
+          </StbellWrap>
           <StAccountBtn onClick={handleClickAccountBtn}>
             <Menuperson />
             <MenuArr className={isOn ? "on" : ""} />
@@ -137,7 +137,7 @@ const Header = () => {
             {accessToken ? "로그아웃" : "로그인"}
           </StMenuItem>
         </StMenu>
-        {/* <StAlarm className={isAlarm ? "on" : ""}>
+        <StAlarm className={isAlarm ? "on" : ""}>
           <StAlarmTop>
             <StAlarmTitle> 알림</StAlarmTitle>
           </StAlarmTop>
@@ -151,12 +151,12 @@ const Header = () => {
               </StAlarmcontentP>
             </StAlarmcontent>
           </StAlarmContentWrap>
-        </StAlarm> */}
+        </StAlarm>
       </StHeaderRightWrapper>
-      {/* <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
+      <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
         {isDark ? <Sun /> : <Dark />}
         {isDark ? "라이트모드로 전환" : "다크모드로 전환"}
-      </StModeToggleBtn> */}
+      </StModeToggleBtn>
     </StContainer>
   );
 };

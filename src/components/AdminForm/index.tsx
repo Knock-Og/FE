@@ -2,9 +2,12 @@ import styled from "styled-components";
 import { SignUpForm } from "components";
 import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useSetRecoilState } from "recoil";
 import { MainArr } from "assets";
 import { ADMIN } from "api";
+import { Alert } from "components";
 import { SignItem } from "types";
+import { errorState, successState } from "store/atoms";
 
 interface OpenState {
   [key: string]: boolean;
@@ -26,6 +29,10 @@ const AdminForm = () => {
   const [position, setPosition] = useState<PositionState>();
   const [changeItemId, setChangeItemId] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<string>("");
+
+  const setError = useSetRecoilState(errorState);
+  const setSuccess = useSetRecoilState(successState);
+
   const queryClient = useQueryClient();
 
   const { isLoading, isError, data } = useQuery("member", ADMIN.member);
@@ -33,9 +40,13 @@ const AdminForm = () => {
   const positionMutation = useMutation("position", ADMIN.position, {
     onSuccess: (response) => {
       if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
+        setSuccess("직급이 변경되었습니다.");
         queryClient.invalidateQueries("member");
       }
-    }
+    },
   });
 
   const modalBtn = () => setModalOpen(false);
@@ -71,8 +82,11 @@ const AdminForm = () => {
   const memberDelMutation = useMutation("memberdel", ADMIN.memberDel, {
     onSuccess: (response) => {
       if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
+        setSuccess("멤버가 삭제되었습니다.");
         queryClient.invalidateQueries("member");
-
         return response.data;
       }
     },
@@ -81,9 +95,6 @@ const AdminForm = () => {
   const memberDel = (id: number, email: string) => {
     if (window.confirm("삭제하시겠습니까?")) {
       memberDelMutation.mutate({ id, email });
-      alert("삭제되었습니다.");
-    } else {
-      alert("취소되었습니다.");
     }
   };
 
@@ -121,75 +132,78 @@ const AdminForm = () => {
   if (isError) return <h1>"실패했습니다.!"</h1>;
 
   return (
-    <StAdminWrap>
-      <StTop>
-        <StTitle>
-          사용자관리
-          <StUser>
-            전체사용자 <StUserSpan>{data?.data.length} </StUserSpan>명
-          </StUser>
-        </StTitle>
-        <StButton onClick={() => setModalOpen(true)}>인원추가 +</StButton>
-      </StTop>
-      <StContent>
-        <StContentTop>
-          <StTopList>이름</StTopList>
-          <StTopList>이메일</StTopList>
-          <StTopList>전화번호</StTopList>
-          <StTopList>현재직급</StTopList>
-          <StTopList>직급변경</StTopList>
-          <StTopList>변경</StTopList>
-        </StContentTop>
-        {data?.data.map((item: SignItem) => {
-          return (
-            <StContentBottom key={item.id}>
-              <StBottomList>{item.memberName}</StBottomList>
-              <StBottomList>{item.email}</StBottomList>
-              <StBottomList>{item.phoneNum}</StBottomList>
-              <StBottomList>{item.position}</StBottomList>
-              <StOpsion onSubmit={positionSubmit}>
-                <StBottomListSel>
-                  <StSelWrap>
-                    <StSeletLabel
-                      onClick={() => handleClickPositionLabel(item.id)}
+    <>
+      <Alert />
+      <StAdminWrap>
+        <StTop>
+          <StTitle>
+            사용자관리
+            <StUser>
+              전체사용자 <StUserSpan>{data?.data.length} </StUserSpan>명
+            </StUser>
+          </StTitle>
+          <StButton onClick={() => setModalOpen(true)}>인원추가 +</StButton>
+        </StTop>
+        <StContent>
+          <StContentTop>
+            <StTopList>이름</StTopList>
+            <StTopList>이메일</StTopList>
+            <StTopList>전화번호</StTopList>
+            <StTopList>현재직급</StTopList>
+            <StTopList>직급변경</StTopList>
+            <StTopList>변경</StTopList>
+          </StContentTop>
+          {data?.data.map((item: SignItem) => {
+            return (
+              <StContentBottom key={item.id}>
+                <StBottomList>{item.memberName}</StBottomList>
+                <StBottomList>{item.email}</StBottomList>
+                <StBottomList>{item.phoneNum}</StBottomList>
+                <StBottomList>{item.position}</StBottomList>
+                <StOpsion onSubmit={positionSubmit}>
+                  <StBottomListSel>
+                    <StSelWrap>
+                      <StSeletLabel
+                        onClick={() => handleClickPositionLabel(item.id)}
+                      >
+                        {position && position[item.id]}
+                        <MenuArr />
+                      </StSeletLabel>
+                      {isOpen && isOpen[`${item.id}`] && (
+                        <StSeletUl>
+                          {positionList.map((position) => (
+                            <StSeletLi
+                              key={`${item.id}-${position.id}`}
+                              onClick={() =>
+                                positionChange(item.id, position.position)
+                              }
+                            >
+                              {position.position}
+                            </StSeletLi>
+                          ))}
+                        </StSeletUl>
+                      )}
+                    </StSelWrap>
+                  </StBottomListSel>
+                  <StBottomListBtn>
+                    <StChangeBtn type="submit">직급수정</StChangeBtn>
+                    <StDelBtn
+                      type="button"
+                      onClick={() => {
+                        memberDel(item.id, item.email);
+                      }}
                     >
-                      {position && position[item.id]}
-                      <MenuArr />
-                    </StSeletLabel>
-                    {isOpen && isOpen[`${item.id}`] && (
-                      <StSeletUl>
-                        {positionList.map((position) => (
-                          <StSeletLi
-                            key={`${item.id}-${position.id}`}
-                            onClick={() =>
-                              positionChange(item.id, position.position)
-                            }
-                          >
-                            {position.position}
-                          </StSeletLi>
-                        ))}
-                      </StSeletUl>
-                    )}
-                  </StSelWrap>
-                </StBottomListSel>
-                <StBottomListBtn>
-                  <StChangeBtn type="submit">직급수정</StChangeBtn>
-                  <StDelBtn
-                    type="button"
-                    onClick={() => {
-                      memberDel(item.id, item.email);
-                    }}
-                  >
-                    인원삭제
-                  </StDelBtn>
-                </StBottomListBtn>
-              </StOpsion>
-            </StContentBottom>
-          );
-        })}
-      </StContent>
-      <SignUpForm onClose={modalBtn} modalOpen={modalOpen} />
-    </StAdminWrap>
+                      인원삭제
+                    </StDelBtn>
+                  </StBottomListBtn>
+                </StOpsion>
+              </StContentBottom>
+            );
+          })}
+        </StContent>
+        <SignUpForm onClose={modalBtn} modalOpen={modalOpen} />
+      </StAdminWrap>
+    </>
   );
 };
 export default AdminForm;

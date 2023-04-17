@@ -79,7 +79,7 @@ const Category = () => {
       getCategoryData({ category: searchedCategory, page, sort: "관심도" });
     }
     //eslint-disable-next-line
-  }, []);
+  }, [params]);
 
   useEffect(() => {
     if (categoryData) {

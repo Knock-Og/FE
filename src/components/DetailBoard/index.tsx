@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Viewer } from "@toast-ui/react-editor";
 import styled from "styled-components";
 import { POST } from "api";
-import { PostDetailTab } from "components";
+import { PostDetailTab, Alert } from "components";
 import { ActiveState, PostDetail } from "types";
+import { errorState, isDarkState } from "store/atoms";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
@@ -15,6 +17,9 @@ const DetailBoard = (post: PostDetail) => {
     log: false,
     bookmark: false,
   });
+
+  const setError = useSetRecoilState(errorState);
+  const isDark = useRecoilValue(isDarkState);
 
   const navigate = useNavigate();
 
@@ -27,8 +32,7 @@ const DetailBoard = (post: PostDetail) => {
 
   const handleClickEditRouteBtn = () => {
     if (post.editingStatus === "true") {
-      alert("현재 다른 사용자가 편집중입니다. 잠시만 기다려주세요.");
-      return;
+      return setError("현재 다른 사용자가 편집중입니다. 잠시만 기다려주세요.");
     }
     navigate(`/post/${post.id}/modify`);
   };
@@ -38,13 +42,19 @@ const DetailBoard = (post: PostDetail) => {
     const isDel = confirm("삭제하시겠습니까?");
 
     if (isDel) {
+      if (post.editingStatus === "true") {
+        return setError(
+          "현재 다른 사용자가 편집중입니다. 잠시만 기다려주세요."
+        );
+      }
       delPost(post.id);
-      navigate("/main");
+      navigate("/mypage");
     }
   };
 
   return (
     <>
+      <Alert />
       <StContainer>
         <StTop>
           <StLeft>
@@ -82,9 +92,11 @@ const DetailBoard = (post: PostDetail) => {
             <StText>조회수</StText>
           </StRight>
         </StTop>
-        <ViewerWrap>
+
+        <ViewerWrap className={isDark ? "dark" : "light"}>
           <Viewer initialValue={post.content} />
         </ViewerWrap>
+
         <StBtnWrap>
           <StDelBtn onClick={handdleClickDelBtn}>삭제하기</StDelBtn>
           <StEditRouteBtn onClick={handleClickEditRouteBtn}>
@@ -174,6 +186,20 @@ const ViewerWrap = styled.div`
   padding: 0px 50px 50px;
   width: 100%;
   border-bottom: 1px solid ${(props) => props.theme.borderColor};
+
+  &.dark {
+    background-color: red;
+    /* 안에 클래스에 컬러 조정필요합니다. */
+    > .toastui-editor-contents {
+      color: white;
+    }
+  }
+  &.light {
+    background-color: blue;
+    > .toastui-editor-contents {
+      color: black;
+    }
+  }
 `;
 
 const StkeyWordWrap = styled.div`

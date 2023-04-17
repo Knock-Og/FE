@@ -42,8 +42,6 @@ const App = () => {
             <Route path="/login/findpw" element={<ROUTE.FindPw />} />
 
             {/* Mypage */}
-            {/* TODO: 페이지 합치기 */}
-            <Route path="/mypage/posts" element={<ROUTE.MyPost />} />
             <Route path="/mypage" element={<ROUTE.Mypage />} />
 
             {/* Searched */}

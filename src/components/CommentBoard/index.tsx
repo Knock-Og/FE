@@ -22,21 +22,21 @@ const CommentBoard = ({ open, setOpen, postId }: Props) => {
 
   const queryClient = useQueryClient();
 
-  const { data: comments } = useQuery<Comments[]>("getComment", () =>
+  const { data: comments } = useQuery<Comments[]>("getComments", () =>
     COMMENT.getComments(postId)
   );
 
   const { mutate: addComment } = useMutation(COMMENT.addComment, {
-    onSuccess: () => queryClient.invalidateQueries("getComment"),
+    onSuccess: () => queryClient.invalidateQueries("getComments"),
   });
   const { mutate: putComment } = useMutation(COMMENT.putComment, {
     onSuccess: () => {
-      queryClient.invalidateQueries("getComment");
+      queryClient.invalidateQueries("getComments");
       setIsEdit(false);
     },
   });
   const { mutate: deleleComment } = useMutation(COMMENT.delComment, {
-    onSuccess: () => queryClient.invalidateQueries("getComment"),
+    onSuccess: () => queryClient.invalidateQueries("getComments"),
   });
 
   const handleChangeTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -46,12 +46,14 @@ const CommentBoard = ({ open, setOpen, postId }: Props) => {
   const handleClickSubmitBtn = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setNewComment({ comment: "" });
-    addComment({ postId, comment: newComment });
-    putComment({
-      postId,
-      commentId: editCommentId,
-      comment: newComment.comment,
-    });
+    if (isEdit) {
+      return putComment({
+        postId,
+        commentId: editCommentId,
+        comment: newComment.comment,
+      });
+    }
+    return addComment({ postId, comment: newComment });
   };
 
   const handleClickEditLi = (existComment: string, commentId: number) => {
@@ -64,10 +66,6 @@ const CommentBoard = ({ open, setOpen, postId }: Props) => {
   const modalBtn = (id: number) => setModalopen(id);
 
   const closeModal = () => setModalopen(null);
-
-  //  const putBtn = (commentId: number) => {
-  //    putComment({ postId, commentId, comment: newComment.comment });
-  //  };
 
   const delBtn = (commentId: number) => deleleComment({ postId, commentId });
 
@@ -263,6 +261,7 @@ const StText = styled.textarea`
   height: 120px !important;
   padding: 20px 20px;
   border: 1px solid ${(props) => props.theme.borderColor};
+  resize: none;
 `;
 
 const StSubmitBtn = styled.button`

@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { ADMIN } from "api";
+import { Alert } from "components";
+import { errorState, successState } from "store/atoms";
 import { SignUpFormProps } from "types";
 import { Close, MainArr } from "assets";
+
 const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
+  const setError = useSetRecoilState(errorState);
+  const setSuccess = useSetRecoilState(successState);
   // 이름, 이메일
   const [memberName, setMemberName] = useState("");
 
@@ -26,11 +32,15 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   const [phoneNumBoolean, setPhoneNumBoolean] = useState(false);
   // 가입
   const queryClient = useQueryClient();
-  const signUpMutation = useMutation("signUp", ADMIN.signUp, {
+  const signUpMutation = useMutation(ADMIN.signUp, {
     onSuccess: (response) => {
+      if (`${response}`.includes("Error")) {
+        return setError(`${response}`);
+      }
+      setSuccess("멤버가 추가되었습니다.");
       queryClient.invalidateQueries("member");
       return response.data;
-    }
+    },
   });
 
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -52,15 +62,19 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   const checkPhonenumMutation = useMutation("checkPhonenum", ADMIN.checkPhone, {
     onSuccess: (response) => {
       if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
         queryClient.invalidateQueries("phonenum");
-        alert("사용가능한 번호 입니다.");
+        return setSuccess("사용가능한 번호 입니다.");
       }
-    }
+    },
   });
   //휴대폰번호을 서버로 전송..
   const checkPhone = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    if (!phoneNumBoolean) return alert("휴대폰번호형식이 올바르지 않습니다!");
+    if (!phoneNumBoolean)
+      return setError("휴대폰번호형식이 올바르지 않습니다!");
     checkPhonenumMutation.mutate(phoneNum);
   };
   //비밀번호 유효성검사
@@ -101,21 +115,24 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   const checkEmailMutation = useMutation("checkEmail", ADMIN.checkEmail, {
     onSuccess: (response) => {
       if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
         queryClient.invalidateQueries("email");
-        alert("사용가능한 이메일 입니다.");
+        return setSuccess("사용가능한 이메일 입니다.");
       }
     },
     onError: (response) => {
       if (response) {
         queryClient.invalidateQueries("email");
-        alert("중복된 이메일 입니다!");
+        setError("중복된 이메일 입니다!");
       }
     },
   });
   //이메일을 서버로 전송..
   const checkEmail = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    if (!isValidEmail) return alert("이메일형식이 올바르지 않습니다!");
+    if (!isValidEmail) return setError("이메일형식이 올바르지 않습니다!");
     checkEmailMutation.mutate(email);
   };
   //이름 유효성검사
@@ -131,46 +148,49 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   //이름을 서버로 전송..
   const checkName = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    if (!isValidName) return alert("올바른 형식의 이름이 아닙니다!");
+    if (!isValidName) return setError("올바른 형식의 이름이 아닙니다!");
     checkNameMutation.mutate(memberName);
   };
   //이름 중복확인
   const checkNameMutation = useMutation("checkName", ADMIN.checkName, {
     onSuccess: (response) => {
       if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
         queryClient.invalidateQueries("name");
-        alert("사용가능한 이름 입니다!");
+        setError("사용가능한 이름 입니다!");
       }
     },
     onError: (response) => {
       if (response) {
         queryClient.invalidateQueries("name");
-        alert("중복된 이름 입니다!");
+        setError("중복된 이름 입니다!");
       }
     },
   });
   const signupSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (position.trim() === "") return alert("직급을 선택해주세요!");
-    if (memberName.trim() === "") return alert("이름을 입력해주세요!");
-    if (!isValidName) return alert("이름 중복 검사를 수행해주세요!");
-    if (!isValidEmail) return alert("이메일 중복 검사를 수행해주세요!");
-    if (email.trim() === "") return alert("이메일을 입력해주세요!");
-    if (phoneNum.trim() === "") return alert("휴대폰 번호를 입력해주세요!");
-    if (password.trim() === "") return alert("비밀번호를 입력해주세요!");
+    if (position.trim() === "") return setError("직급을 선택해주세요!");
+    if (memberName.trim() === "") return setError("이름을 입력해주세요!");
+    if (!isValidName) return setError("이름 중복 검사를 수행해주세요!");
+    if (!isValidEmail) return setError("이메일 중복 검사를 수행해주세요!");
+    if (email.trim() === "") return setError("이메일을 입력해주세요!");
+    if (phoneNum.trim() === "") return setError("휴대폰 번호를 입력해주세요!");
+    if (password.trim() === "") return setError("비밀번호를 입력해주세요!");
     if (passwordCheck.trim() === "")
-      return alert("비밀번호 확인란을 입력해주세요!");
+      return setError("비밀번호 확인란을 입력해주세요!");
 
     const isphoneNumber = phoneNumberRegex.test(phoneNum);
     if (!isphoneNumber)
-      return alert("'-'를 포함한 휴대폰 번호를 정확히 입력하세요!");
+      return setError("'-'를 포함한 휴대폰 번호를 정확히 입력하세요!");
     const isValidPassword = passwordRegex.test(password);
     if (!isValidPassword)
-      return alert(
+      return setError(
         "비밀번호는 대소문자, 숫자, 특수문자를 포함하여 8-32자 이내로 입력해주세요!"
       );
     if (password !== passwordCheck)
-      return alert("비밀번호가 일치하지 않습니다!");
+      return setError("비밀번호가 일치하지 않습니다!");
 
     try {
       await signUpMutation.mutateAsync({
@@ -206,120 +226,123 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   };
 
   return (
-    <StSignWrap className={modalOpen ? "on" : "off"}>
-      <StSignBox className={modalOpen ? "on" : "off"}>
-        <StSignForm onSubmit={signupSubmit}>
-          <StTop>
-            <StSignTitle>계정생성</StSignTitle>
-            {modalOpen && <StIoClose onClick={onClose} />}
-          </StTop>
-          <StSignUl>
-            <StSignLi>
-              <StSignLeft>직급</StSignLeft>
-              <StSignRight>
-                <StSeletLabel onClick={() => setIsOpen(!isOpen)}>
-                  {position}
-                  <MenuArr />
-                </StSeletLabel>
-                {isOpen && (
-                  <StSeletUl>
-                    {positionList.map((item) => (
-                      <StSeletLi
-                        key={item.id}
-                        onClick={() => handleOptionClick(item.position)}
-                      >
-                        {item.position}
-                      </StSeletLi>
-                    ))}
-                  </StSeletUl>
-                )}
-              </StSignRight>
-            </StSignLi>
-            <StSignLi>
-              <StSignLeft>회원명</StSignLeft>
-              <StSignRight>
-                <StSignInputOver
-                  type="text"
-                  value={memberName}
-                  placeholder="회원명을 적어주세요"
-                  onChange={nameChange}
-                />
-                {!isValidName && <StErrorMsg>{memberNameMsg}</StErrorMsg>}
-                <StCheckBtn type="button" onClick={checkName}>
-                  중복확인
-                </StCheckBtn>
-              </StSignRight>
-            </StSignLi>
-            <StSignLi>
-              <StSignLeft>이메일</StSignLeft>
-              <StSignRight>
-                <StSignInputOver
-                  type="text"
-                  value={email}
-                  placeholder="test@test.com"
-                  onChange={emailChange}
-                />
-                {!isValidEmail && <StErrorMsg>{emailMsg}</StErrorMsg>}
-                <StCheckBtn type="button" onClick={checkEmail}>
-                  중복확인
-                </StCheckBtn>
-              </StSignRight>
-            </StSignLi>
-            <StSignLi>
-              <StSignLeft>전화번호</StSignLeft>
-              <StSignRight>
-                <StSignInput
-                  type="text"
-                  value={phoneNum}
-                  placeholder="'-'포함 입력"
-                  onChange={phoneNumberChange}
-                />
-                {phoneNumBoolean && <StErrorMsg>{phoneNumMsg}</StErrorMsg>}
-                <StCheckBtn type="button" onClick={checkPhone}>
-                  중복확인
-                </StCheckBtn>
-              </StSignRight>
-            </StSignLi>
+    <>
+      <Alert />
+      <StSignWrap className={modalOpen ? "on" : "off"}>
+        <StSignBox className={modalOpen ? "on" : "off"}>
+          <StSignForm onSubmit={signupSubmit}>
+            <StTop>
+              <StSignTitle>계정생성</StSignTitle>
+              {modalOpen && <StIoClose onClick={onClose} />}
+            </StTop>
+            <StSignUl>
+              <StSignLi>
+                <StSignLeft>직급</StSignLeft>
+                <StSignRight>
+                  <StSeletLabel onClick={() => setIsOpen(!isOpen)}>
+                    {position}
+                    <MenuArr />
+                  </StSeletLabel>
+                  {isOpen && (
+                    <StSeletUl>
+                      {positionList.map((item) => (
+                        <StSeletLi
+                          key={item.id}
+                          onClick={() => handleOptionClick(item.position)}
+                        >
+                          {item.position}
+                        </StSeletLi>
+                      ))}
+                    </StSeletUl>
+                  )}
+                </StSignRight>
+              </StSignLi>
+              <StSignLi>
+                <StSignLeft>회원명</StSignLeft>
+                <StSignRight>
+                  <StSignInputOver
+                    type="text"
+                    value={memberName}
+                    placeholder="회원명을 적어주세요"
+                    onChange={nameChange}
+                  />
+                  {!isValidName && <StErrorMsg>{memberNameMsg}</StErrorMsg>}
+                  <StCheckBtn type="button" onClick={checkName}>
+                    중복확인
+                  </StCheckBtn>
+                </StSignRight>
+              </StSignLi>
+              <StSignLi>
+                <StSignLeft>이메일</StSignLeft>
+                <StSignRight>
+                  <StSignInputOver
+                    type="text"
+                    value={email}
+                    placeholder="test@test.com"
+                    onChange={emailChange}
+                  />
+                  {!isValidEmail && <StErrorMsg>{emailMsg}</StErrorMsg>}
+                  <StCheckBtn type="button" onClick={checkEmail}>
+                    중복확인
+                  </StCheckBtn>
+                </StSignRight>
+              </StSignLi>
+              <StSignLi>
+                <StSignLeft>전화번호</StSignLeft>
+                <StSignRight>
+                  <StSignInput
+                    type="text"
+                    value={phoneNum}
+                    placeholder="'-'포함 입력"
+                    onChange={phoneNumberChange}
+                  />
+                  {phoneNumBoolean && <StErrorMsg>{phoneNumMsg}</StErrorMsg>}
+                  <StCheckBtn type="button" onClick={checkPhone}>
+                    중복확인
+                  </StCheckBtn>
+                </StSignRight>
+              </StSignLi>
 
-            <StSignLi>
-              <StSignLeft>비밀번호</StSignLeft>
-              <StSignRight>
-                <StSignInput
-                  type="password"
-                  value={password}
-                  placeholder="비밀번호를 적어주세요"
-                  onChange={passwordChange}
-                />
-                {passwordBoolean && <StErrorMsg>{passwordMsg}</StErrorMsg>}
-                {!passwordBoolean && password && (
-                  <StSuccessMsg>{passwordMsg}</StSuccessMsg>
-                )}
-              </StSignRight>
-            </StSignLi>
+              <StSignLi>
+                <StSignLeft>비밀번호</StSignLeft>
+                <StSignRight>
+                  <StSignInput
+                    type="password"
+                    value={password}
+                    placeholder="비밀번호를 적어주세요"
+                    onChange={passwordChange}
+                  />
+                  {passwordBoolean && <StErrorMsg>{passwordMsg}</StErrorMsg>}
+                  {!passwordBoolean && password && (
+                    <StSuccessMsg>{passwordMsg}</StSuccessMsg>
+                  )}
+                </StSignRight>
+              </StSignLi>
 
-            <StSignLi>
-              <StSignLeft>비밀번호 확인</StSignLeft>
-              <StSignRight>
-                <StSignInput
-                  type="password"
-                  value={passwordCheck}
-                  placeholder="비밀번호확인"
-                  onChange={passwordCheckChange}
-                />
-                {passwordCheckBoolean && (
-                  <StErrorMsg>{passwordCheckMsg}</StErrorMsg>
-                )}
-                {!passwordCheckBoolean && passwordCheck && (
-                  <StSuccessMsg>{passwordCheckMsg}</StSuccessMsg>
-                )}
-              </StSignRight>
-            </StSignLi>
-          </StSignUl>
-          <StButton>회원가입</StButton>
-        </StSignForm>
-      </StSignBox>
-      <StSignBg onClick={onClose} className={modalOpen ? "on" : "off"} />
-    </StSignWrap>
+              <StSignLi>
+                <StSignLeft>비밀번호 확인</StSignLeft>
+                <StSignRight>
+                  <StSignInput
+                    type="password"
+                    value={passwordCheck}
+                    placeholder="비밀번호확인"
+                    onChange={passwordCheckChange}
+                  />
+                  {passwordCheckBoolean && (
+                    <StErrorMsg>{passwordCheckMsg}</StErrorMsg>
+                  )}
+                  {!passwordCheckBoolean && passwordCheck && (
+                    <StSuccessMsg>{passwordCheckMsg}</StSuccessMsg>
+                  )}
+                </StSignRight>
+              </StSignLi>
+            </StSignUl>
+            <StButton>회원가입</StButton>
+          </StSignForm>
+        </StSignBox>
+        <StSignBg onClick={onClose} className={modalOpen ? "on" : "off"} />
+      </StSignWrap>
+    </>
   );
 };
 

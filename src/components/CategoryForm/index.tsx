@@ -1,53 +1,92 @@
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useSetRecoilState } from "recoil";
 import { CATEGORY } from "api";
+import { errorState, successState } from "store/atoms";
+import { Alert } from "components";
 import { CategoryItem } from "types";
+
 const CategoryForm = () => {
-  const queryClient = useQueryClient();
-  //카테고리 추가
   const [categoryName, setCategoryName] = useState("");
-  const categoryMutation = useMutation("categoryadd", CATEGORY.categoryAdd, {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [categoryPutName, setCategoryPutName] = useState("");
+  const [categoryPutID, setCategoryPutID] = useState(Number);
+  const [modalPutOpen, setModalPutOpen] = useState(false);
+
+  const setError = useSetRecoilState(errorState);
+  const setSuccess = useSetRecoilState(successState);
+
+  const queryClient = useQueryClient();
+
+  const { isLoading, isError, data } = useQuery(
+    "getCategories",
+    CATEGORY.getCategories
+  );
+
+  const categoryMutation = useMutation(CATEGORY.categoryAdd, {
     onSuccess: (response) => {
       if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
+        setSuccess("카테고리가 추가되었습니다.");
         queryClient.invalidateQueries("getCategories");
         return response.data;
       }
-    }
+    },
   });
-  const [modalOpen, setModalOpen] = useState(false);
+
+  const categoryPutMutation = useMutation(CATEGORY.categoryPut, {
+    onSuccess: (response) => {
+      if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
+        setSuccess("카테고리가 편집되었습니다.");
+        queryClient.invalidateQueries("getCategories");
+        return response.data;
+      }
+    },
+  });
+
+  const categoryDelMutation = useMutation(CATEGORY.categoryDel, {
+    onSuccess: (response) => {
+      if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
+        setSuccess("카테고리가 삭제되었습니다.");
+        queryClient.invalidateQueries("getCategories");
+        return response.data;
+      }
+    },
+  });
+
+  const categoryDel = (id: number) => {
+    if (window.confirm("삭제하시겠습니까?")) {
+      categoryDelMutation.mutate({ id });
+    }
+  };
+
   const modalBtn = () => {
     setModalOpen(!modalOpen);
   };
 
- 
+  const modalPutBtn = () => {
+    setModalPutOpen(!modalPutOpen);
+  };
+
   const categorySubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    if (categoryName.trim() === "") return alert("카테고리명을 적어주세요!");
+    if (categoryName.trim() === "") return setError("카테고리명을 적어주세요!");
     e.preventDefault();
     modalBtn();
     categoryMutation.mutate({ categoryName });
   };
 
-  //카테고리 수정
-  const [categoryPutName, setCategoryPutName] = useState("");
-  const [categoryPutID, setCategoryPutID] = useState(Number);
-
-  const [modalPutOpen, setModalPutOpen] = useState(false);
-  const modalPutBtn = () => {
-    setModalPutOpen(!modalPutOpen);
-  };
-  
-  const categoryPutMutation = useMutation("categoryput", CATEGORY.categoryPut, {
-    onSuccess: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("getCategories");
-        console.log("성공햇습니다.");
-        return response.data;
-      }
-    }
-  });
   const categoryPutSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    if (categoryPutName.trim() === "") return alert("카테고리명을 적어주세요");
+    if (categoryPutName.trim() === "")
+      return setError("카테고리명을 적어주세요");
     e.preventDefault();
     modalPutBtn();
     categoryPutMutation.mutate({
@@ -55,33 +94,13 @@ const CategoryForm = () => {
       id: categoryPutID,
     });
   };
-  //카테고리 삭제
-  const categoryDelMutation = useMutation("categorydel", CATEGORY.categoryDel, {
-    onSuccess: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("getCategories");
-        console.log("성공햇습니다.");
-        return response.data;
-      }
-    }
-  });
-  const categoryDel = (id: number) => {
-    if (window.confirm("삭제하시겠습니까?")) {
-      categoryDelMutation.mutate({ id });
-      alert("삭제되었습니다.");
-    } else {
-      alert("취소되었습니다.");
-    }
-  };
-  const { isLoading, isError, data } = useQuery(
-    "getCategories",
-    CATEGORY.getCategories
-  );
+
   if (isLoading) return <h1>"성공했습니다.</h1>;
   if (isError) return <h1>"실패했습니다.!"</h1>;
 
   return (
     <>
+      <Alert />
       <StAdminWrap>
         <StTop>
           <StTitle>

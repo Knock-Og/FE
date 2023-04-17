@@ -7,7 +7,6 @@ import NavBg from "assets/navBg.png";
 import { Close, Grid } from "assets";
 import { NoCategory } from "components";
 import { NavItem } from "types";
-;
 interface Props {
   open?: boolean;
   setOpen?: (isOpen: boolean) => void;
@@ -139,12 +138,13 @@ const StSettingToggleBtn = styled.div`
   text-align: center;
   box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 12px -4px;
   animation: ${bounceFrames} 1s infinite;
+  background-color: ${({ theme }) => theme.bgColor};
 `;
 const StSettinWrap = styled.div`
   border-radius: 100px;
   width: 60px;
   display: flex;
-  
+
   align-items: center;
   justify-content: center;
   height: 60px;
@@ -160,7 +160,7 @@ const StSettingP = styled.p`
   margin-top: 15px;
   font-size: 0.875rem;
   font-weight: 500;
-  width:100%;
+  width: 100%;
 `;
 const StSettingWrap = styled.div`
   position: fixed;

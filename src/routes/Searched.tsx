@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
@@ -47,6 +47,7 @@ const Searched = () => {
   const [endPage, setEndPage] = useRecoilState(endPageState);
 
   const navigate = useNavigate();
+  const params = useParams();
 
   const { data: categoryData } = useQuery<ICategory[]>(
     "getCategories",
@@ -87,7 +88,7 @@ const Searched = () => {
     setEndPage(1);
     getSearchedData({ keyword: searchedKeyword, page, sort: "관심도" });
     //eslint-disable-next-line
-  }, []);
+  }, [params]);
 
   useEffect(() => {
     if (categoryData) {
