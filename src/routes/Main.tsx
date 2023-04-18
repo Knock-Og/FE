@@ -460,5 +460,5 @@ const StFolderP = styled.p`
   font-weight: 500;
   font-size: 0.875rem;
   margin-top: 12px;
-  color: ${(props) => props.theme.fillGrey};
+  color: ${(props) => props.theme.textColor};
 `;

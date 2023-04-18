@@ -50,7 +50,7 @@ const PostCard = (post: Post) => {
   //     }
   //   };
   // }, [eventSource]);
-  console.log(post)
+ 
   return (
     <StPostCardBox onClick={handleClickPostCard}>
       <StTitle

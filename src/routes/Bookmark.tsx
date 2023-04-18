@@ -3,9 +3,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "react-query";
 import { useRecoilState } from "recoil";
 import { IconButton, Input } from "@mui/material";
-import { Edit, FolderDelete, Cancel } from "@mui/icons-material";
 import styled from "styled-components";
-import { Folder, FolderPlus } from "assets";
+import { Folder, FolderPlus, Pencil, Trash, Delx } from "assets";
 import { BOOKMARK } from "api";
 import { PostCard, Layout, NoSearched } from "components";
 import { endPageState, searchedPostsState } from "store/atoms";
@@ -75,6 +74,8 @@ const Bookmark = () => {
   const handleClickEditBtn = () => setIsEdit((prev) => !prev);
 
   const handleEditSubmit = () => {
+    if (editedFolderName.trim() === "")
+      return alert("변경할즐겨찾기명을 적어주세요");
     editBookmark({
       folderId,
       bookMarkFolderName: editedFolderName,
@@ -116,18 +117,18 @@ const Bookmark = () => {
     const folId = location?.state?.folderId;
     setFolderId(folId ? folId : 0);
   }, [location.state]);
-
+  const addBookmarkBtn = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (addInput.trim() === "") return alert("추가할즐겨찾기명을 적어주세요")
+    addBookmark(addInput);
+    setAddInput("");
+    setIsShowAddFolderModal(false);
+  };
   return (
     <>
       <StCategoryAdd className={isShowAddFolderModal ? "on" : "off"}>
         <StSignBox className={isShowAddFolderModal ? "on" : "off"}>
-          <StCategoryForm
-            onSubmit={(e) => {
-              e.preventDefault();
-              addBookmark(addInput);
-              setIsShowAddFolderModal(false);
-            }}
-          >
+          <StCategoryForm onSubmit={addBookmarkBtn}>
             <StIoClose
               width="40"
               height="40"
@@ -154,6 +155,7 @@ const Bookmark = () => {
               <StCategoryInput
                 type="text"
                 value={addInput}
+                maxLength={10}
                 placeholder="추가할 폴더 명"
                 onChange={(e) => setAddInput(e.target.value)}
               />
@@ -181,7 +183,7 @@ const Bookmark = () => {
             </StFolderli>
             {navItems?.map((folder) => (
               <StFolderli key={folder.itemValue} onClick={folder.handler}>
-                <Folder />
+                <StFolderIcon />
                 <StFolderP>{folder.itemValue}</StFolderP>
               </StFolderli>
             ))}
@@ -197,7 +199,7 @@ const Bookmark = () => {
                   onChange={handleChangeEditInput}
                   endAdornment={
                     <IconButton onClick={handleEditSubmit}>
-                      <Edit />
+                      <StPencil />
                     </IconButton>
                   }
                 />
@@ -205,10 +207,16 @@ const Bookmark = () => {
                 <StBreadCrumb>{params.folderName}</StBreadCrumb>
               )}
               <StEditBtn onClick={handleClickEditBtn}>
-                {isEdit ? <Cancel /> : <Edit />}
+                {isEdit ? (
+                 
+                    <StDelIcon />
+                  
+                ) : (
+                  <StPencil />
+                )}
               </StEditBtn>
               <StDelBtn onClick={handleClickDelBtn}>
-                <FolderDelete />
+                <StTrash />
               </StDelBtn>
             </StBreadCrumbWrapper>
           )}
@@ -254,7 +262,7 @@ const StLayoutChildrenWrapper = styled.div`
 `;
 
 const StFolder = styled.div`
-  width: 625px;
+  width: 100%;
   flex-wrap: wrap;
   display: flex;
   gap: 15px;
@@ -272,6 +280,11 @@ const StFolderli = styled.button`
   font-size: 0;
 `;
 
+const StFolderIcon = styled(Folder)`
+  fill: ${(props) => props.theme.fillGrey};
+  border: 1px solid ${(props) => props.theme.fillGrey};
+  border-radius: 50px;
+`;
 const StFolderP = styled.p`
   width: 100%;
   overflow: hidden;
@@ -280,6 +293,7 @@ const StFolderP = styled.p`
   font-weight: 500;
   font-size: 0.875rem;
   margin-top: 12px;
+  color: ${(props) => props.theme.textColor};
 `;
 
 const StCategoryAdd = styled.div`
@@ -390,3 +404,15 @@ const StIoClose = styled.svg`
     transform: rotatez(180deg);
   }
 `;
+
+const StPencil = styled(Pencil)`
+  fill: ${(props) => props.theme.fillblack};
+`;
+const StTrash = styled(Trash)`
+  fill: ${(props) => props.theme.fillblack};
+`;
+
+const StDelIcon = styled(Delx)`
+  fill: ${(props) => props.theme.fillblack};
+`;
+;
