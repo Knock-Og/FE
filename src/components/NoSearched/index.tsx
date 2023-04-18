@@ -25,7 +25,7 @@ const StContainer = styled.div`
   text-align: center;
   gap: 40px;
   border-radius: 10px;
-  border: 1px solid ${(props) => props.theme.greyBorder};
+  background: ${(props) => props.theme.bgwhite};
   box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
 `;
 
@@ -38,7 +38,7 @@ const StLabel = styled.h4`
 const StCreateBtn = styled.button`
   width: 250px;
   height: 60px;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   border-radius: 60px;
   color: ${(props) => props.theme.textwhite};
   border: none;

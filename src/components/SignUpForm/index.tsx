@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { ADMIN } from "api";
+import { Alert } from "components";
+import { errorState, successState } from "store/atoms";
 import { SignUpFormProps } from "types";
 import { Close, MainArr } from "assets";
+
 const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
+  const setError = useSetRecoilState(errorState);
+  const setSuccess = useSetRecoilState(successState);
   // 이름, 이메일
   const [memberName, setMemberName] = useState("");
 
@@ -26,11 +32,15 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   const [phoneNumBoolean, setPhoneNumBoolean] = useState(false);
   // 가입
   const queryClient = useQueryClient();
-  const signUpMutation = useMutation("signUp", ADMIN.signUp, {
+  const signUpMutation = useMutation(ADMIN.signUp, {
     onSuccess: (response) => {
+      if (`${response}`.includes("Error")) {
+        return setError(`${response}`);
+      }
+      setSuccess("멤버가 추가되었습니다.");
       queryClient.invalidateQueries("member");
       return response.data;
-    }
+    },
   });
 
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -52,15 +62,19 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   const checkPhonenumMutation = useMutation("checkPhonenum", ADMIN.checkPhone, {
     onSuccess: (response) => {
       if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
         queryClient.invalidateQueries("phonenum");
-        alert("사용가능한 번호 입니다.");
+        return setSuccess("사용가능한 번호 입니다.");
       }
-    }
+    },
   });
   //휴대폰번호을 서버로 전송..
   const checkPhone = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    if (!phoneNumBoolean) return alert("휴대폰번호형식이 올바르지 않습니다!");
+    if (!phoneNumBoolean)
+      return setError("휴대폰번호형식이 올바르지 않습니다!");
     checkPhonenumMutation.mutate(phoneNum);
   };
   //비밀번호 유효성검사
@@ -98,24 +112,28 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   };
 
   //이메일 중복확인
-  const checkEmailMutation = useMutation("checkEmail", ADMIN.checkEmail, {
+  const checkEmailMutation = useMutation(ADMIN.checkEmail, {
     onSuccess: (response) => {
       if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
         queryClient.invalidateQueries("email");
-        alert("사용가능한 이메일 입니다.");
+        return setSuccess("사용가능한 이메일 입니다.");
       }
     },
     onError: (response) => {
       if (response) {
         queryClient.invalidateQueries("email");
-        alert("중복된 이메일 입니다!");
+        return setError("중복된 이메일 입니다!");
       }
     },
   });
+
   //이메일을 서버로 전송..
   const checkEmail = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    if (!isValidEmail) return alert("이메일형식이 올바르지 않습니다!");
+    if (!isValidEmail) return setError("이메일형식이 올바르지 않습니다!");
     checkEmailMutation.mutate(email);
   };
   //이름 유효성검사
@@ -131,66 +149,66 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   //이름을 서버로 전송..
   const checkName = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    if (!isValidName) return alert("올바른 형식의 이름이 아닙니다!");
+    if (!isValidName) return setError("올바른 형식의 이름이 아닙니다!");
     checkNameMutation.mutate(memberName);
   };
   //이름 중복확인
   const checkNameMutation = useMutation("checkName", ADMIN.checkName, {
     onSuccess: (response) => {
       if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
         queryClient.invalidateQueries("name");
-        alert("사용가능한 이름 입니다!");
+        setError("사용가능한 이름 입니다!");
       }
     },
     onError: (response) => {
       if (response) {
         queryClient.invalidateQueries("name");
-        alert("중복된 이름 입니다!");
+        setError("중복된 이름 입니다!");
       }
     },
   });
+
   const signupSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (position.trim() === "") return alert("직급을 선택해주세요!");
-    if (memberName.trim() === "") return alert("이름을 입력해주세요!");
-    if (!isValidName) return alert("이름 중복 검사를 수행해주세요!");
-    if (!isValidEmail) return alert("이메일 중복 검사를 수행해주세요!");
-    if (email.trim() === "") return alert("이메일을 입력해주세요!");
-    if (phoneNum.trim() === "") return alert("휴대폰 번호를 입력해주세요!");
-    if (password.trim() === "") return alert("비밀번호를 입력해주세요!");
+    if (position.trim() === "") return setError("직급을 선택해주세요!");
+    if (memberName.trim() === "") return setError("이름을 입력해주세요!");
+    if (!isValidName) return setError("이름 중복 검사를 수행해주세요!");
+    if (!isValidEmail) return setError("이메일 중복 검사를 수행해주세요!");
+    if (email.trim() === "") return setError("이메일을 입력해주세요!");
+    if (phoneNum.trim() === "") return setError("휴대폰 번호를 입력해주세요!");
+    if (password.trim() === "") return setError("비밀번호를 입력해주세요!");
     if (passwordCheck.trim() === "")
-      return alert("비밀번호 확인란을 입력해주세요!");
+      return setError("비밀번호 확인란을 입력해주세요!");
 
     const isphoneNumber = phoneNumberRegex.test(phoneNum);
     if (!isphoneNumber)
-      return alert("'-'를 포함한 휴대폰 번호를 정확히 입력하세요!");
+      return setError("'-'를 포함한 휴대폰 번호를 정확히 입력하세요!");
     const isValidPassword = passwordRegex.test(password);
     if (!isValidPassword)
-      return alert(
+      return setError(
         "비밀번호는 대소문자, 숫자, 특수문자를 포함하여 8-32자 이내로 입력해주세요!"
       );
     if (password !== passwordCheck)
-      return alert("비밀번호가 일치하지 않습니다!");
+      return setError("비밀번호가 일치하지 않습니다!");
 
-    try {
-      await signUpMutation.mutateAsync({
-        position,
-        memberName,
-        password,
-        email,
-        phoneNum,
-      });
-      setPhoneNum("");
-      setMemberName("");
-      setPosition("");
-      setPassword("");
-      setPasswordCheck("");
-      setEmail("");
-      onClose();
-    } catch (error) {
-      queryClient.invalidateQueries("member");
-      e.stopPropagation();
-    }
+    signUpMutation.mutate({
+      position,
+      memberName,
+      password,
+      email,
+      phoneNum,
+    });
+
+    setPhoneNum("");
+    setMemberName("");
+    setPosition("");
+    setPassword("");
+    setPasswordCheck("");
+    setEmail("");
+    onClose();
   };
   const positionList = [
     { id: 0, position: "MEMBER" },
@@ -206,120 +224,123 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   };
 
   return (
-    <StSignWrap className={modalOpen ? "on" : "off"}>
-      <StSignBox className={modalOpen ? "on" : "off"}>
-        <StSignForm onSubmit={signupSubmit}>
-          <StTop>
-            <StSignTitle>계정생성</StSignTitle>
-            {modalOpen && <StIoClose onClick={onClose} />}
-          </StTop>
-          <StSignUl>
-            <StSignLi>
-              <StSignLeft>직급</StSignLeft>
-              <StSignRight>
-                <StSeletLabel onClick={() => setIsOpen(!isOpen)}>
-                  {position}
-                  <MenuArr />
-                </StSeletLabel>
-                {isOpen && (
-                  <StSeletUl>
-                    {positionList.map((item) => (
-                      <StSeletLi
-                        key={item.id}
-                        onClick={() => handleOptionClick(item.position)}
-                      >
-                        {item.position}
-                      </StSeletLi>
-                    ))}
-                  </StSeletUl>
-                )}
-              </StSignRight>
-            </StSignLi>
-            <StSignLi>
-              <StSignLeft>회원명</StSignLeft>
-              <StSignRight>
-                <StSignInputOver
-                  type="text"
-                  value={memberName}
-                  placeholder="회원명을 적어주세요"
-                  onChange={nameChange}
-                />
-                {!isValidName && <StErrorMsg>{memberNameMsg}</StErrorMsg>}
-                <StCheckBtn type="button" onClick={checkName}>
-                  중복확인
-                </StCheckBtn>
-              </StSignRight>
-            </StSignLi>
-            <StSignLi>
-              <StSignLeft>이메일</StSignLeft>
-              <StSignRight>
-                <StSignInputOver
-                  type="text"
-                  value={email}
-                  placeholder="test@test.com"
-                  onChange={emailChange}
-                />
-                {!isValidEmail && <StErrorMsg>{emailMsg}</StErrorMsg>}
-                <StCheckBtn type="button" onClick={checkEmail}>
-                  중복확인
-                </StCheckBtn>
-              </StSignRight>
-            </StSignLi>
-            <StSignLi>
-              <StSignLeft>전화번호</StSignLeft>
-              <StSignRight>
-                <StSignInput
-                  type="text"
-                  value={phoneNum}
-                  placeholder="'-'포함 입력"
-                  onChange={phoneNumberChange}
-                />
-                {phoneNumBoolean && <StErrorMsg>{phoneNumMsg}</StErrorMsg>}
-                <StCheckBtn type="button" onClick={checkPhone}>
-                  중복확인
-                </StCheckBtn>
-              </StSignRight>
-            </StSignLi>
+    <>
+      <Alert />
+      <StSignWrap className={modalOpen ? "on" : "off"}>
+        <StSignBox className={modalOpen ? "on" : "off"}>
+          <StSignForm onSubmit={signupSubmit}>
+            <StTop>
+              <StSignTitle>계정생성</StSignTitle>
+              {modalOpen && <StIoClose onClick={onClose} />}
+            </StTop>
+            <StSignUl>
+              <StSignLi>
+                <StSignLeft>직급</StSignLeft>
+                <StSignRight>
+                  <StSeletLabel onClick={() => setIsOpen(!isOpen)}>
+                    {position}
+                    <MenuArr />
+                  </StSeletLabel>
+                  {isOpen && (
+                    <StSeletUl>
+                      {positionList.map((item) => (
+                        <StSeletLi
+                          key={item.id}
+                          onClick={() => handleOptionClick(item.position)}
+                        >
+                          {item.position}
+                        </StSeletLi>
+                      ))}
+                    </StSeletUl>
+                  )}
+                </StSignRight>
+              </StSignLi>
+              <StSignLi>
+                <StSignLeft>회원명</StSignLeft>
+                <StSignRight>
+                  <StSignInputOver
+                    type="text"
+                    value={memberName}
+                    placeholder="회원명을 적어주세요"
+                    onChange={nameChange}
+                  />
+                  {!isValidName && <StErrorMsg>{memberNameMsg}</StErrorMsg>}
+                  <StCheckBtn type="button" onClick={checkName}>
+                    중복확인
+                  </StCheckBtn>
+                </StSignRight>
+              </StSignLi>
+              <StSignLi>
+                <StSignLeft>이메일</StSignLeft>
+                <StSignRight>
+                  <StSignInputOver
+                    type="text"
+                    value={email}
+                    placeholder="test@test.com"
+                    onChange={emailChange}
+                  />
+                  {!isValidEmail && <StErrorMsg>{emailMsg}</StErrorMsg>}
+                  <StCheckBtn type="button" onClick={checkEmail}>
+                    중복확인
+                  </StCheckBtn>
+                </StSignRight>
+              </StSignLi>
+              <StSignLi>
+                <StSignLeft>전화번호</StSignLeft>
+                <StSignRight>
+                  <StSignInput
+                    type="text"
+                    value={phoneNum}
+                    placeholder="'-'포함 입력"
+                    onChange={phoneNumberChange}
+                  />
+                  {phoneNumBoolean && <StErrorMsg>{phoneNumMsg}</StErrorMsg>}
+                  <StCheckBtn type="button" onClick={checkPhone}>
+                    중복확인
+                  </StCheckBtn>
+                </StSignRight>
+              </StSignLi>
 
-            <StSignLi>
-              <StSignLeft>비밀번호</StSignLeft>
-              <StSignRight>
-                <StSignInput
-                  type="password"
-                  value={password}
-                  placeholder="비밀번호를 적어주세요"
-                  onChange={passwordChange}
-                />
-                {passwordBoolean && <StErrorMsg>{passwordMsg}</StErrorMsg>}
-                {!passwordBoolean && password && (
-                  <StSuccessMsg>{passwordMsg}</StSuccessMsg>
-                )}
-              </StSignRight>
-            </StSignLi>
+              <StSignLi>
+                <StSignLeft>비밀번호</StSignLeft>
+                <StSignRight>
+                  <StSignInput
+                    type="password"
+                    value={password}
+                    placeholder="비밀번호를 적어주세요"
+                    onChange={passwordChange}
+                  />
+                  {passwordBoolean && <StErrorMsg>{passwordMsg}</StErrorMsg>}
+                  {!passwordBoolean && password && (
+                    <StSuccessMsg>{passwordMsg}</StSuccessMsg>
+                  )}
+                </StSignRight>
+              </StSignLi>
 
-            <StSignLi>
-              <StSignLeft>비밀번호 확인</StSignLeft>
-              <StSignRight>
-                <StSignInput
-                  type="password"
-                  value={passwordCheck}
-                  placeholder="비밀번호확인"
-                  onChange={passwordCheckChange}
-                />
-                {passwordCheckBoolean && (
-                  <StErrorMsg>{passwordCheckMsg}</StErrorMsg>
-                )}
-                {!passwordCheckBoolean && passwordCheck && (
-                  <StSuccessMsg>{passwordCheckMsg}</StSuccessMsg>
-                )}
-              </StSignRight>
-            </StSignLi>
-          </StSignUl>
-          <StButton>회원가입</StButton>
-        </StSignForm>
-      </StSignBox>
-      <StSignBg onClick={onClose} className={modalOpen ? "on" : "off"} />
-    </StSignWrap>
+              <StSignLi>
+                <StSignLeft>비밀번호 확인</StSignLeft>
+                <StSignRight>
+                  <StSignInput
+                    type="password"
+                    value={passwordCheck}
+                    placeholder="비밀번호확인"
+                    onChange={passwordCheckChange}
+                  />
+                  {passwordCheckBoolean && (
+                    <StErrorMsg>{passwordCheckMsg}</StErrorMsg>
+                  )}
+                  {!passwordCheckBoolean && passwordCheck && (
+                    <StSuccessMsg>{passwordCheckMsg}</StSuccessMsg>
+                  )}
+                </StSignRight>
+              </StSignLi>
+            </StSignUl>
+            <StButton>회원가입</StButton>
+          </StSignForm>
+        </StSignBox>
+        <StSignBg onClick={onClose} className={modalOpen ? "on" : "off"} />
+      </StSignWrap>
+    </>
   );
 };
 
@@ -361,7 +382,7 @@ const StSignBox = styled.div`
   width: 650px;
   height: 700px;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   bottom: 0;
   top: 0;
   right: 0;
@@ -387,14 +408,15 @@ const StSignForm = styled.form`
   height: 100%;
   padding: 65px 65px;
   &::-webkit-scrollbar {
-    width: 10px;
+    width: 5px;
+    background: ${(props) => props.theme.bgToggle};
   }
   &::-webkit-scrollbar-thumb {
-    background-color: ${(props) => props.theme.scrollColor};
+    background: ${(props) => props.theme.scrollColor};
     border-radius: 10px;
   }
   &::-webkit-scrollbar-track {
-    background-color: ${(props) => props.theme.bgColor};
+    background: ${(props) => props.theme.bgToggle};
   }
 `;
 const StTop = styled.div`
@@ -411,7 +433,7 @@ const StIoClose = styled(Close)`
   top: 20px;
   cursor: pointer;
   transition: all 0.3s;
-  stroke: ${(props) => props.theme.lightGrey};
+  stroke: ${(props) => props.theme.fillGrey};
   &:hover {
     transform: rotatez(180deg);
   }
@@ -438,11 +460,12 @@ const StSignInput = styled.input`
   width: 100%;
   height: 57px;
   padding: 0 15px;
-  border: 1px solid ${(props) => props.theme.lightGrey};
-  border-radius: 10px;
+  border: 1px solid ${(props) => props.theme.borderGray};
+  border-radius: 5px;
   outline: 0;
+  background: ${(props) => props.theme.bgwhite};
   &:focus {
-    border: 1px solid ${(props) => props.theme.keyBlue};
+    border: 1px solid ${(props) => props.theme.bgBlue};
   }
   &::placeholder {
     color: ${(props) => props.theme.placeholder};
@@ -464,7 +487,7 @@ const StCheckBtn = styled.button`
   outline: 0;
   border: 0;
   cursor: pointer;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
 `;
 const StErrorMsg = styled.p`
   color: ${(props) => props.theme.textRed};
@@ -472,7 +495,7 @@ const StErrorMsg = styled.p`
   margin-top: 10px;
 `;
 const StSuccessMsg = styled.p`
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textBlue};
   font-size: 0.75rem;
   margin-top: 10px;
 `;
@@ -483,7 +506,7 @@ const StButton = styled.button`
   outline: 0;
   border: 0;
   cursor: pointer;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   font-size: 1.25rem;
   border-radius: 57px;
   margin: 45px auto 0;
@@ -493,8 +516,8 @@ const StButton = styled.button`
 `;
 
 const StSeletLabel = styled.p`
-  border: 1px solid ${(props) => props.theme.lightGrey};
-  border-radius: 10px;
+  border: 1px solid ${(props) => props.theme.borderGray};
+  border-radius: 5px;
   width: 100%;
   height: 57px;
   margin: 0 auto;
@@ -506,16 +529,26 @@ const StSeletLabel = styled.p`
   justify-content: space-between;
 `;
 const MenuArr = styled(MainArr)`
-  fill: ${(props) => props.theme.lightGrey};
+  fill: ${(props) => props.theme.borderGray};
 `;
 const StSeletUl = styled.ul`
   position: absolute;
-  bottom: -175px;
-  left: 0;
-  background: ${(props) => props.theme.bgColor};
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 3px 2px 1px;
+  top: 54px;
+  height: 0;
+  left: 0px;
+  border-radius: 0px 0px 5px 5px;
+  background: ${(props) => props.theme.bgwhite};
+  border: 1px solid ${(props) => props.theme.borderGray};
   z-index: 1;
   width: 100%;
+  transition: all 0.3s ease;
+  border-top: 0;
+  border-bottom: 0;
+  overflow: hidden;
+  &.on {
+    height: 172px;
+    border-bottom: 1px solid ${(props) => props.theme.borderGray};
+  }
 `;
 const StSeletLi = styled.li`
   line-height: 57px;
@@ -523,7 +556,7 @@ const StSeletLi = styled.li`
 
   cursor: pointer;
   &:hover {
-    background: ${(props) => props.theme.lightBlue};
-    color: ${(props) => props.theme.keyBlue};
+    background: ${(props) => props.theme.bgLightBlue};
+    color: ${(props) => props.theme.textBlue};
   }
 `;

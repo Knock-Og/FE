@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Viewer } from "@toast-ui/react-editor";
 import styled from "styled-components";
 import { POST } from "api";
-import { PostDetailTab } from "components";
+import { PostDetailTab, Alert } from "components";
 import { ActiveState, PostDetail } from "types";
+import { errorState, isDarkState } from "store/atoms";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
@@ -15,6 +17,9 @@ const DetailBoard = (post: PostDetail) => {
     log: false,
     bookmark: false,
   });
+
+  const setError = useSetRecoilState(errorState);
+  const isDark = useRecoilValue(isDarkState);
 
   const navigate = useNavigate();
 
@@ -27,8 +32,7 @@ const DetailBoard = (post: PostDetail) => {
 
   const handleClickEditRouteBtn = () => {
     if (post.editingStatus === "true") {
-      alert("현재 다른 사용자가 편집중입니다. 잠시만 기다려주세요.");
-      return;
+      return setError("현재 다른 사용자가 편집중입니다. 잠시만 기다려주세요.");
     }
     navigate(`/post/${post.id}/modify`);
   };
@@ -38,13 +42,19 @@ const DetailBoard = (post: PostDetail) => {
     const isDel = confirm("삭제하시겠습니까?");
 
     if (isDel) {
+      if (post.editingStatus === "true") {
+        return setError(
+          "현재 다른 사용자가 편집중입니다. 잠시만 기다려주세요."
+        );
+      }
       delPost(post.id);
-      navigate("/main");
+      navigate("/mypage");
     }
   };
 
   return (
     <>
+      <Alert />
       <StContainer>
         <StTop>
           <StLeft>
@@ -82,9 +92,11 @@ const DetailBoard = (post: PostDetail) => {
             <StText>조회수</StText>
           </StRight>
         </StTop>
-        <ViewerWrap>
+
+        <ViewerWrap className={isDark ? "" : ""}>
           <Viewer initialValue={post.content} />
         </ViewerWrap>
+
         <StBtnWrap>
           <StDelBtn onClick={handdleClickDelBtn}>삭제하기</StDelBtn>
           <StEditRouteBtn onClick={handleClickEditRouteBtn}>
@@ -130,19 +142,19 @@ const StRight = styled.div`
 `;
 const StNum = styled.em`
   color: ${(props) => props.theme.redLightColor};
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 700;
 `;
 const StText = styled.p`
-  font-weight: 600;
-  margin-top: 15px;
+  font-weight: 500;
+  margin-top: 12px;
 `;
 
 const StTitle = styled.h4`
   line-height: 45px;
-  font-size: 2rem;
+  font-size: 1.875rem;
   font-weight: 700;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 `;
 const StOhterUl = styled.ul`
   display: flex;
@@ -174,6 +186,20 @@ const ViewerWrap = styled.div`
   padding: 0px 50px 50px;
   width: 100%;
   border-bottom: 1px solid ${(props) => props.theme.borderColor};
+
+  &.dark {
+    background-color: red;
+    /* 안에 클래스에 컬러 조정필요합니다. */
+    > .toastui-editor-contents {
+      color: white;
+    }
+  }
+  &.light {
+    background-color: blue;
+    > .toastui-editor-contents {
+      color: black;
+    }
+  }
 `;
 
 const StkeyWordWrap = styled.div`
@@ -181,9 +207,9 @@ const StkeyWordWrap = styled.div`
   gap: 10px;
 `;
 const StkeyWordP = styled.p`
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textBlue};
   word-break: break-word;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 `;
 
 const StBtnWrap = styled.div`
@@ -194,7 +220,7 @@ const StBtnWrap = styled.div`
 const StEditRouteBtn = styled.button`
   width: 120px;
   height: 50px;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   border-radius: 10px;
   color: ${(props) => props.theme.textwhite};
   border: none;
@@ -205,10 +231,10 @@ const StEditRouteBtn = styled.button`
 const StDelBtn = styled.button`
   width: 120px;
   height: 50px;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   border-radius: 10px;
-  color: ${(props) => props.theme.keyBlue};
-  border: 1px solid ${(props) => props.theme.borderBlue};
+  color: ${(props) => props.theme.textBlue};
+  border: 1px solid ${(props) => props.theme.delBtn};
   margin-right: 15px;
   outline: 0;
   cursor: pointer;

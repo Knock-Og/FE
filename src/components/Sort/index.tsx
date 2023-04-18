@@ -1,4 +1,3 @@
-import { FormControl, Select, MenuItem } from "@mui/material";
 import { SortItem } from "types";
 
 interface Props {
@@ -9,27 +8,18 @@ interface Props {
 
 const Sort = ({ sortItems, sort, setSort }: Props) => {
   return (
-    <FormControl>
-      <Select
-        size="small"
-        value={sort}
-        onChange={(e) => setSort(e.target.value)}
-        displayEmpty
-      >
-        <MenuItem value="">
-          <em>-- 정렬 --</em>
-        </MenuItem>
-        {sortItems.map((item) => (
-          <MenuItem
-            key={item.itemValue}
-            onClick={item.handler}
-            value={item.itemValue}
-          >
-            {item.itemValue}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <select value={sort} onChange={(e) => setSort(e.target.value)}>
+      <option value="">-- 정렬 --</option>
+      {sortItems.map((item) => (
+        <option
+          key={item.itemValue}
+          value={item.itemValue}
+          onClick={item.handler}
+        >
+          {item.itemValue}
+        </option>
+      ))}
+    </select>
   );
 };
 

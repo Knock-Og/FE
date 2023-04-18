@@ -25,5 +25,9 @@ export { ReactComponent as NoSearch } from "./noSearch.svg";
 export { ReactComponent as NavOpenArrow } from "./navOpenArrow.svg";
 export { ReactComponent as Chat } from "./chat.svg";
 export { ReactComponent as Grid } from "./grid.svg";
+export { ReactComponent as DelIcon } from "./delIcon.svg";
 
-;
+export { ReactComponent as Trash } from "./trash.svg";
+export { ReactComponent as Pencil } from "./pencil.svg";
+export { ReactComponent as Delx } from "./delx.svg";
+

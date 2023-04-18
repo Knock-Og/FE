@@ -16,7 +16,7 @@ const Detail = () => {
   useEffect(() => {
     getPost(parseInt(params.postId as string));
     //eslint-disable-next-line
-  }, []);
+  }, [params]);
 
   return <Layout>{post && <DetailBoard {...post} />}</Layout>;
 };

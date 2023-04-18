@@ -24,3 +24,4 @@ export { default as Setting } from "./Setting";
 export { default as CurrentPw } from "./CurrentPw";
 export { default as NoCategory } from "./NoCategory";
 export { default as PostDetailTab } from "./PostDetailTab";
+export { default as Alert } from "./Alert";

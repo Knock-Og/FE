@@ -37,7 +37,9 @@ const Main = () => {
   const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const accessToken = getCookie("access_token");
+  const accessToken = getCookie("reqWithToken");
+
+ 
 
   const { mutate: getSearchedData } = useMutation(SEARCH.getSearchedData, {
     onSuccess: (res) => {
@@ -49,7 +51,7 @@ const Main = () => {
       setEndPage(1);
     },
   });
-
+  
   const { mutate: getBookmarks } = useMutation(BOOKMARK.getBookmarks, {
     onSuccess: (res) => {
       const nav = res.data.map((v: Bookmark) => {
@@ -66,7 +68,7 @@ const Main = () => {
       setFolders(nav);
     },
   });
-
+  
   const { mutate: getBookmark } = useMutation(BOOKMARK.getBookmark, {
     onSuccess: (res) => {
       setSearchedPosts(res.data.postResponseDtoList as Post[]);
@@ -102,13 +104,16 @@ const Main = () => {
     setIsOn(false);
   };
   const handleClickLogOut = () => {
+    alert("로그아웃되셨습니다.");
     navigate("/");
-    removeCookie("access_token");
+    removeCookie("reqWithToken");
   };
 
+  
+
+  
   useEffect(() => {
     getBookmarks();
-    //eslint-disable-next-line
   }, []);
 
   return (
@@ -116,9 +121,9 @@ const Main = () => {
       <StHeader>
         <StHeaderMeun>
           <StWrite onClick={() => navigate("/write")}>게시물작성</StWrite>
-          {/* <StbellWrap onClick={isAlarmBtn}>
+          <StbellWrap onClick={isAlarmBtn}>
             <Bell />
-          </StbellWrap> */}
+          </StbellWrap>
           <StAccountBtn onClick={handleClickAccountBtn}>
             <Menuperson />
             <MenuArr className={isOn ? "on" : ""} />
@@ -135,21 +140,21 @@ const Main = () => {
             {accessToken ? "로그아웃" : "로그인"}
           </StMenuItem>
         </StMenu>
-        {/* <StAlarm className={isAlarm ? "on" : ""}>
+        <StAlarm className={isAlarm ? "on" : ""}>
           <StAlarmTop>
             <StAlarmTitle> 알림</StAlarmTitle>
           </StAlarmTop>
           <StAlarmContentWrap>
             <StAlarmcontent>
               <StAlarmIconWrap>
-                <AlarmIcon />
+                <StAlarmIcon />
               </StAlarmIconWrap>
               <StAlarmcontentP>
                 000님이 '0000'댓글을 달았습니다.
               </StAlarmcontentP>
             </StAlarmcontent>
           </StAlarmContentWrap>
-        </StAlarm> */}
+        </StAlarm>
       </StHeader>
 
       <StMainWrapper>
@@ -166,16 +171,16 @@ const Main = () => {
         <StFolder>
           {folders?.map((folder) => (
             <StFolderli key={folder.itemValue} onClick={folder.handler}>
-              <Folder />
+              <StFolderIcon />
               <StFolderP>{folder.itemValue}</StFolderP>
             </StFolderli>
           ))}
         </StFolder>
       </StMainWrapper>
-      {/* <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
+      <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
         {isDark ? <Sun /> : <Dark />}
         {isDark ? "라이트모드로 전환" : "다크모드로 전환"}
-      </StModeToggleBtn> */}
+      </StModeToggleBtn>
     </StContainer>
   );
 };
@@ -221,10 +226,15 @@ const StSearchInput = styled.input`
   width: 100%;
   height: 65px;
   border-radius: 65px;
-  border: 1px solid ${(props) => props.theme.lightGrey};
+  border:0;
+  background: ${(props) => props.theme.bgwhite};
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 3px 2px;
   padding: 0px 55px 0px 30px;
+  color: ${(props) => props.theme.textColor};
   outline: none;
+  &::placeholder {
+    color: ${(props) => props.theme.placeholder};
+  }
 `;
 const StSearchBtn = styled(Search)`
   position: absolute;
@@ -233,13 +243,12 @@ const StSearchBtn = styled(Search)`
   bottom: 0;
   margin: auto 0;
   cursor: pointer;
+  stroke: ${(props) => props.theme.search};
 `;
-
 const StModeToggleBtn = styled.button`
   border: none;
-  background: ${(props) => props.theme.bgColor};
-  width: 150px;
-  height: 48px;
+  padding: 0 22px;
+  height: 50px;
   box-shadow: 0px 5px 7px -4px rgba(0, 0, 0, 0.3);
   border-radius: 60px;
   position: fixed;
@@ -248,12 +257,13 @@ const StModeToggleBtn = styled.button`
   bottom: 60px;
   font-weight: 500;
   cursor: pointer;
-  color: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgwhite};
+  color: ${(props) => props.theme.textBlue};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  gap: 5px;
+  gap: 10px;
   z-index: 2;
 `;
 
@@ -264,25 +274,19 @@ const StHeaderMeun = styled.div`
 `;
 const StWrite = styled.button`
   border: none;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
+  color: ${(props) => props.theme.textBlue};
   width: 120px;
   height: 40px;
   box-shadow: 0px 5px 7px -4px rgba(0, 0, 0, 0.3);
   border-radius: 60px;
   font-weight: 500;
   cursor: pointer;
-  color: ${(props) => props.theme.keyBlue};
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
   gap: 5px;
-`;
-const StbellWrap = styled.button`
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  padding-top: 5px;
 `;
 
 const StAccountBtn = styled.button`
@@ -295,12 +299,13 @@ const StAccountBtn = styled.button`
   cursor: pointer;
 `;
 const Menuperson = styled(Headermenu)`
-  fill: ${(props) => props.theme.lightGrey};
-  margin-right: 10px;
+  fill: ${(props) => props.theme.fillGrey};
+  stroke: ${(props) => props.theme.fillGrey};
+  margin-right: 13px;
 `;
 const MenuArr = styled(MainArr)`
-  fill: ${(props) => props.theme.lightGrey};
-
+  stroke: ${(props) => props.theme.fillGrey};
+  fill: ${(props) => props.theme.fillGrey};
   transition: all 0.3s;
   &.on {
     transform: rotateZ(-180deg);
@@ -311,7 +316,7 @@ const StMenu = styled.div`
   width: 150px;
   bottom: -130px;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   opacity: 0;
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out,
     visibility 0.3s ease-in-out;
@@ -332,20 +337,26 @@ const StMenuItem = styled.button`
   background: transparent;
   padding: 0 20px;
   cursor: pointer;
+  color: ${(props) => props.theme.textColor};
   &:hover {
-    background: ${(props) => props.theme.lightBlue};
-    color: ${(props) => props.theme.keyBlue};
+    background: ${(props) => props.theme.bgLightBlue};
+    color: ${(props) => props.theme.textBlue};
   }
+`;
+const StbellWrap = styled.button`
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding-top: 5px;
 `;
 
 const StAlarm = styled.div`
   position: absolute;
   width: 350px;
   height: 600px;
-
   bottom: -580px;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   opacity: 0;
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out,
     visibility 0.3s ease-in-out;
@@ -358,7 +369,7 @@ const StAlarm = styled.div`
   }
 `;
 const StAlarmTop = styled.div`
-  border-bottom: 1px solid ${(props) => props.theme.borderColor};
+  border-bottom: 1px solid ${(props) => props.theme.alarm};
   height: 45px;
   line-height: 45px;
   padding: 0 20px;
@@ -376,15 +387,17 @@ const StAlarmIconWrap = styled.div`
 const StAlarmContentWrap = styled.div`
   height: calc(100% - 46px);
   overflow-y: scroll;
+
   &::-webkit-scrollbar {
-    width: 10px;
+    width: 5px;
+    background: ${(props) => props.theme.bgToggle};
   }
   &::-webkit-scrollbar-thumb {
-    background-color: ${(props) => props.theme.scrollColor};
+    background: ${(props) => props.theme.scrollColor};
     border-radius: 10px;
   }
   &::-webkit-scrollbar-track {
-    background-color: ${(props) => props.theme.bgColor};
+    background: ${(props) => props.theme.bgToggle};
   }
 `;
 const StAlarmcontent = styled.div`
@@ -392,11 +405,15 @@ const StAlarmcontent = styled.div`
   line-height: 60px;
   display: flex;
   align-items: center;
+
   &:hover {
-    background: ${(props) => props.theme.lightBlue};
+    background: ${(props) => props.theme.bgLightBlue};
   }
   &:hover p {
-    color: ${(props) => props.theme.keyBlue};
+    color: ${(props) => props.theme.textBlue};
+  }
+  &:hover svg {
+    fill: ${(props) => props.theme.textBlue};
   }
 `;
 
@@ -406,7 +423,13 @@ const StAlarmcontentP = styled.p`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: ${(props) => props.theme.textColor};
 `;
+
+const StAlarmIcon = styled(AlarmIcon)`
+  fill: ${(props) => props.theme.fillblack};
+`;
+
 
 const StFolder = styled.div`
   width: 625px;
@@ -424,6 +447,11 @@ const StFolderli = styled.button`
   cursor: pointer;
   font-size: 0;
 `;
+const StFolderIcon = styled(Folder)`
+  fill: ${(props) => props.theme.fillGrey};
+  border: 1px solid ${(props) => props.theme.fillGrey};
+  border-radius: 50px;
+`;
 const StFolderP = styled.p`
   width: 100%;
   overflow: hidden;
@@ -432,4 +460,5 @@ const StFolderP = styled.p`
   font-weight: 500;
   font-size: 0.875rem;
   margin-top: 12px;
+  color: ${(props) => props.theme.textColor};
 `;
