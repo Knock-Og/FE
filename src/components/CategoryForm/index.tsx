@@ -32,12 +32,13 @@ const CategoryForm = () => {
         }
         setSuccess("카테고리가 추가되었습니다.");
         queryClient.invalidateQueries("getCategories");
+        setCategoryName("");
         return response.data;
       }
     },
   });
 
-  const categoryPutMutation = useMutation(CATEGORY.categoryPut, {
+  const categoryPutMutation = useMutation("categoryput", CATEGORY.categoryPut, {
     onSuccess: (response) => {
       if (response) {
         if (`${response}`.includes("Error")) {
@@ -45,6 +46,7 @@ const CategoryForm = () => {
         }
         setSuccess("카테고리가 편집되었습니다.");
         queryClient.invalidateQueries("getCategories");
+        setCategoryPutName("");
         return response.data;
       }
     },
@@ -70,10 +72,12 @@ const CategoryForm = () => {
   };
 
   const modalBtn = () => {
+    setCategoryName("");
     setModalOpen(!modalOpen);
   };
 
   const modalPutBtn = () => {
+    setCategoryPutName("");
     setModalPutOpen(!modalPutOpen);
   };
 
@@ -172,6 +176,7 @@ const CategoryForm = () => {
                 type="text"
                 value={categoryName}
                 placeholder="추가할 카테고리 명"
+                maxLength={10}
                 onChange={(e) => setCategoryName(e.target.value)}
               />
               <StCommonButton>추가</StCommonButton>
@@ -214,6 +219,7 @@ const CategoryForm = () => {
                 value={categoryPutName}
                 placeholder="수정할 카테고리명"
                 onChange={(e) => setCategoryPutName(e.target.value)}
+                maxLength={10}
               />
               <StCommonButton>수정</StCommonButton>
             </StCategory>
@@ -236,7 +242,7 @@ const StAdminWrap = styled.div`
 `;
 
 const StTop = styled.div`
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -260,7 +266,7 @@ const StUser = styled.p`
   &::before {
     width: 16px;
     height: 16px;
-    background: ${(props) => props.theme.keyBlue};
+    background: ${(props) => props.theme.textBlue};
     content: "";
     position: absolute;
     left: 0;
@@ -271,7 +277,7 @@ const StUser = styled.p`
   }
 `;
 const StUserSpan = styled.span`
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textBlue};
   font-weight: 800;
 `;
 
@@ -280,9 +286,9 @@ const StContentTop = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 60px;
+  height: 80px;
   border-radius: 5px;
-  background: ${(props) => props.theme.veryLightGrey};
+  background: ${(props) => props.theme.bgGrey};
   text-align: center;
 `;
 const StName = styled.p`
@@ -296,10 +302,11 @@ const StContentBottom = styled.div`
   width: 100%;
   height: 80px;
   align-items: center;
-  border: 1px solid ${(props) => props.theme.lightGrey};
+  border: 1px solid ${(props) => props.theme.borderColor};
+  background: ${(props) => props.theme.bgwhite};
   border-radius: 5px;
   display: flex;
-  margin-top: 25px;
+  margin-top: 18px;
 `;
 
 const StChange = styled.p`
@@ -314,8 +321,8 @@ const StButton = styled.button`
   width: 140px;
   height: 50px;
   font-size: 0.875rem;
-  background: ${(props) => props.theme.keyBlue};
-  color: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgBlue};
+  color: ${(props) => props.theme.textwhite};
   border: 0;
   cursor: pointer;
   border-radius: 50px;
@@ -325,8 +332,8 @@ const StChangeBtn = styled.button`
   text-align: center;
   width: 130px;
   height: 38px;
-  border: 1px solid ${(props) => props.theme.keyBlue};
-  color: ${(props) => props.theme.keyBlue};
+  border: 1px solid ${(props) => props.theme.bgBlue};
+  color: ${(props) => props.theme.bgBlue};
   background: transparent;
   font-size: 0.875rem;
   border-radius: 50px;
@@ -334,8 +341,8 @@ const StChangeBtn = styled.button`
 `;
 
 const StDelBtn = styled.button`
-  border: 1px solid ${(props) => props.theme.redColor};
-  color: ${(props) => props.theme.redColor};
+  border: 1px solid ${(props) => props.theme.textRed};
+  color: ${(props) => props.theme.textRed};
   margin-left: 10px;
   text-align: center;
   width: 130px;
@@ -384,7 +391,7 @@ const StSignBox = styled.div`
   width: 500px;
   height: 250px;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   bottom: 0;
   top: 0;
   right: 0;
@@ -421,7 +428,7 @@ const StCategoryInput = styled.input`
   border: 0;
   outline: 0;
   padding-right: 90px;
-  border-bottom: 1px solid ${(props) => props.theme.blockBorder};
+  border-bottom: 1px solid ${(props) => props.theme.borderColor};
   &::placeholder {
     color: ${(props) => props.theme.placeholder};
   }
@@ -435,7 +442,7 @@ const StCommonButton = styled.button`
   height: 44px;
   right: 0px;
   top: 0;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   color: ${(props) => props.theme.textwhite};
   border: 0;
   outline: 0;
@@ -447,5 +454,5 @@ const StIoClose = styled.svg`
   right: 20px;
   top: 20px;
   cursor: pointer;
-  stroke: ${(props) => props.theme.lightGrey};
+  stroke: ${(props) => props.theme.borderColor};
 `;

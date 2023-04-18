@@ -1,18 +1,24 @@
 import { useState } from "react";
 import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { MYPAGEPW } from "api";
+import { removeCookie } from "api/cookies";
 import { Close } from "assets";
 import { errorState, successState } from "store/atoms";
 import { Alert } from "components";
 import { CurrenPw } from "types";
 
-const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
+const CurrentPw = ({
+  changPw,
+  changPwBtn,
+  password,
+  setPassword,
+}: CurrenPw) => {
   const passwordRegex =
     /^.*(?=^.{8,32}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
 
-  const [password, setPassword] = useState("");
   const [passwordBoolean, setPasswordBoolean] = useState(false);
   const [passwordMsg, setPasswordMsg] = useState("");
   const [pageChage, setPageChage] = useState(false);
@@ -20,6 +26,8 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
 
   const setError = useSetRecoilState(errorState);
   const setSuccess = useSetRecoilState(successState);
+
+  const navigate = useNavigate();
 
   const pwMutation = useMutation(MYPAGEPW.getPwData, {
     onSuccess: (response) => {
@@ -37,6 +45,7 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
       return response.response.data.message;
     },
   });
+
   const pwPutMutation = useMutation(MYPAGEPW.putPwData, {
     onSuccess: (response) => {
       if (`${response}`.includes("Error")) {
@@ -45,7 +54,6 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
       setSuccess("비밀번호가 변경되었습니다.");
       setPageChage(false);
       changPwBtn();
-      return response.data;
     },
   });
 
@@ -104,7 +112,7 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
     setPassword("");
     setPageChage(true);
   };
-  const putPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const putPassword = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const isValidPassword = passwordRegex.test(newPassword);
     if (!isValidPassword)
@@ -117,7 +125,13 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
 
     if (newPassword !== passwordCheck)
       return setError("비밀번호가 일치하지 않습니다!");
-    pwPutMutation.mutate({ newPassword });
+
+    try {
+      await pwPutMutation.mutateAsync({ newPassword });
+      await Promise.all([navigate("/"), removeCookie("reqWithToken")]);
+    } catch (err) {
+      console.error(err);
+    }
   };
   return (
     <>
@@ -153,9 +167,9 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
             {passwordCheckBoolean && (
               <StErrorMsg>{passwordCheckMsg}</StErrorMsg>
             )}
-            <StNext type="button" onClick={putPassword}>
-              변경
-            </StNext>
+            <StNextLogin type="button" onClick={putPassword}>
+              로그인으로 이동
+            </StNextLogin>
             <StIoClose onClick={() => changPwBtn()} />
           </StCurrntPw>
         ) : (
@@ -211,7 +225,7 @@ const StChangPw = styled.div`
   width: 712px;
   height: 390px;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   bottom: 0;
   top: 0;
   right: 0;
@@ -265,18 +279,19 @@ const StInput = styled.input`
   width: 100%;
   height: 57px;
   padding: 0 15px;
-  border: 1px solid ${(props) => props.theme.lightGrey};
+  border: 1px solid ${(props) => props.theme.placeholder};
   border-radius: 10px;
   outline: 0;
+  background: ${(props) => props.theme.bgwhite};
+  color: ${(props) => props.theme.textColor};
   &:focus {
-    border: 1px solid ${(props) => props.theme.keyBlue};
+    border: 1px solid ${(props) => props.theme.bgBlue};
   }
   &::placeholder {
     color: ${(props) => props.theme.placeholder};
   }
 `;
 const StButton = styled.button`
-  position: absolute;
   position: absolute;
   right: 0;
   top: 0px;
@@ -288,7 +303,7 @@ const StButton = styled.button`
   outline: 0;
   border: 0;
   cursor: pointer;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
 `;
 
 const StErrorMsg = styled.p`
@@ -303,7 +318,7 @@ const StIoClose = styled(Close)`
   top: 10px;
   cursor: pointer;
   transition: all 0.3s;
-  stroke: ${(props) => props.theme.lightGrey};
+  stroke: ${(props) => props.theme.borderGray};
   &:hover {
     transform: rotatez(180deg);
   }
@@ -313,19 +328,29 @@ const StNext = styled.button`
   width: 95px;
   height: 57px;
   color: ${(props) => props.theme.textwhite};
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   border: 0;
   border-radius: 10px;
   margin: 30px auto 0;
   cursor: pointer;
   display: block;
 `;
-
+const StNextLogin = styled.button`
+  width: 145px;
+  height: 57px;
+  color: ${(props) => props.theme.textwhite};
+  background: ${(props) => props.theme.bgBlue};
+  border: 0;
+  border-radius: 10px;
+  margin: 30px auto 0;
+  cursor: pointer;
+  display: block;
+`;
 const StCurrntPw = styled.div`
   width: 712px;
   height: 650px;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   bottom: 0;
   top: 0;
   right: 0;
@@ -349,14 +374,12 @@ const StCurrntPwEm = styled.em`
   display: block;
   font-weight: 700;
   font-size: 1.125rem;
-  color: ${(props) => props.theme.textblack};
   margin-bottom: 15px;
 `;
 const StCurrntPwContent = styled.p`
   margin-top: 10px;
   font-weight: 500;
   font-size: 0.875rem;
-  color: ${(props) => props.theme.textGrey};
 `;
 
 const StSCurrntpan = styled.p`

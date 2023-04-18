@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
+import { getCookie } from "api/cookies";
 import { FIND } from "api";
 import { Alert } from "components";
 import { errorState, successState } from "store/atoms";
@@ -12,12 +13,17 @@ const FindPwForm = () => {
   const setSuccess = useSetRecoilState(successState);
 
   const navigate = useNavigate();
-  const idPage = () => {
-    navigate("/login/findid");
-  };
-  const loginPage = () => {
-    navigate("/");
-  };
+
+  const idPage = () => navigate("/login/findid");
+
+  const loginPage = () => navigate("/");
+
+  useEffect(() => {
+    if (getCookie("access_token")) {
+      navigate("/main", { replace: true });
+    }
+  }, [navigate]);
+
   //이메일 보내기
   const [email, setEmail] = useState("");
   const [emailBoolean, setEmailBoolean] = useState(false);
@@ -54,6 +60,7 @@ const FindPwForm = () => {
   const codeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAuthenticationCode(e.target.value);
   };
+
   const { mutate: pwFindCodeMutate, data } = useMutation(FIND.findPwCode, {
     onSuccess: (response) => {
       if (`${response}`.includes("Error")) {
@@ -62,6 +69,7 @@ const FindPwForm = () => {
       return response.data;
     },
   });
+
   const codeSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (authenticationCode.trim() === "")
@@ -154,9 +162,9 @@ const StFindPWBg = styled.div`
 const StFindPwWrap = styled.div`
   width: 700px;
   padding: 0 115px;
-  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
   border-radius: 24px;
   border: 1px solid ${(props) => props.theme.borderColor};
+  background: ${(props) => props.theme.bgwhite};
   height: 630px;
   display: flex;
   align-items: center;
@@ -197,7 +205,7 @@ const StInput = styled.input`
     color: ${(props) => props.theme.placeholder};
   }
   &:focus {
-    border: 1px solid ${(props) => props.theme.borderBlue};
+    border: 1px solid ${(props) => props.theme.bgBlue};
   }
 `;
 
@@ -209,13 +217,14 @@ const StInputEmail = styled(StInput)`
 const Stbutton = styled.button`
   width: 150px;
   height: 70px;
-  border: 1px solid ${(props) => props.theme.borderBlue};
+  outline: 0;
+  border: 0;
   border-radius: 0px 10px 10px 0px;
   position: absolute;
   top: 0;
   right: 0;
   background: ${(props) => props.theme.bgBlue};
-  color: #fff;
+  color: ${(props) => props.theme.textwhite};
   font-weight: 500;
   cursor: pointer;
 `;
@@ -228,7 +237,7 @@ const StNextButton = styled.button`
   border: 0;
   margin-top: 10px;
   background: ${(props) => props.theme.bgBlue};
-  color: #fff;
+  color: ${(props) => props.theme.textwhite};
   cursor: pointer;
 `;
 const StErrorMsg = styled.p`
@@ -248,7 +257,7 @@ const StfondId = styled.p`
 const StfondIdspan = styled.span`
   display: block;
   margin-left: 30px;
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textBlue};
   font-weight: 700;
   cursor: pointer;
 `;
@@ -268,14 +277,14 @@ const StCodePw = styled.p`
   font-size: 20px;
 `;
 const StCopy = styled.button`
-  background: none;
+  background: transparent;
   border: 0;
   margin-left: 8px;
   cursor: pointer;
 `;
 const StCopySvg = styled.svg`
-  stroke: ${(props) => props.theme.stroke};
-  fill: ${(props) => props.theme.fillWhite};
+  stroke: ${(props) => props.theme.bgBlue};
+  fill: ${(props) => props.theme.bgwhite};
 `;
 
 const StLoginbutton = styled.button`
@@ -283,7 +292,9 @@ const StLoginbutton = styled.button`
   width: 100%;
   border-radius: 60px;
   height: 64px;
-  background: ${(props) => props.theme.bgBlue};
+  background: ${(props) => props.theme.textBlue};
   color: ${(props) => props.theme.textwhite};
+  font-weight: 500;
   cursor: pointer;
+  outline: 0;
 `;

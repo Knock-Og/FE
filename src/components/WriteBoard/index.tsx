@@ -5,6 +5,7 @@ import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { Editor } from "@toast-ui/react-editor";
 import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
+import { DelIcon } from "assets";
 import { CATEGORY, POST } from "api";
 import { Alert } from "components";
 import { errorState } from "store/atoms";
@@ -95,6 +96,12 @@ const WriteBoard = () => {
       setKeyword("");
     }
   };
+  const delKeyword = (keywordToDelete: string) => {
+    const updatedKeywords = newPost.keywords.filter(
+      (keyword) => keyword !== keywordToDelete
+    );
+    setNewPost({ ...newPost, keywords: updatedKeywords });
+  };
 
   return (
     <>
@@ -166,10 +173,15 @@ const WriteBoard = () => {
         <StFooter>
           <StkeyWordWrap>
             {newPost.keywords.map((keyword) => (
-              <StkeyWordP key={keyword}>#{keyword}</StkeyWordP>
+              <StKeyword>
+                <StkeyWordP key={keyword}>#{keyword}</StkeyWordP>
+                <Stbutton onClick={() => delKeyword(keyword)}>
+                  <StDelIcon />
+                </Stbutton>
+              </StKeyword>
             ))}
             <StkeyWordInput
-              placeholder="태그를 입력하세요 (엔터로 구분)"
+              placeholder="키워드를 입력하세요 (엔터로 구분)"
               value={keyword}
               onChange={handleChangeKeywordInput}
               onKeyUp={handleKeyUp}
@@ -191,21 +203,24 @@ const StContainer = styled.div`
   height: 100vh;
 `;
 const StMidSelet = styled.div`
-  border: 1px solid ${(props) => props.theme.pageBorder};
+  border: 1px solid ${(props) => props.theme.borderWrite};
   border-top: 0;
   border-bottom: 0;
   padding: 20px 20px;
   display: flex;
   gap: 20px;
+  background: ${(props) => props.theme.bgwhite};
 `;
 const StTitleInput = styled.input`
+  background: ${(props) => props.theme.bgwhite};
   width: 100%;
   height: 80px;
-  border: 1px solid ${(props) => props.theme.pageBorder};
+  border: 1px solid ${(props) => props.theme.borderWrite};
   padding: 20px 30px;
   font-size: 1.125rem;
   outline: none;
   border-radius: 5px 5px 0 0;
+  color: ${(props) => props.theme.textColor};
   &::placeholder {
     color: ${(props) => props.theme.placeholder};
   }
@@ -217,29 +232,53 @@ const StFooter = styled.div`
   flex-wrap: wrap;
 `;
 const StkeyWordWrap = styled.div`
-  border: 1px solid ${(props) => props.theme.pageBorder};
+  border: 1px solid ${(props) => props.theme.borderWrite};
+  background: ${(props) => props.theme.bgwhite};
   width: 100%;
   border-top: 0;
   margin-bottom: 30px;
   display: flex;
   flex-wrap: wrap;
   padding: 20px 20px;
-  gap: 10px;
+  gap: 15px;
+`;
+const StKeyword = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
 `;
 const StkeyWordP = styled.p`
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textBlue};
   word-break: break-word;
+`;
+const StDelIcon = styled(DelIcon)`
+  fill: ${(props) => props.theme.textwhite}; ;
+`;
+const Stbutton = styled.button`
+  background: transparent;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${(props) => props.theme.bgBlue};
 `;
 const StkeyWordInput = styled.input`
   outline: 0;
   border: 0;
-  width: 200px;
+  width: 210px;
+  background: transparent;
+  color: ${(props) => props.theme.textColor};
 `;
 
 const StAddBtn = styled.button`
   width: 120px;
   height: 50px;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   border-radius: 10px;
   color: ${(props) => props.theme.textwhite};
   border: none;

@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { setCookie } from "api/cookies";
+import { setCookie, getCookie } from "api/cookies";
 import { LOGIN } from "api";
 import { Alert } from "components";
 import { errorState } from "store/atoms";
@@ -22,8 +22,8 @@ const LoginForm = () => {
       if (`${response}`.includes("Error")) {
         return setError(`${response}`);
       }
-      setCookie("access_token", response.headers.authorization.substr(7));
-      navigate("/main");
+      setCookie("reqWithToken", response.headers.authorization.substr(7));
+      navigate("/main", { replace: true });
     },
   });
 
@@ -31,7 +31,9 @@ const LoginForm = () => {
 
   const loginHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const isValidEmail = emailRegex.test(email);
+    if (!isValidEmail) return alert("이메일형식이 올바르지 않습니다!");
     if (!email.trim() || email.trim() === "")
       return setError("이메일을 입력해주세요!");
     if (password.trim() === "") return setError("비밀번호를 입력해주세요!");
@@ -40,12 +42,20 @@ const LoginForm = () => {
     setEmail("");
     setPassword("");
   };
+
   const findId = () => {
     navigate("/login/findId");
   };
   const findPw = () => {
     navigate("/login/findPw");
   };
+
+  useEffect(() => {
+    if (getCookie("reqWithToken")) {
+      navigate("/main", { replace: true });
+    }
+  }, [navigate]);
+
   return (
     <>
       <Alert />
@@ -126,9 +136,9 @@ const StLoginBg = styled.div`
 const StLoginWrap = styled.div`
   width: 700px;
   padding: 0 115px;
-  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
   border-radius: 24px;
   border: 1px solid ${(props) => props.theme.borderColor};
+  background: ${(props) => props.theme.bgwhite};
   height: 630px;
   display: flex;
   align-items: center;
@@ -137,11 +147,11 @@ const StLoginWrap = styled.div`
 `;
 
 const StLogo = styled.svg`
-  fill: ${(props) => props.theme.keyBlue};
+  fill: ${(props) => props.theme.bgBlue};
 `;
 const StExplanation = styled.p`
   font-weight: 500;
-  color: ${(props) => props.theme.greyLight};
+  color: ${(props) => props.theme.textGray};
   margin: 25px auto 40px;
 `;
 const StLogin = styled.div`
@@ -162,11 +172,10 @@ const StInput = styled.input`
   font-weight: 500;
   outline: 0;
   &::placeholder {
-    color: #c9c9c9;
+    color: ${(props) => props.theme.placeholder};
   }
-
   &:focus {
-    border: 1px solid ${(props) => props.theme.keyBlue};
+    border: 1px solid ${(props) => props.theme.bgBlue};
   }
 `;
 const StLoginLabel = styled.label`
@@ -177,7 +186,7 @@ const StLoginLabel = styled.label`
 `;
 const StLoginBtn = styled.button`
   width: 100%;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   border-radius: 10px;
   font-weight: 500;
   height: 64px;
@@ -194,12 +203,12 @@ const StLink = styled.ul`
 `;
 const StLinkli = styled.li`
   font-weight: 500;
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textBlue};
   font-size: 14px;
   cursor: pointer;
   &:first-child {
     margin-right: 18px;
     padding-right: 18px;
-    border-right: 1px solid ${(props) => props.theme.textwhite};
+    border-right: 1px solid ${(props) => props.theme.textGray};
   }
 `;

@@ -35,7 +35,7 @@ const Header = () => {
   const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const accessToken = getCookie("access_token");
+  const accessToken = getCookie("reqWithToken");
 
   const { mutate: getSearchedData } = useMutation(SEARCH.getSearchedData, {
     onSuccess: (res) => {
@@ -75,8 +75,9 @@ const Header = () => {
   };
 
   const handleClickLogOut = () => {
+    alert("로그아웃되셨습니다.");
     navigate("/");
-    removeCookie("access_token");
+    removeCookie("reqWithToken");
   };
   const [headerMove, setHeaderMove] = useState(false);
   const stContainerRef = useRef<HTMLDivElement>(null);
@@ -174,8 +175,8 @@ const StContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   display: flex;
-  border-bottom: 1px solid ${(props) => props.theme.lightGrey};
-  background: ${(props) => props.theme.bgColor};
+  border-bottom: 1px solid ${(props) => props.theme.borderColor};
+  background: ${(props) => props.theme.bglightblack};
   z-index: 9;
   transition: all 0.3s;
   &.on {
@@ -209,10 +210,15 @@ const StSearchInput = styled.input`
   width: 100%;
   height: 50px;
   border-radius: 65px;
-  border: 1px solid ${(props) => props.theme.lightGrey};
-  box-shadow: 4px 5px 11px -5px rgba(106, 115, 147, 0.4);
+  border:0;
+  background: ${(props) => props.theme.bgwhite};
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 3px 2px;
+  color: ${(props) => props.theme.textColor};
   padding: 0px 55px 0px 30px;
   outline: none;
+  &::placeholder {
+    color: ${(props) => props.theme.placeholder};
+  }
 `;
 
 const StSearchBtn = styled(Search)`
@@ -221,6 +227,8 @@ const StSearchBtn = styled(Search)`
   top: 0;
   bottom: 0;
   margin: auto 0;
+  cursor: pointer;
+  stroke: ${(props) => props.theme.search};
 `;
 
 const StHeaderRightWrapper = styled.div`
@@ -229,9 +237,8 @@ const StHeaderRightWrapper = styled.div`
 
 const StModeToggleBtn = styled.button`
   border: none;
-  background: ${(props) => props.theme.bgColor};
-  width: 150px;
-  height: 48px;
+  padding: 0 22px;
+  height: 50px;
   box-shadow: 0px 5px 7px -4px rgba(0, 0, 0, 0.3);
   border-radius: 60px;
   position: fixed;
@@ -240,12 +247,13 @@ const StModeToggleBtn = styled.button`
   bottom: 60px;
   font-weight: 500;
   cursor: pointer;
-  color: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgwhite};
+  color: ${(props) => props.theme.textBlue};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  gap: 5px;
+  gap: 10px;
   z-index: 2;
 `;
 
@@ -256,25 +264,19 @@ const StHeaderMeun = styled.div`
 `;
 const StWrite = styled.button`
   border: none;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
+  color: ${(props) => props.theme.textBlue};
   width: 120px;
   height: 40px;
   box-shadow: 0px 5px 7px -4px rgba(0, 0, 0, 0.3);
   border-radius: 60px;
   font-weight: 500;
   cursor: pointer;
-  color: ${(props) => props.theme.keyBlue};
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
   gap: 5px;
-`;
-const StbellWrap = styled.button`
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  padding-top: 5px;
 `;
 
 const StAccountBtn = styled.button`
@@ -287,12 +289,13 @@ const StAccountBtn = styled.button`
   cursor: pointer;
 `;
 const Menuperson = styled(Headermenu)`
-  fill: ${(props) => props.theme.lightGrey};
-  margin-right: 10px;
+  fill: ${(props) => props.theme.fillGrey};
+  stroke: ${(props) => props.theme.fillGrey};
+  margin-right: 13px;
 `;
 const MenuArr = styled(MainArr)`
-  fill: ${(props) => props.theme.lightGrey};
-
+  stroke: ${(props) => props.theme.fillGrey};
+  fill: ${(props) => props.theme.fillGrey};
   transition: all 0.3s;
   &.on {
     transform: rotateZ(-180deg);
@@ -304,7 +307,7 @@ const StMenu = styled.div`
   bottom: -170px;
   right: 0;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   opacity: 0;
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out,
     visibility 0.3s ease-in-out;
@@ -325,20 +328,29 @@ const StMenuItem = styled.button`
   background: transparent;
   padding: 0 20px;
   cursor: pointer;
+  color: ${(props) => props.theme.textColor};
   &:hover {
-    background: ${(props) => props.theme.lightBlue};
-    color: ${(props) => props.theme.keyBlue};
+    background: ${(props) => props.theme.bgLightBlue};
+    color: ${(props) => props.theme.textBlue};
   }
+`;
+
+
+const StbellWrap = styled.button`
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding-top: 5px;
 `;
 
 const StAlarm = styled.div`
   position: absolute;
   width: 350px;
   height: 600px;
-  right: 0;
   bottom: -625px;
+  right:0;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   opacity: 0;
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out,
     visibility 0.3s ease-in-out;
@@ -351,7 +363,7 @@ const StAlarm = styled.div`
   }
 `;
 const StAlarmTop = styled.div`
-  border-bottom: 1px solid ${(props) => props.theme.borderColor};
+  border-bottom: 1px solid ${(props) => props.theme.alarm};
   height: 45px;
   line-height: 45px;
   padding: 0 20px;
@@ -369,15 +381,17 @@ const StAlarmIconWrap = styled.div`
 const StAlarmContentWrap = styled.div`
   height: calc(100% - 46px);
   overflow-y: scroll;
+
   &::-webkit-scrollbar {
-    width: 10px;
+    width: 5px;
+    background: ${(props) => props.theme.bgToggle};
   }
   &::-webkit-scrollbar-thumb {
-    background-color: ${(props) => props.theme.scrollColor};
+    background: ${(props) => props.theme.scrollColor};
     border-radius: 10px;
   }
   &::-webkit-scrollbar-track {
-    background-color: ${(props) => props.theme.bgColor};
+    background: ${(props) => props.theme.bgToggle};
   }
 `;
 const StAlarmcontent = styled.div`
@@ -385,17 +399,27 @@ const StAlarmcontent = styled.div`
   line-height: 60px;
   display: flex;
   align-items: center;
+
   &:hover {
-    background: ${(props) => props.theme.lightBlue};
+    background: ${(props) => props.theme.bgLightBlue};
   }
   &:hover p {
-    color: ${(props) => props.theme.keyBlue};
+    color: ${(props) => props.theme.textBlue};
+  }
+  &:hover svg {
+    fill: ${(props) => props.theme.textBlue};
   }
 `;
 
 const StAlarmcontentP = styled.p`
   width: calc(100% - 60px);
+  padding-right: 30px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: ${(props) => props.theme.textColor};
+`;
+
+const StAlarmIcon = styled(AlarmIcon)`
+  fill: ${(props) => props.theme.fillblack};
 `;

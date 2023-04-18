@@ -93,7 +93,7 @@ const DetailBoard = (post: PostDetail) => {
           </StRight>
         </StTop>
 
-        <ViewerWrap className={isDark ? "dark" : "light"}>
+        <ViewerWrap className={isDark ? "" : ""}>
           <Viewer initialValue={post.content} />
         </ViewerWrap>
 
@@ -142,19 +142,19 @@ const StRight = styled.div`
 `;
 const StNum = styled.em`
   color: ${(props) => props.theme.redLightColor};
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 700;
 `;
 const StText = styled.p`
-  font-weight: 600;
-  margin-top: 15px;
+  font-weight: 500;
+  margin-top: 12px;
 `;
 
 const StTitle = styled.h4`
   line-height: 45px;
-  font-size: 2rem;
+  font-size: 1.875rem;
   font-weight: 700;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 `;
 const StOhterUl = styled.ul`
   display: flex;
@@ -207,9 +207,9 @@ const StkeyWordWrap = styled.div`
   gap: 10px;
 `;
 const StkeyWordP = styled.p`
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textBlue};
   word-break: break-word;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 `;
 
 const StBtnWrap = styled.div`
@@ -220,7 +220,7 @@ const StBtnWrap = styled.div`
 const StEditRouteBtn = styled.button`
   width: 120px;
   height: 50px;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   border-radius: 10px;
   color: ${(props) => props.theme.textwhite};
   border: none;
@@ -231,10 +231,10 @@ const StEditRouteBtn = styled.button`
 const StDelBtn = styled.button`
   width: 120px;
   height: 50px;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   border-radius: 10px;
-  color: ${(props) => props.theme.keyBlue};
-  border: 1px solid ${(props) => props.theme.borderBlue};
+  color: ${(props) => props.theme.textBlue};
+  border: 1px solid ${(props) => props.theme.delBtn};
   margin-right: 15px;
   outline: 0;
   cursor: pointer;

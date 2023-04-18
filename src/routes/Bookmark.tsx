@@ -3,9 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "react-query";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { IconButton, Input } from "@mui/material";
-import { Edit, FolderDelete, Cancel } from "@mui/icons-material";
 import styled from "styled-components";
-import { Folder, FolderPlus } from "assets";
+import { Folder, FolderPlus, Pencil, Trash, Delx } from "assets";
 import { BOOKMARK } from "api";
 import { PostCard, Layout, NoSearched, Alert } from "components";
 import {
@@ -82,10 +81,14 @@ const Bookmark = () => {
     if (editedFolderName === "")
       return setError("편집할 폴더명을 입력해주세요.");
 
+    if (editedFolderName.trim() === "")
+      return setError("변경할 즐겨찾기명을 적어주세요.");
+
     editBookmark({
       folderId,
       bookMarkFolderName: editedFolderName,
     });
+
     navigate(`/bookmark/${editedFolderName}`, { replace: true });
     handleClickEditBtn();
     setAddInput("");
@@ -102,6 +105,7 @@ const Bookmark = () => {
     e.preventDefault();
     if (addInput === "") return setError("추가할 폴더명을 입력해주세요.");
     addBookmark(addInput);
+    setAddInput("");
     setIsShowAddFolderModal(false);
   };
 
@@ -151,6 +155,7 @@ const Bookmark = () => {
               <StInput
                 type="text"
                 value={addInput}
+                maxLength={10}
                 placeholder="추가할 폴더 명"
                 onChange={(e) => setAddInput(e.target.value)}
               />
@@ -178,7 +183,7 @@ const Bookmark = () => {
             </StFolderli>
             {navItems?.map((folder) => (
               <StFolderli key={folder.itemValue} onClick={folder.handler}>
-                <Folder />
+                <StFolderIcon />
                 <StFolderP>{folder.itemValue}</StFolderP>
               </StFolderli>
             ))}
@@ -193,7 +198,7 @@ const Bookmark = () => {
                   onChange={handleChangeEditInput}
                   endAdornment={
                     <IconButton onClick={handleEditSubmit}>
-                      <Edit />
+                      <StPencil />
                     </IconButton>
                   }
                 />
@@ -201,10 +206,10 @@ const Bookmark = () => {
                 <StBreadCrumb>{params.folderName}</StBreadCrumb>
               )}
               <StEditBtn onClick={handleClickEditBtn}>
-                {isEdit ? <Cancel /> : <Edit />}
+                {isEdit ? <StDelIcon /> : <StPencil />}
               </StEditBtn>
               <StDelBtn onClick={handleClickDelBtn}>
-                <FolderDelete />
+                <StTrash />
               </StDelBtn>
             </StBreadCrumbWrapper>
           )}
@@ -250,7 +255,7 @@ const StLayoutChildrenWrapper = styled.div`
 `;
 
 const StFolder = styled.div`
-  width: 625px;
+  width: 100%;
   flex-wrap: wrap;
   display: flex;
   gap: 15px;
@@ -268,6 +273,11 @@ const StFolderli = styled.button`
   font-size: 0;
 `;
 
+const StFolderIcon = styled(Folder)`
+  fill: ${(props) => props.theme.fillGrey};
+  border: 1px solid ${(props) => props.theme.fillGrey};
+  border-radius: 50px;
+`;
 const StFolderP = styled.p`
   width: 100%;
   overflow: hidden;
@@ -276,6 +286,7 @@ const StFolderP = styled.p`
   font-weight: 500;
   font-size: 0.875rem;
   margin-top: 12px;
+  color: ${(props) => props.theme.textColor};
 `;
 
 const StBookmarkAdd = styled.div`
@@ -315,7 +326,7 @@ const StBookmarkAddModal = styled.div`
   width: 500px;
   height: 250px;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   bottom: 0;
   top: 0;
   right: 0;
@@ -348,11 +359,13 @@ const StModalTitle = styled.h3`
 `;
 const StInput = styled.input`
   width: 100%;
-  height: 44px;
+  height: 45px;
   border: 0;
   outline: 0;
   padding-right: 90px;
-  border-bottom: 1px solid ${(props) => props.theme.blockBorder};
+  border-bottom: 1px solid ${(props) => props.theme.bgBlue};
+  background: transparent;
+  color: ${(props) => props.theme.textColor};
   &::placeholder {
     color: ${(props) => props.theme.placeholder};
   }
@@ -362,11 +375,11 @@ const StInputWrapper = styled.div`
 `;
 const StSubmitBtn = styled.button`
   position: absolute;
-  width: 84px;
-  height: 44px;
+  width: 85px;
+  height: 45px;
   right: 0px;
   top: 0;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   color: ${(props) => props.theme.textwhite};
   border: 0;
   outline: 0;
@@ -375,8 +388,23 @@ const StSubmitBtn = styled.button`
 
 const StCloseBtn = styled.svg`
   position: absolute;
-  right: 20px;
-  top: 20px;
+  right: 15px;
+  top: 15px;
   cursor: pointer;
-  stroke: ${(props) => props.theme.lightGrey};
+  transition: all 0.3s;
+  stroke: ${(props) => props.theme.borderGray};
+  &:hover {
+    transform: rotatez(180deg);
+  }
+`;
+
+const StPencil = styled(Pencil)`
+  fill: ${(props) => props.theme.fillblack};
+`;
+const StTrash = styled(Trash)`
+  fill: ${(props) => props.theme.fillblack};
+`;
+
+const StDelIcon = styled(Delx)`
+  fill: ${(props) => props.theme.fillblack};
 `;

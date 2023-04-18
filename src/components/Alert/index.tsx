@@ -106,7 +106,7 @@ const StAlertTitle = styled.h3<{ isError: boolean }>`
   margin-bottom: 35px;
   text-align: center;
   color: ${(props) =>
-    props.isError ? props.theme.textRed : props.theme.keyBlue};
+    props.isError ? props.theme.textRed : props.theme.textBlue};
 `;
 
 const StAlertContent = styled.div`
@@ -121,7 +121,7 @@ const StCloseBtn = styled.svg`
   top: 20px;
   cursor: pointer;
   transition: all 0.3s;
-  stroke: ${(props) => props.theme.lightGrey};
+  stroke: ${(props) => props.theme.borderGray};
   &:hover {
     transform: rotatez(180deg);
   }
