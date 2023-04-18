@@ -30,3 +30,13 @@ export const errorState = atom<string | null>({
   key: "errorState",
   default: null,
 });
+
+export const successState = atom<string | null>({
+  key: "successState",
+  default: null,
+});
+
+export const folderIdState = atom<number>({
+  key: "folderIdState",
+  default: 0,
+});

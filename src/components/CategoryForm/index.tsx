@@ -1,53 +1,96 @@
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useSetRecoilState } from "recoil";
 import { CATEGORY } from "api";
+import { errorState, successState } from "store/atoms";
+import { Alert } from "components";
 import { CategoryItem } from "types";
+
 const CategoryForm = () => {
-  const queryClient = useQueryClient();
-  //카테고리 추가
   const [categoryName, setCategoryName] = useState("");
-  const categoryMutation = useMutation("categoryadd", CATEGORY.categoryAdd, {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [categoryPutName, setCategoryPutName] = useState("");
+  const [categoryPutID, setCategoryPutID] = useState(Number);
+  const [modalPutOpen, setModalPutOpen] = useState(false);
+
+  const setError = useSetRecoilState(errorState);
+  const setSuccess = useSetRecoilState(successState);
+
+  const queryClient = useQueryClient();
+
+  const { isLoading, isError, data } = useQuery(
+    "getCategories",
+    CATEGORY.getCategories
+  );
+
+  const categoryMutation = useMutation(CATEGORY.categoryAdd, {
     onSuccess: (response) => {
       if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
+        setSuccess("카테고리가 추가되었습니다.");
+        queryClient.invalidateQueries("getCategories");
+        setCategoryName("");
+        return response.data;
+      }
+    },
+  });
+
+  const categoryPutMutation = useMutation("categoryput", CATEGORY.categoryPut, {
+    onSuccess: (response) => {
+      if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
+        setSuccess("카테고리가 편집되었습니다.");
+        queryClient.invalidateQueries("getCategories");
+        setCategoryPutName("");
+        return response.data;
+      }
+    },
+  });
+
+  const categoryDelMutation = useMutation(CATEGORY.categoryDel, {
+    onSuccess: (response) => {
+      if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
+        setSuccess("카테고리가 삭제되었습니다.");
         queryClient.invalidateQueries("getCategories");
         return response.data;
       }
-    }
+    },
   });
-  const [modalOpen, setModalOpen] = useState(false);
+
+  const categoryDel = (id: number) => {
+    if (window.confirm("삭제하시겠습니까?")) {
+      categoryDelMutation.mutate({ id });
+    }
+  };
+
   const modalBtn = () => {
+    setCategoryName("");
     setModalOpen(!modalOpen);
   };
 
- 
+  const modalPutBtn = () => {
+    setCategoryPutName("");
+    setModalPutOpen(!modalPutOpen);
+  };
+
   const categorySubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    if (categoryName.trim() === "") return alert("카테고리명을 적어주세요!");
+    if (categoryName.trim() === "") return setError("카테고리명을 적어주세요!");
     e.preventDefault();
     modalBtn();
     categoryMutation.mutate({ categoryName });
   };
 
-  //카테고리 수정
-  const [categoryPutName, setCategoryPutName] = useState("");
-  const [categoryPutID, setCategoryPutID] = useState(Number);
-
-  const [modalPutOpen, setModalPutOpen] = useState(false);
-  const modalPutBtn = () => {
-    setModalPutOpen(!modalPutOpen);
-  };
-  
-  const categoryPutMutation = useMutation("categoryput", CATEGORY.categoryPut, {
-    onSuccess: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("getCategories");
-        console.log("성공햇습니다.");
-        return response.data;
-      }
-    }
-  });
   const categoryPutSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    if (categoryPutName.trim() === "") return alert("카테고리명을 적어주세요");
+    if (categoryPutName.trim() === "")
+      return setError("카테고리명을 적어주세요");
     e.preventDefault();
     modalPutBtn();
     categoryPutMutation.mutate({
@@ -55,33 +98,13 @@ const CategoryForm = () => {
       id: categoryPutID,
     });
   };
-  //카테고리 삭제
-  const categoryDelMutation = useMutation("categorydel", CATEGORY.categoryDel, {
-    onSuccess: (response) => {
-      if (response) {
-        queryClient.invalidateQueries("getCategories");
-        console.log("성공햇습니다.");
-        return response.data;
-      }
-    }
-  });
-  const categoryDel = (id: number) => {
-    if (window.confirm("삭제하시겠습니까?")) {
-      categoryDelMutation.mutate({ id });
-      alert("삭제되었습니다.");
-    } else {
-      alert("취소되었습니다.");
-    }
-  };
-  const { isLoading, isError, data } = useQuery(
-    "getCategories",
-    CATEGORY.getCategories
-  );
+
   if (isLoading) return <h1>"성공했습니다.</h1>;
   if (isError) return <h1>"실패했습니다.!"</h1>;
 
   return (
     <>
+      <Alert />
       <StAdminWrap>
         <StTop>
           <StTitle>
@@ -153,6 +176,7 @@ const CategoryForm = () => {
                 type="text"
                 value={categoryName}
                 placeholder="추가할 카테고리 명"
+                maxLength={10}
                 onChange={(e) => setCategoryName(e.target.value)}
               />
               <StCommonButton>추가</StCommonButton>
@@ -195,6 +219,7 @@ const CategoryForm = () => {
                 value={categoryPutName}
                 placeholder="수정할 카테고리명"
                 onChange={(e) => setCategoryPutName(e.target.value)}
+                maxLength={10}
               />
               <StCommonButton>수정</StCommonButton>
             </StCategory>
@@ -217,7 +242,7 @@ const StAdminWrap = styled.div`
 `;
 
 const StTop = styled.div`
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -241,7 +266,7 @@ const StUser = styled.p`
   &::before {
     width: 16px;
     height: 16px;
-    background: ${(props) => props.theme.keyBlue};
+    background: ${(props) => props.theme.textBlue};
     content: "";
     position: absolute;
     left: 0;
@@ -252,7 +277,7 @@ const StUser = styled.p`
   }
 `;
 const StUserSpan = styled.span`
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textBlue};
   font-weight: 800;
 `;
 
@@ -261,9 +286,9 @@ const StContentTop = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 60px;
+  height: 80px;
   border-radius: 5px;
-  background: ${(props) => props.theme.veryLightGrey};
+  background: ${(props) => props.theme.bgGrey};
   text-align: center;
 `;
 const StName = styled.p`
@@ -277,10 +302,11 @@ const StContentBottom = styled.div`
   width: 100%;
   height: 80px;
   align-items: center;
-  border: 1px solid ${(props) => props.theme.lightGrey};
+  border: 1px solid ${(props) => props.theme.borderColor};
+  background: ${(props) => props.theme.bgwhite};
   border-radius: 5px;
   display: flex;
-  margin-top: 25px;
+  margin-top: 18px;
 `;
 
 const StChange = styled.p`
@@ -295,8 +321,8 @@ const StButton = styled.button`
   width: 140px;
   height: 50px;
   font-size: 0.875rem;
-  background: ${(props) => props.theme.keyBlue};
-  color: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgBlue};
+  color: ${(props) => props.theme.textwhite};
   border: 0;
   cursor: pointer;
   border-radius: 50px;
@@ -306,8 +332,8 @@ const StChangeBtn = styled.button`
   text-align: center;
   width: 130px;
   height: 38px;
-  border: 1px solid ${(props) => props.theme.keyBlue};
-  color: ${(props) => props.theme.keyBlue};
+  border: 1px solid ${(props) => props.theme.bgBlue};
+  color: ${(props) => props.theme.bgBlue};
   background: transparent;
   font-size: 0.875rem;
   border-radius: 50px;
@@ -315,8 +341,8 @@ const StChangeBtn = styled.button`
 `;
 
 const StDelBtn = styled.button`
-  border: 1px solid ${(props) => props.theme.redColor};
-  color: ${(props) => props.theme.redColor};
+  border: 1px solid ${(props) => props.theme.textRed};
+  color: ${(props) => props.theme.textRed};
   margin-left: 10px;
   text-align: center;
   width: 130px;
@@ -365,7 +391,7 @@ const StSignBox = styled.div`
   width: 500px;
   height: 250px;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   bottom: 0;
   top: 0;
   right: 0;
@@ -402,7 +428,7 @@ const StCategoryInput = styled.input`
   border: 0;
   outline: 0;
   padding-right: 90px;
-  border-bottom: 1px solid ${(props) => props.theme.blockBorder};
+  border-bottom: 1px solid ${(props) => props.theme.borderColor};
   &::placeholder {
     color: ${(props) => props.theme.placeholder};
   }
@@ -416,7 +442,7 @@ const StCommonButton = styled.button`
   height: 44px;
   right: 0px;
   top: 0;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   color: ${(props) => props.theme.textwhite};
   border: 0;
   outline: 0;
@@ -428,5 +454,5 @@ const StIoClose = styled.svg`
   right: 20px;
   top: 20px;
   cursor: pointer;
-  stroke: ${(props) => props.theme.lightGrey};
+  stroke: ${(props) => props.theme.borderColor};
 `;

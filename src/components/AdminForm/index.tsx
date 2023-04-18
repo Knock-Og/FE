@@ -2,9 +2,12 @@ import styled from "styled-components";
 import { SignUpForm } from "components";
 import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useSetRecoilState } from "recoil";
 import { MainArr } from "assets";
 import { ADMIN } from "api";
+import { Alert } from "components";
 import { SignItem } from "types";
+import { errorState, successState } from "store/atoms";
 
 interface OpenState {
   [key: string]: boolean;
@@ -26,6 +29,10 @@ const AdminForm = () => {
   const [position, setPosition] = useState<PositionState>();
   const [changeItemId, setChangeItemId] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<string>("");
+
+  const setError = useSetRecoilState(errorState);
+  const setSuccess = useSetRecoilState(successState);
+
   const queryClient = useQueryClient();
 
   const { isLoading, isError, data } = useQuery("member", ADMIN.member);
@@ -33,9 +40,13 @@ const AdminForm = () => {
   const positionMutation = useMutation("position", ADMIN.position, {
     onSuccess: (response) => {
       if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
+        setSuccess("직급이 변경되었습니다.");
         queryClient.invalidateQueries("member");
       }
-    }
+    },
   });
 
   const modalBtn = () => setModalOpen(false);
@@ -68,11 +79,14 @@ const AdminForm = () => {
       });
     }
   };
-  const memberDelMutation = useMutation("memberdel", ADMIN.memberDel, {
+  const memberDelMutation = useMutation(ADMIN.memberDel, {
     onSuccess: (response) => {
       if (response) {
+        if (`${response}`.includes("Error")) {
+          return setError(`${response}`);
+        }
+        setSuccess("멤버가 삭제되었습니다.");
         queryClient.invalidateQueries("member");
-
         return response.data;
       }
     },
@@ -81,9 +95,6 @@ const AdminForm = () => {
   const memberDel = (id: number, email: string) => {
     if (window.confirm("삭제하시겠습니까?")) {
       memberDelMutation.mutate({ id, email });
-      alert("삭제되었습니다.");
-    } else {
-      alert("취소되었습니다.");
     }
   };
 
@@ -121,75 +132,78 @@ const AdminForm = () => {
   if (isError) return <h1>"실패했습니다.!"</h1>;
 
   return (
-    <StAdminWrap>
-      <StTop>
-        <StTitle>
-          사용자관리
-          <StUser>
-            전체사용자 <StUserSpan>{data?.data.length} </StUserSpan>명
-          </StUser>
-        </StTitle>
-        <StButton onClick={() => setModalOpen(true)}>인원추가 +</StButton>
-      </StTop>
-      <StContent>
-        <StContentTop>
-          <StTopList>이름</StTopList>
-          <StTopList>이메일</StTopList>
-          <StTopList>전화번호</StTopList>
-          <StTopList>현재직급</StTopList>
-          <StTopList>직급변경</StTopList>
-          <StTopList>변경</StTopList>
-        </StContentTop>
-        {data?.data.map((item: SignItem) => {
-          return (
-            <StContentBottom key={item.id}>
-              <StBottomList>{item.memberName}</StBottomList>
-              <StBottomList>{item.email}</StBottomList>
-              <StBottomList>{item.phoneNum}</StBottomList>
-              <StBottomList>{item.position}</StBottomList>
-              <StOpsion onSubmit={positionSubmit}>
-                <StBottomListSel>
-                  <StSelWrap>
-                    <StSeletLabel
-                      onClick={() => handleClickPositionLabel(item.id)}
+    <>
+      <Alert />
+      <StAdminWrap>
+        <StTop>
+          <StTitle>
+            사용자관리
+            <StUser>
+              전체사용자 <StUserSpan>{data?.data.length} </StUserSpan>명
+            </StUser>
+          </StTitle>
+          <StButton onClick={() => setModalOpen(true)}>인원추가 +</StButton>
+        </StTop>
+        <StContent>
+          <StContentTop>
+            <StTopList>이름</StTopList>
+            <StTopList>이메일</StTopList>
+            <StTopList>전화번호</StTopList>
+            <StTopList>현재직급</StTopList>
+            <StTopList>직급변경</StTopList>
+            <StTopList>변경</StTopList>
+          </StContentTop>
+          {data?.data.map((item: SignItem) => {
+            return (
+              <StContentBottom key={item.id}>
+                <StBottomList>{item.memberName}</StBottomList>
+                <StBottomList>{item.email}</StBottomList>
+                <StBottomList>{item.phoneNum}</StBottomList>
+                <StBottomList>{item.position}</StBottomList>
+                <StOpsion onSubmit={positionSubmit}>
+                  <StBottomListSel>
+                    <StSelWrap>
+                      <StSeletLabel
+                        onClick={() => handleClickPositionLabel(item.id)}
+                      >
+                        {position && position[item.id]}
+                        <MenuArr />
+                      </StSeletLabel>
+                      {isOpen && isOpen[`${item.id}`] && (
+                        <StSeletUl>
+                          {positionList.map((position) => (
+                            <StSeletLi
+                              key={`${item.id}-${position.id}`}
+                              onClick={() =>
+                                positionChange(item.id, position.position)
+                              }
+                            >
+                              {position.position}
+                            </StSeletLi>
+                          ))}
+                        </StSeletUl>
+                      )}
+                    </StSelWrap>
+                  </StBottomListSel>
+                  <StBottomListBtn>
+                    <StChangeBtn type="submit">직급수정</StChangeBtn>
+                    <StDelBtn
+                      type="button"
+                      onClick={() => {
+                        memberDel(item.id, item.email);
+                      }}
                     >
-                      {position && position[item.id]}
-                      <MenuArr />
-                    </StSeletLabel>
-                    {isOpen && isOpen[`${item.id}`] && (
-                      <StSeletUl>
-                        {positionList.map((position) => (
-                          <StSeletLi
-                            key={`${item.id}-${position.id}`}
-                            onClick={() =>
-                              positionChange(item.id, position.position)
-                            }
-                          >
-                            {position.position}
-                          </StSeletLi>
-                        ))}
-                      </StSeletUl>
-                    )}
-                  </StSelWrap>
-                </StBottomListSel>
-                <StBottomListBtn>
-                  <StChangeBtn type="submit">직급수정</StChangeBtn>
-                  <StDelBtn
-                    type="button"
-                    onClick={() => {
-                      memberDel(item.id, item.email);
-                    }}
-                  >
-                    인원삭제
-                  </StDelBtn>
-                </StBottomListBtn>
-              </StOpsion>
-            </StContentBottom>
-          );
-        })}
-      </StContent>
-      <SignUpForm onClose={modalBtn} modalOpen={modalOpen} />
-    </StAdminWrap>
+                      인원삭제
+                    </StDelBtn>
+                  </StBottomListBtn>
+                </StOpsion>
+              </StContentBottom>
+            );
+          })}
+        </StContent>
+        <SignUpForm onClose={modalBtn} modalOpen={modalOpen} />
+      </StAdminWrap>
+    </>
   );
 };
 export default AdminForm;
@@ -200,7 +214,7 @@ const StAdminWrap = styled.div`
   padding: 95px 5.74%;
 `;
 const StTop = styled.div`
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -224,7 +238,7 @@ const StUser = styled.p`
   &::before {
     width: 16px;
     height: 16px;
-    background: ${(props) => props.theme.keyBlue};
+    background: ${(props) => props.theme.textBlue};
     content: "";
     position: absolute;
     left: 0;
@@ -235,7 +249,7 @@ const StUser = styled.p`
   }
 `;
 const StUserSpan = styled.span`
-  color: ${(props) => props.theme.keyBlue};
+  color: ${(props) => props.theme.textBlue};
   font-weight: 800;
 `;
 
@@ -245,17 +259,17 @@ const StContentTop = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 60px;
+  height: 80px;
   border-radius: 5px;
-  background: ${(props) => props.theme.veryLightGrey};
+  background: ${(props) => props.theme.bgGrey};
   text-align: center;
 `;
 const StButton = styled.button`
   width: 140px;
   height: 50px;
   font-size: 0.875rem;
-  background: ${(props) => props.theme.keyBlue};
-  color: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgBlue};
+  color: ${(props) => props.theme.textwhite};
   border: 0;
   cursor: pointer;
   border-radius: 50px;
@@ -271,10 +285,11 @@ const StContentBottom = styled.div`
   width: 100%;
   height: 80px;
   align-items: center;
-  border: 1px solid ${(props) => props.theme.lightGrey};
+  border: 1px solid ${(props) => props.theme.borderColor};
+  background: ${(props) => props.theme.bgwhite};
   border-radius: 5px;
   display: flex;
-  margin-top: 25px;
+  margin-top: 18px;
 `;
 const StBottomList = styled.p`
   width: 16.66%;
@@ -301,8 +316,8 @@ const StSelWrap = styled.div`
   width: 120px;
 `;
 const StSeletLabel = styled.p`
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 2px 1px;
-  border-radius: 2px;
+  border: 1px solid ${(props) => props.theme.borderGray};
+  border-radius: 5px;
   width: 100%;
   height: 40px;
   margin: 0 auto;
@@ -316,14 +331,16 @@ const StSeletLabel = styled.p`
   cursor: pointer;
 `;
 const MenuArr = styled(MainArr)`
-  fill: ${(props) => props.theme.lightGrey};
+  fill: ${(props) => props.theme.fillGrey};
 `;
 const StSeletUl = styled.ul`
   position: absolute;
-  bottom: -120px;
+  top: 37px;
   left: 0;
-  background: ${(props) => props.theme.bgColor};
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 3px 2px 1px;
+  border-radius: 0px 0px 5px 5px;
+  background: ${(props) => props.theme.bgwhite};
+  border: 1px solid ${(props) => props.theme.borderGray};
+  border-top: 0;
   z-index: 1;
   width: 100%;
 `;
@@ -333,8 +350,8 @@ const StSeletLi = styled.li`
   font-size: 0.75rem;
   cursor: pointer;
   &:hover {
-    background: ${(props) => props.theme.lightBlue};
-    color: ${(props) => props.theme.keyBlue};
+    background: ${(props) => props.theme.bgLightBlue};
+    color: ${(props) => props.theme.textBlue};
   }
 `;
 
@@ -349,8 +366,8 @@ const StChangeBtn = styled.button`
   text-align: center;
   width: 90px;
   height: 38px;
-  border: 1px solid ${(props) => props.theme.keyBlue};
-  color: ${(props) => props.theme.keyBlue};
+  border: 1px solid ${(props) => props.theme.bgBlue};
+  color: ${(props) => props.theme.bgBlue};
   background: transparent;
   font-size: 0.875rem;
   border-radius: 50px;
@@ -358,8 +375,8 @@ const StChangeBtn = styled.button`
 `;
 
 const StDelBtn = styled.button`
-  border: 1px solid ${(props) => props.theme.redColor};
-  color: ${(props) => props.theme.redColor};
+  border: 1px solid ${(props) => props.theme.redLightColor};
+  color: ${(props) => props.theme.redLightColor};
   margin-left: 10px;
   text-align: center;
   width: 90px;

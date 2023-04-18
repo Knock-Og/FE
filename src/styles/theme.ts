@@ -23,6 +23,8 @@ export const GlobalStyle = createGlobalStyle`
     /* min-width : 1440px; */
     color: ${({ theme }) => theme.textColor};
     background-color: ${({ theme }) => theme.bgColor};
+    transition : all 0.3s;
+   
   }
   button{
     padding:0;
@@ -56,41 +58,57 @@ export const GlobalStyle = createGlobalStyle`
 `;
 
 export const defaultTheme: DefaultTheme = {
-  textColor: "#111",
-  textwhite: "#fff",
-  textblack: "#121212",
-  textRed: "#ff0000",
-  textGrey: "#5a5a5a",
-  keyBlue: "#007FFF",
-  grey: "#828282",
-  darkGrey: "#121212",
-  lightGrey: "#C5C5C5",
-  veryLightGrey: "#f9f9f9",
-  greyLight: "#aeaeae",
-  lightBlue: "#F5FAFF",
-  redColor: "#FF0F00",
-  greenColor: "#24CE57",
-  redLightColor: "#EC1A22",
-
-  bgBlue: "#007fff",
   bgColor: "#fff",
+  bgwhite: "#fff",
   bgLightBlue: "#F5FAFF",
+  bglightblack: "#fff",
+  bgBlue: "#007FFF",
   bgGrey: "#f9f9f9",
-  bgGreyE: "#767676",
-  scrollColor: "#606060",
-
-  fillWhite: "#fff",
-  stroke: "#007FFF",
+  delBtn: "#007FFF",
+  textColor: "#121212",
+  textBlue: "#007FFF",
+  textRed: "#ff0000",
+  textGray: "#aeaeae",
+  redLightColor: "#EC1A22",
+  greenColor: "#24CE57",
+  textwhite: "#fff",
   borderColor: "#AEAEAE",
-  pageBorder: "#DADDE6",
-  borderBlue: "#007fff",
+  borderWrite: "#DADDE6",
+  borderGray: "#AEAEAE",
+  fillGrey: "#C5C5C5",
+  fillblack: "#121212",
+  fillWhite: "#fff",
+  radius: "#fff",
+  search: "#5a5a5a",
+  alarm: "#AEAEAE",
   placeholder: "#bdbdbd",
-  blockBorder: "#000",
-  greyBorder: "#f9f9f9",
-  greylight: "#C5C5C5",
+  scrollColor: "#AEAEAE",
 };
 
 export const darkTheme: DefaultTheme = {
+  bgColor: "#121212",
+  bgwhite: "#2F2F2F",
+  bgLightBlue: "#272727",
+  bglightblack: "#232323",
+  bgBlue: "#007FFF",
+  bgGrey: "#2F2F2F",
   textColor: "#fff",
-  bgColor: "#111",
+  textBlue: "#fff",
+  textRed: "#ff0000",
+  textGray: "#fff",
+  textwhite: "#fff",
+  redLightColor: "#fff",
+  greenColor: "#fff",
+  borderColor: "#414141",
+  borderGray: "#fff",
+  borderWrite: "#414141",
+  radius: "#2F2F2F",
+  delBtn: "#2F2F2F",
+  fillGrey: "#ACACAC",
+  fillblack: "#fff",
+  fillWhite: "#2F2F2F",
+  search: "#ACACAC",
+  alarm: "#272727",
+  placeholder: "#ACACAC",
+  scrollColor: "#ACACAC",
 };

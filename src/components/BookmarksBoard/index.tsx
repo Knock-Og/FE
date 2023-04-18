@@ -1,10 +1,13 @@
 import { BOOKMARK } from "api";
 import { useMutation } from "react-query";
 import { useState, useEffect } from "react";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { IconButton, Input, Snackbar } from "@mui/material";
+import { IconButton, Input } from "@mui/material";
 import { CreateNewFolder } from "@mui/icons-material";
 import { Close } from "assets";
+import { Alert } from "components";
+import { successState } from "store/atoms";
 import { Bookmark, BookmarkNavItem } from "types";
 
 interface Props {
@@ -18,8 +21,8 @@ const BookmarksBoard = ({ open, setOpen, postId, folders }: Props) => {
   const [selectedFolders, setSelectedFolders] = useState<number[]>(folders);
   const [navItems, setNavItems] = useState<BookmarkNavItem[]>();
   const [addBookmarkInput, setAddBookmarkInput] = useState("");
-  const [snackBarOpen, setSnackBarOpen] = useState<boolean>(false);
-  const [snackBarContent, setSnackBarContent] = useState<string>("");
+
+  const setSuccess = useSetRecoilState(successState);
 
   const { mutate: getBookmarks } = useMutation(BOOKMARK.getBookmarks, {
     onSuccess: (res) => {
@@ -45,13 +48,11 @@ const BookmarksBoard = ({ open, setOpen, postId, folders }: Props) => {
 
   const handler = (folderId: number, folderName: string) => {
     if (selectedFolders.includes(folderId)) {
-      setSnackBarContent(`[${folderName}] 에서 삭제되었습니다.`);
-      setSnackBarOpen(true);
+      setSuccess(`[${folderName}] 에서 삭제되었습니다.`);
       setSelectedFolders(selectedFolders.filter((x) => x !== folderId));
       deletePostToBookmark({ folderId, postId });
     } else {
-      setSnackBarContent(`[${folderName}] 에 추가되었습니다.`);
-      setSnackBarOpen(true);
+      setSuccess(`[${folderName}] 에 추가되었습니다.`);
       setSelectedFolders([...selectedFolders, folderId]);
       addPostToBookmark({ folderId, postId });
     }
@@ -73,6 +74,8 @@ const BookmarksBoard = ({ open, setOpen, postId, folders }: Props) => {
 
   return (
     <>
+      <Alert />
+
       <StSettingWrap className={open ? "on" : "off"}>
         <StSettingBox
           onClick={(e) => e.stopPropagation()}
@@ -80,7 +83,14 @@ const BookmarksBoard = ({ open, setOpen, postId, folders }: Props) => {
         >
           <StSettingTop>
             <StSettingTitle>즐겨찾기</StSettingTitle>
-            {setOpen && <StIoClose onClick={() => setOpen("")} />}
+            {setOpen && (
+              <StIoClose
+                onClick={() => {
+                  setOpen("");
+                  setAddBookmarkInput("");
+                }}
+              />
+            )}
           </StSettingTop>
 
           <StSettingbottom>
@@ -98,6 +108,7 @@ const BookmarksBoard = ({ open, setOpen, postId, folders }: Props) => {
           <StBookmarkAddWrapper>
             <StBookmarkAddTitle>즐겨찾기 폴더 생성</StBookmarkAddTitle>
             <Input
+              value={addBookmarkInput}
               onChange={handleChangeAddBookmarkInput}
               endAdornment={
                 <StAddBookMarkBtn onClick={handleClickBookMarkAddBtn}>
@@ -110,16 +121,13 @@ const BookmarksBoard = ({ open, setOpen, postId, folders }: Props) => {
 
         {setOpen && (
           <StSettingBg
-            onClick={() => setOpen("")}
+            onClick={() => {
+              setOpen("");
+              setAddBookmarkInput("");
+            }}
             className={open ? "on" : "off"}
           />
         )}
-        <StSnackBar
-          open={snackBarOpen}
-          onClose={() => setSnackBarOpen(false)}
-          autoHideDuration={2000}
-          message={snackBarContent}
-        />
       </StSettingWrap>
     </>
   );
@@ -149,7 +157,7 @@ const StSettingBox = styled.div`
   width: 400px;
   height: 100vh;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bglightblack};
   right: 0;
   top: 0;
   transition: transform 0.3s ease-out;
@@ -196,7 +204,7 @@ const StIoClose = styled(Close)`
   top: 10px;
   cursor: pointer;
   transition: all 0.3s;
-  stroke: ${(props) => props.theme.lightGrey};
+  stroke: ${(props) => props.theme.borderGray};
   &:hover {
     transform: rotatez(180deg);
   }
@@ -206,14 +214,15 @@ const StSettingbottom = styled.div`
   overflow: auto;
   height: 55%;
   &::-webkit-scrollbar {
-    width: 10px;
+    width: 5px;
+    background: ${(props) => props.theme.bgToggle};
   }
   &::-webkit-scrollbar-thumb {
-    background-color: ${(props) => props.theme.scrollColor};
+    background: ${(props) => props.theme.scrollColor};
     border-radius: 10px;
   }
   &::-webkit-scrollbar-track {
-    background-color: ${(props) => props.theme.bgColor};
+    background: ${(props) => props.theme.bgToggle};
   }
 `;
 const StSettingButton = styled.button<{ active?: boolean }>`
@@ -221,9 +230,9 @@ const StSettingButton = styled.button<{ active?: boolean }>`
   display: block;
   padding: 0 50px 0 65px;
   background: ${({ active, theme }) =>
-    active ? theme.lightBlue : "transparent"};
+    active ? theme.bgLightBlue : "transparent"};
   text-align: left;
-  color: ${({ active, theme }) => (active ? theme.keyBlue : theme.greyLight)};
+  color: ${({ active, theme }) => (active ? theme.textBlue : theme.textColor)};
   font-weight: 500;
   border: 0;
   outline: 0;
@@ -234,6 +243,9 @@ const StSettingButton = styled.button<{ active?: boolean }>`
   white-space: nowrap;
   text-overflow: ellipsis;
   cursor: pointer;
+  &:hover {
+    background: ${(props) => props.theme.bgLightBlue};
+  }
   &:after {
     width: 10px;
     height: 10px;
@@ -243,9 +255,10 @@ const StSettingButton = styled.button<{ active?: boolean }>`
     top: 0;
     bottom: 0;
     margin: auto 0;
+
     content: "";
     border: 5px solid
-      ${({ active, theme }) => (active ? theme.keyBlue : theme.greyLight)};
+      ${({ active, theme }) => (active ? theme.textBlue : theme.borderGray)};
   }
   &:before {
     width: 16px;
@@ -259,12 +272,12 @@ const StSettingButton = styled.button<{ active?: boolean }>`
     margin: auto 0px;
     content: "";
     background: ${({ active, theme }) =>
-      active ? "transparent" : theme.bgColor};
+      active ? "transparent" : theme.radius};
   }
 `;
 
 const StBookmarkAddWrapper = styled.div`
-  border-top: 1px solid ${({ theme }) => theme.lightGrey};
+  border-top: 1px solid ${(props) => props.theme.borderColor};
   height: 45%;
   padding: 30px 50px;
   display: flex;
@@ -283,5 +296,3 @@ const StAddBookMarkBtn = styled(IconButton)`
   right: 0%;
   transform: translateY(-50%);
 `;
-
-const StSnackBar = styled(Snackbar)``;

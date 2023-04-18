@@ -1,56 +1,71 @@
-import styled from "styled-components";
-import { Close } from "assets";
-import { MYPAGEPW } from "api";
 import { useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import styled from "styled-components";
+import { MYPAGEPW } from "api";
+import { removeCookie } from "api/cookies";
+import { Close } from "assets";
+import { errorState, successState } from "store/atoms";
+import { Alert } from "components";
 import { CurrenPw } from "types";
 
-const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
-  const [password, setPassword] = useState("");
+const CurrentPw = ({
+  changPw,
+  changPwBtn,
+  password,
+  setPassword,
+}: CurrenPw) => {
+  const passwordRegex =
+    /^.*(?=^.{8,32}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+
   const [passwordBoolean, setPasswordBoolean] = useState(false);
   const [passwordMsg, setPasswordMsg] = useState("");
   const [pageChage, setPageChage] = useState(false);
   const [passwordCorrect, setPasswordCorrect] = useState(false);
 
-  const passwordRegex =
-    /^.*(?=^.{8,32}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
-  const queryClient = useQueryClient();
-  const pwMutation = useMutation("getPw", MYPAGEPW.getPwData, {
+  const setError = useSetRecoilState(errorState);
+  const setSuccess = useSetRecoilState(successState);
+
+  const navigate = useNavigate();
+
+  const pwMutation = useMutation(MYPAGEPW.getPwData, {
     onSuccess: (response) => {
-      queryClient.invalidateQueries("getPw");
-      alert("비밀번호가 일치합니다.");
+      if (`${response}`.includes("Error")) {
+        return setError(`${response}`);
+      }
+      setSuccess("비밀번호가 일치합니다.");
       setPasswordCorrect(true);
       return response.data;
     },
     onError: async (response: {
       response: { data: { message: string } };
     }): Promise<string> => {
-      queryClient.invalidateQueries("getPw");
-      alert("비밀번호가 일치하지 않습니다.");
+      setError("비밀번호가 일치하지 않습니다.");
       return response.response.data.message;
     },
   });
-  const pwPutMutation = useMutation("getPw", MYPAGEPW.putPwData, {
+
+  const pwPutMutation = useMutation(MYPAGEPW.putPwData, {
     onSuccess: (response) => {
-      queryClient.invalidateQueries("getPw");
-      alert("비밀번호가 변경되었습니다.");
+      if (`${response}`.includes("Error")) {
+        return setError(`${response}`);
+      }
+      setSuccess("비밀번호가 변경되었습니다.");
       setPageChage(false);
       changPwBtn();
-      return response.data;
     },
   });
 
-  //비밀번호 서버 일치안하는지...
   const checkPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (passwordBoolean) return alert("올바른 형식의 비밀번호가 아닙니다.");
+    if (passwordBoolean) return setError("올바른 형식의 비밀번호가 아닙니다.");
     pwMutation.mutate({ password });
   };
-  //비밀번호확인란 유효성검사
+
   const currentPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     const passwordValue = e.target.value;
     setPassword(passwordValue);
-    // const isValidPassword = passwordRegex.test(passwordValue);
     const isValidPassword = true;
     setPasswordBoolean(!isValidPassword);
     setPasswordMsg(
@@ -92,28 +107,35 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
   };
 
   const nextPwBtn = () => {
-    if (!passwordCorrect) return alert("비밀번호 확인을 수행해주세요!");
-    if (password.trim() === "") return alert("비밀번호를 입력해주세요");
+    if (!passwordCorrect) return setError("비밀번호 확인을 수행해주세요!");
+    if (password.trim() === "") return setError("비밀번호를 입력해주세요");
     setPassword("");
     setPageChage(true);
   };
-  const putPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const putPassword = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const isValidPassword = passwordRegex.test(newPassword);
     if (!isValidPassword)
-      return alert(
+      return setError(
         "비밀번호는 대소문자, 숫자, 특수문자를 포함하여 8-32자 이내로 입력해주세요!"
       );
-    if (newPassword.trim() === "") return alert("비밀번호를 입력해주세요!");
+    if (newPassword.trim() === "") return setError("비밀번호를 입력해주세요!");
     if (passwordCheck.trim() === "")
-      return alert("비밀번호 확인란을 입력해주세요!");
+      return setError("비밀번호 확인란을 입력해주세요!");
 
     if (newPassword !== passwordCheck)
-      return alert("비밀번호가 일치하지 않습니다!");
-    pwPutMutation.mutate({ newPassword });
+      return setError("비밀번호가 일치하지 않습니다!");
+
+    try {
+      await pwPutMutation.mutateAsync({ newPassword });
+      await Promise.all([navigate("/"), removeCookie("reqWithToken")]);
+    } catch (err) {
+      console.error(err);
+    }
   };
   return (
     <>
+      <Alert />
       <StChangPwWrap className={changPw ? "on" : "off"}>
         {pageChage ? (
           <StCurrntPw className={changPw ? "on" : "off"}>
@@ -145,9 +167,9 @@ const CurrentPw = ({ changPw, changPwBtn }: CurrenPw) => {
             {passwordCheckBoolean && (
               <StErrorMsg>{passwordCheckMsg}</StErrorMsg>
             )}
-            <StNext type="button" onClick={putPassword}>
-              변경
-            </StNext>
+            <StNextLogin type="button" onClick={putPassword}>
+              로그인으로 이동
+            </StNextLogin>
             <StIoClose onClick={() => changPwBtn()} />
           </StCurrntPw>
         ) : (
@@ -203,7 +225,7 @@ const StChangPw = styled.div`
   width: 712px;
   height: 390px;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   bottom: 0;
   top: 0;
   right: 0;
@@ -257,18 +279,19 @@ const StInput = styled.input`
   width: 100%;
   height: 57px;
   padding: 0 15px;
-  border: 1px solid ${(props) => props.theme.lightGrey};
+  border: 1px solid ${(props) => props.theme.placeholder};
   border-radius: 10px;
   outline: 0;
+  background: ${(props) => props.theme.bgwhite};
+  color: ${(props) => props.theme.textColor};
   &:focus {
-    border: 1px solid ${(props) => props.theme.keyBlue};
+    border: 1px solid ${(props) => props.theme.bgBlue};
   }
   &::placeholder {
     color: ${(props) => props.theme.placeholder};
   }
 `;
 const StButton = styled.button`
-  position: absolute;
   position: absolute;
   right: 0;
   top: 0px;
@@ -280,7 +303,7 @@ const StButton = styled.button`
   outline: 0;
   border: 0;
   cursor: pointer;
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
 `;
 
 const StErrorMsg = styled.p`
@@ -295,7 +318,7 @@ const StIoClose = styled(Close)`
   top: 10px;
   cursor: pointer;
   transition: all 0.3s;
-  stroke: ${(props) => props.theme.lightGrey};
+  stroke: ${(props) => props.theme.borderGray};
   &:hover {
     transform: rotatez(180deg);
   }
@@ -305,19 +328,29 @@ const StNext = styled.button`
   width: 95px;
   height: 57px;
   color: ${(props) => props.theme.textwhite};
-  background: ${(props) => props.theme.keyBlue};
+  background: ${(props) => props.theme.bgBlue};
   border: 0;
   border-radius: 10px;
   margin: 30px auto 0;
   cursor: pointer;
   display: block;
 `;
-
+const StNextLogin = styled.button`
+  width: 145px;
+  height: 57px;
+  color: ${(props) => props.theme.textwhite};
+  background: ${(props) => props.theme.bgBlue};
+  border: 0;
+  border-radius: 10px;
+  margin: 30px auto 0;
+  cursor: pointer;
+  display: block;
+`;
 const StCurrntPw = styled.div`
   width: 712px;
   height: 650px;
   position: absolute;
-  background: ${(props) => props.theme.bgColor};
+  background: ${(props) => props.theme.bgwhite};
   bottom: 0;
   top: 0;
   right: 0;
@@ -341,14 +374,12 @@ const StCurrntPwEm = styled.em`
   display: block;
   font-weight: 700;
   font-size: 1.125rem;
-  color: ${(props) => props.theme.textblack};
   margin-bottom: 15px;
 `;
 const StCurrntPwContent = styled.p`
   margin-top: 10px;
   font-weight: 500;
   font-size: 0.875rem;
-  color: ${(props) => props.theme.textGrey};
 `;
 
 const StSCurrntpan = styled.p`

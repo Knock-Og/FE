@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { Pagination } from "@mui/material";
@@ -23,6 +23,7 @@ const MyPostContent = () => {
   const [endPage, setEndPage] = useRecoilState(endPageState);
 
   const navigate = useNavigate();
+  const params = useParams();
 
   const { data: categoryData } = useQuery<ICategory[]>(
     "getCategories",
@@ -55,7 +56,7 @@ const MyPostContent = () => {
     setEndPage(1);
     getMyPosts(page);
     //eslint-disable-next-line
-  }, []);
+  }, [params]);
 
   useEffect(() => {
     getMyPosts(page);

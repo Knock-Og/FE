@@ -79,7 +79,7 @@ const Category = () => {
       getCategoryData({ category: searchedCategory, page, sort: "관심도" });
     }
     //eslint-disable-next-line
-  }, []);
+  }, [params]);
 
   useEffect(() => {
     if (categoryData) {
@@ -130,10 +130,11 @@ export default Category;
 const StBreadCrumbWrapper = styled.div`
   width: 100%;
   display: flex;
-  gap: 10px;
+  gap: 30px;
   align-items: center;
 `;
 
 const StBreadCrumb = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
 `;
