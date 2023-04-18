@@ -147,7 +147,7 @@ const Header = () => {
                 <AlarmIcon />
               </StAlarmIconWrap>
               <StAlarmcontentP>
-                000님이 '0000'댓글을 달았습니다.
+                박정현님이 게시글 편집을 완료했습니다. [바로가기]
               </StAlarmcontentP>
             </StAlarmcontent>
           </StAlarmContentWrap>
