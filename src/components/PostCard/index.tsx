@@ -19,7 +19,7 @@ const PostCard = (post: Post) => {
     //       `${process.env.REACT_APP_SERVER_URL}connect/${post.id}`,
     //       {
     //         headers: {
-    //           Authorization: `Bearer ${getCookie("access_token")}`,
+    //           Authorization: `Bearer ${getCookie("reqWithToken")}`,
     //         },
     //         withCredentials: true,
     //       }
@@ -51,34 +51,22 @@ const PostCard = (post: Post) => {
   //     }
   //   };
   // }, [eventSource]);
- 
+
   return (
     <StPostCardBox onClick={handleClickPostCard}>
       <StTitle
         dangerouslySetInnerHTML={{
-          __html:
-            post.title.length > 100
-              ? post.title.slice(0, 99) + "..."
-              : post.title,
+          __html: post.title.length ? post.title : post.title,
         }}
       />
 
       <StContent
         dangerouslySetInnerHTML={{
-          __html:
-            post.content.length > 100
-              ? post.content.replace(/<[^>]*>?/g, "").slice(0, 99) + "..."
-              : post.content.replace(/<[^>]*>?/g, ""),
+          __html: post.content.length
+            ? post.content.replace(/<[^>]*>?/g, "")
+            : post.content.replace(/<[^>]*>?/g, ""),
         }}
       />
-      <StEditingWrapper>
-        {post.editingStatus === "true" && (
-          <>
-            <StEditingCircle />
-            <div>Editing</div>
-          </>
-        )}
-      </StEditingWrapper>
 
       <StPostCardFooter>
         <StFooterleft>
@@ -90,6 +78,14 @@ const PostCard = (post: Post) => {
           ))}
         </StFooterleft>
         <StFooterRight>
+          <StEditingWrapper>
+            {post.editingStatus === "true" && (
+              <>
+                <StEditingCircle />
+                <div>Editing</div>
+              </>
+            )}
+          </StEditingWrapper>
           <StFooterItem>
             {new Date(post.createdAt)
               .toLocaleDateString("ko-KR", {
@@ -119,7 +115,7 @@ const StPostCardBox = styled.div`
   flex-direction: column;
   justify-content: space-between;
   padding: 45px 45px;
-  
+
   box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
   border-radius: 10px;
   margin-bottom: 30px;
@@ -137,7 +133,7 @@ const StTitle = styled.h4`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin: 0px 0 20px;
+  margin: 0px 0 25px;
 `;
 
 const StContent = styled.p`
@@ -148,13 +144,14 @@ const StContent = styled.p`
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   white-space: normal;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   overflow: hidden;
 `;
 
 const StPostCardFooter = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 30px;
 `;
 
 const StFooterleft = styled.div`
@@ -200,7 +197,6 @@ const circleKeyframes = keyframes`
 const StEditingWrapper = styled.div`
   display: flex;
   align-items: center;
-  height: 70px;
   color: ${({ theme }) => theme.textRed};
 `;
 

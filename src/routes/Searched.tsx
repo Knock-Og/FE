@@ -16,21 +16,25 @@ import { Category as ICategory, NavItem, Post, SortItem } from "types";
 const Searched = () => {
   const SORT_ITEMS: SortItem[] = [
     {
+      sort: "관심도",
       itemValue: "연관순",
       handler: () =>
         getSearchedData({ keyword: searchedKeyword, page, sort: "관심도" }),
     },
     {
+      sort: "생성일자",
       itemValue: "최신순",
       handler: () =>
         getSearchedData({ keyword: searchedKeyword, page, sort: "생성일자" }),
     },
     {
+      sort: "조회수",
       itemValue: "조회순",
       handler: () =>
         getSearchedData({ keyword: searchedKeyword, page, sort: "조회수" }),
     },
     {
+      sort: "댓글수",
       itemValue: "댓글순",
       handler: () =>
         getSearchedData({ keyword: searchedKeyword, page, sort: "댓글수" }),
@@ -63,7 +67,7 @@ const Searched = () => {
       setEndPage(1);
     },
   });
-  
+
   const { mutate: getSearchedData } = useMutation(SEARCH.getSearchedData, {
     onSuccess: (res) => {
       setSearchedPosts(res.data.searchResponseDtoList as Post[]);
