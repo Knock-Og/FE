@@ -1,16 +1,17 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useSetRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { Editor } from "@toast-ui/react-editor";
 import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
-import { DelIcon } from "assets";
+import { DelIcon, MainArr } from "assets";
 import { CATEGORY, POST } from "api";
 import { Alert } from "components";
-import { errorState } from "store/atoms";
+import { errorState, isDarkState } from "store/atoms";
 import { AddPost, Category } from "types";
 import { uploadImg } from "utils";
+import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "tui-color-picker/dist/tui-color-picker.css";
 import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
@@ -23,12 +24,12 @@ const WriteBoard = () => {
     content: "",
     keywords: [],
     category: "",
-    modifyPermission: "",
-    readablePosition: "",
+    modifyPermission: positionArr[2],
+    readablePosition: positionArr[2],
     editingStatus: "false",
   });
   const [keyword, setKeyword] = useState("");
-
+  const isDark = useRecoilValue(isDarkState);
   const setError = useSetRecoilState(errorState);
 
   const navigate = useNavigate();
@@ -78,8 +79,8 @@ const WriteBoard = () => {
     addPost(newPost);
   };
 
-  const handleChangeSelectBox = (e: React.ChangeEvent<HTMLSelectElement>) =>
-    setNewPost({ ...newPost, [e.target.name]: e.target.value });
+  // const handleChangeSelectBox = (e: React.ChangeEvent<HTMLSelectElement>) =>
+  //   setNewPost({ ...newPost, [e.target.name]: e.target.value });
 
   const handleChangeKeywordInput = (e: React.ChangeEvent<HTMLInputElement>) =>
     setKeyword(e.target.value);
@@ -96,6 +97,7 @@ const WriteBoard = () => {
       setKeyword("");
     }
   };
+
   const delKeyword = (keywordToDelete: string) => {
     const updatedKeywords = newPost.keywords.filter(
       (keyword) => keyword !== keywordToDelete
@@ -103,59 +105,130 @@ const WriteBoard = () => {
     setNewPost({ ...newPost, keywords: updatedKeywords });
   };
 
+  const [readOpen, setReadOpen] = useState(false);
+  const [selectedRead, setSelectedRead] = useState(positionArr[2]);
+  const handleSelectRead = (readablePosition: string) => {
+    setSelectedRead(readablePosition);
+    setReadOpen(false);
+    setNewPost({ ...newPost, readablePosition });
+  };
+  const [positionOpen, setPositionOpen] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState(positionArr[2]);
+  const handleSelectPosition = (modifyPermission: string) => {
+    setSelectedPosition(modifyPermission);
+    setPositionOpen(false);
+    setNewPost({ ...newPost, modifyPermission });
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const handleSelectCategory = (category: string) => {
+    setSelectedCategory(category);
+    setIsOpen(false);
+    setNewPost({ ...newPost, category });
+  };
+
+  useEffect(() => {
+    if (categoryData) {
+      setNewPost({ ...newPost, category: categoryData[0].categoryName });
+      setSelectedCategory(categoryData[0].categoryName);
+    }
+    //eslint-disable-next-line
+  }, [categoryData]);
+
   return (
     <>
       <Alert />
 
-      <StContainer>
+      <StContainer
+        onClick={() => {
+          setIsOpen(false);
+          setPositionOpen(false);
+          setReadOpen(false);
+        }}
+      >
         <StTitleInput placeholder="제목" onChange={handleChangeTitle} />
 
-        <StMidSelet>
-          <label htmlFor="category">카테고리</label>
-          <select
-            id="category"
-            name="category"
-            value={newPost.category}
-            onChange={handleChangeSelectBox}
-          >
-            <option value="">-- 카테고리 --</option>
-            {categoryData?.map((category) => (
-              <option key={category.id} value={category.categoryName}>
-                {category.categoryName}
-              </option>
-            ))}
-          </select>
+        <StMidSelect>
+          <Stlabel>카테고리</Stlabel>
+          <StSelectDiv>
+            <StSelectp
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsOpen(!isOpen);
+              }}
+            >
+              {selectedCategory && selectedCategory}
+              <MenuArr className={isOpen ? "on" : "off"} />
+            </StSelectp>
+            <StSelectUl className={isOpen ? "on" : "off"}>
+              {categoryData?.map((category) => (
+                <StSelectli
+                  key={category.id}
+                  value={category.categoryName}
+                  onClick={() => {
+                    handleSelectCategory(category.categoryName);
+                  }}
+                >
+                  {category.categoryName}
+                </StSelectli>
+              ))}
+            </StSelectUl>
+          </StSelectDiv>
 
-          <label htmlFor="modifyPermission">수정권한</label>
-          <select
-            id="modifyPermission"
-            name="modifyPermission"
-            value={newPost.modifyPermission}
-            onChange={handleChangeSelectBox}
-          >
-            <option value="">-- 수정권한 --</option>
-            {positionArr?.map((position) => (
-              <option key={`modify-${position}`} value={position}>
-                {position}
-              </option>
-            ))}
-          </select>
+          <Stlabel>수정권한</Stlabel>
+          <StSelectDiv>
+            <StSelectp
+              onClick={(e) => {
+                e.stopPropagation();
+                setPositionOpen(!positionOpen);
+              }}
+            >
+              {selectedPosition && selectedPosition}
+              <MenuArr className={positionOpen ? "on" : "off"} />
+            </StSelectp>
+            <StSelectUl className={positionOpen ? "on" : "off"}>
+              {positionArr?.map((position) => (
+                <StSelectli
+                  key={`modify-${position}`}
+                  value={position}
+                  onClick={() => {
+                    handleSelectPosition(position);
+                  }}
+                >
+                  {position}
+                </StSelectli>
+              ))}
+            </StSelectUl>
+          </StSelectDiv>
 
-          <label htmlFor="readablePosition">읽기권한</label>
-          <select
-            id="readablePosition"
-            name="readablePosition"
-            value={newPost.readablePosition}
-            onChange={handleChangeSelectBox}
-          >
-            <option value="">-- 읽기권한 --</option>
-            {positionArr?.map((position) => (
-              <option key={`readable-${position}`} value={position}>
-                {position}
-              </option>
-            ))}
-          </select>
-        </StMidSelet>
+          <Stlabel>읽기권한</Stlabel>
+          <StSelectDiv>
+            <StSelectp
+              onClick={(e) => {
+                e.stopPropagation();
+                setReadOpen(!readOpen);
+              }}
+            >
+              {selectedRead && selectedRead}
+              <MenuArr className={readOpen ? "on" : "off"} />
+            </StSelectp>
+            <StSelectUl className={readOpen ? "on" : "off"}>
+              {positionArr?.map((position) => (
+                <StSelectli
+                  key={`readable-${position}`}
+                  value={position}
+                  onClick={() => {
+                    handleSelectRead(position);
+                  }}
+                >
+                  {position}
+                </StSelectli>
+              ))}
+            </StSelectUl>
+          </StSelectDiv>
+        </StMidSelect>
+
         <Editor
           previewStyle="vertical"
           height="100%"
@@ -166,10 +239,10 @@ const WriteBoard = () => {
           language="ko-KR"
           ref={editorRef}
           onChange={handleChangeEditor}
-          hooks={{
-            addImageBlobHook: uploadImg,
-          }}
+          hooks={{ addImageBlobHook: uploadImg }}
+          theme={isDark ? "dark" : "default"}
         />
+
         <StFooter>
           <StkeyWordWrap>
             {newPost.keywords.map((keyword) => (
@@ -196,20 +269,75 @@ const WriteBoard = () => {
 
 export default WriteBoard;
 
+const StSelectDiv = styled.div`
+  position: relative;
+  width: 150px;
+  border: 1px solid ${(props) => props.theme.borderColor};
+  height: 45px;
+  background: ${(props) => props.theme.bgwhite};
+  cursor: pointer;
+`;
+const StSelectp = styled.p`
+  line-height: 45px;
+  padding: 0 15px;
+  position: relative;
+`;
+const MenuArr = styled(MainArr)`
+  stroke: ${(props) => props.theme.fillGrey};
+  fill: ${(props) => props.theme.fillGrey};
+  transition: all 0.3s;
+  position: absolute;
+  right: 15px;
+  bottom: 0;
+  margin: auto 0;
+  top: 0;
+  &.on {
+    transform: rotateZ(-180deg);
+  }
+`;
+const StSelectUl = styled.ul`
+  width: calc(100% + 2px);
+  left: -1px;
+  top: 43px;
+  position: absolute;
+  border: 1px solid ${(props) => props.theme.borderColor};
+  background: ${(props) => props.theme.bgwhite};
+  border-top: 0;
+  height: 0;
+  overflow: hidden;
+  &.on {
+    height: auto;
+  }
+`;
+const StSelectli = styled.li`
+  line-height: 45px;
+  padding: 0 15px;
+  cursor: pointer;
+  &:hover {
+    background: ${(props) => props.theme.bgLightBlue};
+    color: ${(props) => props.theme.textBlue};
+  }
+`;
+
+const Stlabel = styled.label``;
+
 const StContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100vh;
 `;
-const StMidSelet = styled.div`
+const StMidSelect = styled.div`
   border: 1px solid ${(props) => props.theme.borderWrite};
   border-top: 0;
   border-bottom: 0;
   padding: 20px 20px;
   display: flex;
+  align-items: center;
   gap: 20px;
   background: ${(props) => props.theme.bgwhite};
+  position: relative;
+  z-index: 30;
 `;
 const StTitleInput = styled.input`
   background: ${(props) => props.theme.bgwhite};

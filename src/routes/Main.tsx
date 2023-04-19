@@ -23,12 +23,12 @@ import {
   searchedPostsState,
 } from "store/atoms";
 import { Bookmark, NavItem, Post } from "types";
+import { Alert } from "components";
 
 const Main = () => {
   const [isOn, setIsOn] = useState(false);
   const [isAlarm, setIsAlarm] = useState(false);
   const [folders, setFolders] = useState<NavItem[]>();
-
   const setSearchedPosts = useSetRecoilState(searchedPostsState);
   const setSearchedKeyword = useSetRecoilState(searchedKeywordState);
   const setEndPage = useSetRecoilState(endPageState);
@@ -38,8 +38,6 @@ const Main = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const accessToken = getCookie("reqWithToken");
-
- 
 
   const { mutate: getSearchedData } = useMutation(SEARCH.getSearchedData, {
     onSuccess: (res) => {
@@ -51,7 +49,7 @@ const Main = () => {
       setEndPage(1);
     },
   });
-  
+
   const { mutate: getBookmarks } = useMutation(BOOKMARK.getBookmarks, {
     onSuccess: (res) => {
       const nav = res.data.map((v: Bookmark) => {
@@ -68,7 +66,7 @@ const Main = () => {
       setFolders(nav);
     },
   });
-  
+
   const { mutate: getBookmark } = useMutation(BOOKMARK.getBookmark, {
     onSuccess: (res) => {
       setSearchedPosts(res.data.postResponseDtoList as Post[]);
@@ -104,84 +102,84 @@ const Main = () => {
     setIsOn(false);
   };
   const handleClickLogOut = () => {
-    alert("로그아웃되셨습니다.");
-    navigate("/");
     removeCookie("reqWithToken");
+    setTimeout(() => navigate("/"), 500);
   };
 
-  
-
-  
   useEffect(() => {
     getBookmarks();
+    //eslint-disable-next-line
   }, []);
 
   return (
-    <StContainer>
-      <StHeader>
-        <StHeaderMeun>
-          <StWrite onClick={() => navigate("/write")}>게시물작성</StWrite>
-          <StbellWrap onClick={isAlarmBtn}>
-            <Bell />
-          </StbellWrap>
-          <StAccountBtn onClick={handleClickAccountBtn}>
-            <Menuperson />
-            <MenuArr className={isOn ? "on" : ""} />
-          </StAccountBtn>
-        </StHeaderMeun>
-        <StMenu className={isOn ? "on" : ""}>
-          <StMenuItem onClick={() => navigate("/mypage")}>
-            마이페이지
-          </StMenuItem>
-          <StMenuItem onClick={() => navigate("/bookmark")}>
-            즐겨찾기
-          </StMenuItem>
-          <StMenuItem onClick={handleClickLogOut}>
-            {accessToken ? "로그아웃" : "로그인"}
-          </StMenuItem>
-        </StMenu>
-        <StAlarm className={isAlarm ? "on" : ""}>
-          <StAlarmTop>
-            <StAlarmTitle> 알림</StAlarmTitle>
-          </StAlarmTop>
-          <StAlarmContentWrap>
-            <StAlarmcontent>
-              <StAlarmIconWrap>
-                <StAlarmIcon />
-              </StAlarmIconWrap>
-              <StAlarmcontentP>
-                000님이 '0000'댓글을 달았습니다.
-              </StAlarmcontentP>
-            </StAlarmcontent>
-          </StAlarmContentWrap>
-        </StAlarm>
-      </StHeader>
+    <>
+      <Alert />
+      <StContainer>
+        <StHeader>
+          <StHeaderMeun>
+            <StWrite onClick={() => navigate("/write")}>게시물작성</StWrite>
+            <StbellWrap onClick={isAlarmBtn}>
+              <Bell />
+            </StbellWrap>
+            <StAccountBtn onClick={handleClickAccountBtn}>
+              <Menuperson />
+              <MenuArr className={isOn ? "on" : ""} />
+            </StAccountBtn>
+          </StHeaderMeun>
+          <StMenu className={isOn ? "on" : ""}>
+            <StMenuItem onClick={() => navigate("/mypage")}>
+              마이페이지
+            </StMenuItem>
+            <StMenuItem onClick={() => navigate("/bookmark")}>
+              즐겨찾기
+            </StMenuItem>
+            <StMenuItem onClick={handleClickLogOut}>
+              {accessToken ? "로그아웃" : "로그인"}
+            </StMenuItem>
+          </StMenu>
+          <StAlarm className={isAlarm ? "on" : ""}>
+            <StAlarmTop>
+              <StAlarmTitle> 알림</StAlarmTitle>
+            </StAlarmTop>
+            <StAlarmContentWrap>
+              <StAlarmcontent>
+                <StAlarmIconWrap>
+                  <StAlarmIcon />
+                </StAlarmIconWrap>
+                <StAlarmcontentP>
+                  000님이 '0000'댓글을 달았습니다.
+                </StAlarmcontentP>
+              </StAlarmcontent>
+            </StAlarmContentWrap>
+          </StAlarm>
+        </StHeader>
 
-      <StMainWrapper>
-        <MainLogo />
-        <StSearchWrapper>
-          <StSearchInput
-            ref={searchInputRef}
-            onKeyDown={handleKeyDown}
-            placeholder="검색어 또는 키워드를 입력"
-          />
+        <StMainWrapper>
+          <MainLogo />
+          <StSearchWrapper>
+            <StSearchInput
+              ref={searchInputRef}
+              onKeyDown={handleKeyDown}
+              placeholder="검색어 또는 키워드를 입력"
+            />
 
-          <StSearchBtn onClick={handleClickSearchBtn}>찾기</StSearchBtn>
-        </StSearchWrapper>
-        <StFolder>
-          {folders?.map((folder) => (
-            <StFolderli key={folder.itemValue} onClick={folder.handler}>
-              <StFolderIcon />
-              <StFolderP>{folder.itemValue}</StFolderP>
-            </StFolderli>
-          ))}
-        </StFolder>
-      </StMainWrapper>
-      <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
-        {isDark ? <Sun /> : <Dark />}
-        {isDark ? "라이트모드로 전환" : "다크모드로 전환"}
-      </StModeToggleBtn>
-    </StContainer>
+            <StSearchBtn onClick={handleClickSearchBtn}>찾기</StSearchBtn>
+          </StSearchWrapper>
+          <StFolder>
+            {folders?.map((folder) => (
+              <StFolderli key={folder.itemValue} onClick={folder.handler}>
+                <StFolderIcon />
+                <StFolderP>{folder.itemValue}</StFolderP>
+              </StFolderli>
+            ))}
+          </StFolder>
+        </StMainWrapper>
+        <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
+          {isDark ? <Sun /> : <Dark />}
+          {isDark ? "라이트모드로 전환" : "다크모드로 전환"}
+        </StModeToggleBtn>
+      </StContainer>
+    </>
   );
 };
 
@@ -226,7 +224,7 @@ const StSearchInput = styled.input`
   width: 100%;
   height: 65px;
   border-radius: 65px;
-  border:0;
+  border: 0;
   background: ${(props) => props.theme.bgwhite};
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 3px 2px;
   padding: 0px 55px 0px 30px;
@@ -429,7 +427,6 @@ const StAlarmcontentP = styled.p`
 const StAlarmIcon = styled(AlarmIcon)`
   fill: ${(props) => props.theme.fillblack};
 `;
-
 
 const StFolder = styled.div`
   width: 625px;

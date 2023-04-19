@@ -22,8 +22,7 @@ const FindIdForm = () => {
     navigate("/");
   };
   useEffect(() => {
-    // 로그인 페이지를 보여주고 있으므로, 로그인되어 있으면 메인 페이지로 이동
-    if (getCookie("access_token")) {
+    if (getCookie("reqWithToken")) {
       navigate("/main", { replace: true });
     }
   }, [navigate]);

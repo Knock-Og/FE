@@ -204,7 +204,6 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
 
     setPhoneNum("");
     setMemberName("");
-    setPosition("");
     setPassword("");
     setPasswordCheck("");
     setEmail("");
@@ -474,6 +473,7 @@ const StSignInput = styled.input`
   border-radius: 5px;
   outline: 0;
   background: ${(props) => props.theme.bgwhite};
+  font-size: 0.875rem;
   &:focus {
     border: 1px solid ${(props) => props.theme.bgBlue};
   }
@@ -517,7 +517,7 @@ const StButton = styled.button`
   border: 0;
   cursor: pointer;
   background: ${(props) => props.theme.bgBlue};
-  font-size: 1.25rem;
+  font-size: 0.875rem;
   border-radius: 57px;
   margin: 45px auto 0;
   display: block;
@@ -530,6 +530,7 @@ const StSeletLabel = styled.p`
   border-radius: 5px;
   width: 100%;
   height: 57px;
+  font-size: 0.875rem;
   margin: 0 auto;
   line-height: 57px;
   font-weight: 500;
@@ -563,7 +564,7 @@ const StSeletUl = styled.ul`
 const StSeletLi = styled.li`
   line-height: 57px;
   padding: 0px 15px;
-
+  font-size: 0.875rem;
   cursor: pointer;
   &:hover {
     background: ${(props) => props.theme.bgLightBlue};

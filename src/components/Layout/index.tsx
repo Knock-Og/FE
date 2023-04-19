@@ -65,7 +65,7 @@ const StLayout = styled.div``;
 
 const StContainer = styled.div`
   margin: 200px auto 80px;
-  min-width: 1376px;
+  max-width: 1376px;
   width: 1376px;
   @media only screen and (max-width: 1375px) {
     padding: 0px 60px 0 0;

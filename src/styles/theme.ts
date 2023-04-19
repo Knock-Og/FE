@@ -14,7 +14,7 @@ export const GlobalStyle = createGlobalStyle`
     font-family: 'SUIT';
     font-weight: 400;
   }
-  p,button,label,h1,h2,h3,h4,h5,h6,em,span{
+  p,button,label,h1,h2,h3,h4,h5,h6,em,span,li{
     font-family: 'SUIT';
     font-weight: 400;
     font-size:16px;

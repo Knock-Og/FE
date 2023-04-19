@@ -21,17 +21,17 @@ import {
   searchedKeywordState,
   searchedPostsState,
 } from "store/atoms";
+import { Alert } from "components";
 import { Post } from "types";
 
 const Header = () => {
   const [isOn, setIsOn] = useState(false);
   const [isAlarm, setIsAlarm] = useState(false);
-
   const setSearchedPosts = useSetRecoilState(searchedPostsState);
   const setSearchedKeyword = useSetRecoilState(searchedKeywordState);
   const setEndPage = useSetRecoilState(endPageState);
   const [isDark, setIsDark] = useRecoilState(isDarkState);
-
+  const [key, setKey] = useState(0);
   const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,10 +75,10 @@ const Header = () => {
   };
 
   const handleClickLogOut = () => {
-    alert("로그아웃되셨습니다.");
-    navigate("/");
     removeCookie("reqWithToken");
+    setTimeout(() => navigate("/"), 500);
   };
+
   const [headerMove, setHeaderMove] = useState(false);
   const stContainerRef = useRef<HTMLDivElement>(null);
 
@@ -102,63 +102,70 @@ const Header = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
   return (
-    <StContainer className={headerMove ? "on" : ""}>
-      <StHeaderLeftWrapper>
-        <StHeaderLogo onClick={() => navigate("/main")} />
-        <StSearchWrapper>
-          <StSearchInput
-            ref={searchInputRef}
-            onKeyDown={handleKeyDown}
-            placeholder="검색어 또는 키워드를 입력"
-          />
-          <StSearchBtn onClick={handleClickSearchBtn}>찾기</StSearchBtn>
-        </StSearchWrapper>
-      </StHeaderLeftWrapper>
-      <StHeaderRightWrapper>
-        <StHeaderMeun>
-          <StWrite onClick={() => navigate("/write")}>게시물작성</StWrite>
-          <StbellWrap onClick={isAlarmBtn}>
-            <Bell />
-          </StbellWrap>
-          <StAccountBtn onClick={handleClickAccountBtn}>
-            <Menuperson />
-            <MenuArr className={isOn ? "on" : ""} />
-          </StAccountBtn>
-        </StHeaderMeun>
-        <StMenu className={isOn ? "on" : ""}>
-          <StMenuItem onClick={() => navigate("/mypage")}>
-            마이페이지
-          </StMenuItem>
-          <StMenuItem onClick={() => navigate("/bookmark")}>
-            즐겨찾기
-          </StMenuItem>
-          <StMenuItem onClick={handleClickLogOut}>
-            {accessToken ? "로그아웃" : "로그인"}
-          </StMenuItem>
-        </StMenu>
-        <StAlarm className={isAlarm ? "on" : ""}>
-          <StAlarmTop>
-            <StAlarmTitle> 알림</StAlarmTitle>
-          </StAlarmTop>
-          <StAlarmContentWrap>
-            <StAlarmcontent>
-              <StAlarmIconWrap>
-                <AlarmIcon />
-              </StAlarmIconWrap>
-              <StAlarmcontentP>
-                박정현님이 게시글 편집을 완료했습니다. [바로가기]
-              </StAlarmcontentP>
-            </StAlarmcontent>
-          </StAlarmContentWrap>
-        </StAlarm>
-      </StHeaderRightWrapper>
-      <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
-        {isDark ? <Sun /> : <Dark />}
-        {isDark ? "라이트모드로 전환" : "다크모드로 전환"}
-      </StModeToggleBtn>
-    </StContainer>
+    <>
+      <Alert />
+      <StContainer className={headerMove ? "on" : ""}>
+        <StHeaderLeftWrapper>
+          <StHeaderLogo onClick={() => navigate("/main")} />
+          <StSearchWrapper>
+            <StSearchInput
+              ref={searchInputRef}
+              onKeyDown={handleKeyDown}
+              placeholder="검색어 또는 키워드를 입력"
+            />
+            <StSearchBtn onClick={handleClickSearchBtn}>찾기</StSearchBtn>
+          </StSearchWrapper>
+        </StHeaderLeftWrapper>
+        <StHeaderRightWrapper>
+          <StHeaderMeun>
+            <StWrite onClick={() => navigate("/write")}>게시물작성</StWrite>
+            <StbellWrap onClick={isAlarmBtn}>
+              <Bell />
+            </StbellWrap>
+            <StAccountBtn onClick={handleClickAccountBtn}>
+              <Menuperson />
+              <MenuArr className={isOn ? "on" : ""} />
+            </StAccountBtn>
+          </StHeaderMeun>
+          <StMenu className={isOn ? "on" : ""}>
+            <StMenuItem onClick={() => navigate("/mypage")}>
+              마이페이지
+            </StMenuItem>
+            <StMenuItem onClick={() => navigate("/bookmark")}>
+              즐겨찾기
+            </StMenuItem>
+            <StMenuItem onClick={handleClickLogOut}>
+              {accessToken ? "로그아웃" : "로그인"}
+            </StMenuItem>
+          </StMenu>
+          <StAlarm className={isAlarm ? "on" : ""}>
+            <StAlarmTop>
+              <StAlarmTitle> 알림</StAlarmTitle>
+            </StAlarmTop>
+            <StAlarmContentWrap>
+              <StAlarmcontent>
+                <StAlarmIconWrap>
+                  <StAlarmIcon />
+                </StAlarmIconWrap>
+                <StAlarmcontentP>
+                  박정현님이 게시글 편집을 완료했습니다. [바로가기]
+                </StAlarmcontentP>
+              </StAlarmcontent>
+            </StAlarmContentWrap>
+          </StAlarm>
+        </StHeaderRightWrapper>
+        <StModeToggleBtn
+          onClick={() => {
+            setIsDark((prev) => !prev);
+            setKey(key + 1);
+          }}
+        >
+          {isDark ? <Sun /> : <Dark />}
+          {isDark ? "라이트모드로 전환" : "다크모드로 전환"}
+        </StModeToggleBtn>
+      </StContainer>
+    </>
   );
 };
 
@@ -177,7 +184,7 @@ const StContainer = styled.div`
   display: flex;
   border-bottom: 1px solid ${(props) => props.theme.borderColor};
   background: ${(props) => props.theme.bglightblack};
-  z-index: 9;
+  z-index: 99;
   transition: all 0.3s;
   &.on {
     position: fixed;
@@ -210,7 +217,7 @@ const StSearchInput = styled.input`
   width: 100%;
   height: 50px;
   border-radius: 65px;
-  border:0;
+  border: 0;
   background: ${(props) => props.theme.bgwhite};
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 3px 2px;
   color: ${(props) => props.theme.textColor};
@@ -335,7 +342,6 @@ const StMenuItem = styled.button`
   }
 `;
 
-
 const StbellWrap = styled.button`
   background: transparent;
   border: 0;
@@ -348,7 +354,7 @@ const StAlarm = styled.div`
   width: 350px;
   height: 600px;
   bottom: -625px;
-  right:0;
+  right: 0;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
   background: ${(props) => props.theme.bgwhite};
   opacity: 0;
