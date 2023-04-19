@@ -27,8 +27,6 @@ const Sort = ({ sortItems, sort, setSort }: Props) => {
           e.stopPropagation();
           setIsOpen(!isOpen);
         }}
-        // value={sort}
-        // onChange={(e) => setSort(e.target.value)}
       >
         {selectedSort ? selectedSort : sortItems?.[0]?.itemValue}
         <MenuArr className={isOpen ? "on" : "off"} />
@@ -39,7 +37,8 @@ const Sort = ({ sortItems, sort, setSort }: Props) => {
             key={item.itemValue}
             value={item.itemValue}
             onClick={() => {
-              handleSelectSort(item.itemValue);
+                handleSelectSort(item.itemValue);
+                item.handler()
             }}
           >
             {item.itemValue}
