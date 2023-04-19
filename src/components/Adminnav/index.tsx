@@ -1,15 +1,21 @@
 import styled from "styled-components";
 import { removeCookie } from "api/cookies";
 import { useNavigate } from "react-router-dom";
+import { Alert } from "components";
+import { errorState } from "store/atoms";
+import { useSetRecoilState } from "recoil";
 const AdminNav = () => {
+  const setError = useSetRecoilState(errorState);
   const pathname = window.location.pathname;
   const navigate = useNavigate();
   const handleClickLogOut = () => {
     navigate("/admin/login");
-    alert("로그아웃되셨습니다.")
+    setError("로그아웃되셨습니다.");
     removeCookie("reqWithToken");
   };
   return (
+    <>
+      <Alert />
     <StAdminNavWrap>
       <StLogo>
         <StLogoSvg>
@@ -133,6 +139,7 @@ const AdminNav = () => {
         <StLogin onClick={handleClickLogOut}>로그아웃</StLogin>
       </StNav>
     </StAdminNavWrap>
+    </>
   );
 };
 

@@ -57,8 +57,8 @@ const PostCard = (post: Post) => {
       <StTitle
         dangerouslySetInnerHTML={{
           __html:
-            post.title.length > 100
-              ? post.title.slice(0, 99) + "..."
+            post.title.length
+              ? post.title
               : post.title,
         }}
       />
@@ -66,19 +66,11 @@ const PostCard = (post: Post) => {
       <StContent
         dangerouslySetInnerHTML={{
           __html:
-            post.content.length > 100
-              ? post.content.replace(/<[^>]*>?/g, "").slice(0, 99) + "..."
+            post.content.length
+              ? post.content.replace(/<[^>]*>?/g, "")
               : post.content.replace(/<[^>]*>?/g, ""),
         }}
       />
-      <StEditingWrapper>
-        {post.editingStatus === "true" && (
-          <>
-            <StEditingCircle />
-            <div>Editing</div>
-          </>
-        )}
-      </StEditingWrapper>
 
       <StPostCardFooter>
         <StFooterleft>
@@ -90,6 +82,14 @@ const PostCard = (post: Post) => {
           ))}
         </StFooterleft>
         <StFooterRight>
+          <StEditingWrapper>
+            {post.editingStatus === "true" && (
+              <>
+                <StEditingCircle />
+                <div>Editing</div>
+              </>
+            )}
+          </StEditingWrapper>
           <StFooterItem>
             {new Date(post.createdAt)
               .toLocaleDateString("ko-KR", {
@@ -137,7 +137,7 @@ const StTitle = styled.h4`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin: 0px 0 20px;
+  margin: 0px 0 25px;
 `;
 
 const StContent = styled.p`
@@ -148,13 +148,16 @@ const StContent = styled.p`
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   white-space: normal;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   overflow: hidden;
+  
 `;
 
 const StPostCardFooter = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 30px;
+  
 `;
 
 const StFooterleft = styled.div`
@@ -200,7 +203,6 @@ const circleKeyframes = keyframes`
 const StEditingWrapper = styled.div`
   display: flex;
   align-items: center;
-  height: 70px;
   color: ${({ theme }) => theme.textRed};
 `;
 

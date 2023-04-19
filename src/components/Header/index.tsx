@@ -20,18 +20,20 @@ import {
   isDarkState,
   searchedKeywordState,
   searchedPostsState,
+  successState,
 } from "store/atoms";
+import { Alert } from "components";
 import { Post } from "types";
 
 const Header = () => {
   const [isOn, setIsOn] = useState(false);
   const [isAlarm, setIsAlarm] = useState(false);
-
+const setSuccess = useSetRecoilState(successState);
   const setSearchedPosts = useSetRecoilState(searchedPostsState);
   const setSearchedKeyword = useSetRecoilState(searchedKeywordState);
   const setEndPage = useSetRecoilState(endPageState);
   const [isDark, setIsDark] = useRecoilState(isDarkState);
-
+  const [key, setKey] = useState(0);
   const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,7 +77,7 @@ const Header = () => {
   };
 
   const handleClickLogOut = () => {
-    alert("로그아웃되셨습니다.");
+    setSuccess("로그아웃되셨습니다.");
     navigate("/");
     removeCookie("reqWithToken");
   };
@@ -102,63 +104,70 @@ const Header = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
   return (
-    <StContainer className={headerMove ? "on" : ""}>
-      <StHeaderLeftWrapper>
-        <StHeaderLogo onClick={() => navigate("/main")} />
-        <StSearchWrapper>
-          <StSearchInput
-            ref={searchInputRef}
-            onKeyDown={handleKeyDown}
-            placeholder="검색어 또는 키워드를 입력"
-          />
-          <StSearchBtn onClick={handleClickSearchBtn}>찾기</StSearchBtn>
-        </StSearchWrapper>
-      </StHeaderLeftWrapper>
-      <StHeaderRightWrapper>
-        <StHeaderMeun>
-          <StWrite onClick={() => navigate("/write")}>게시물작성</StWrite>
-          <StbellWrap onClick={isAlarmBtn}>
-            <Bell />
-          </StbellWrap>
-          <StAccountBtn onClick={handleClickAccountBtn}>
-            <Menuperson />
-            <MenuArr className={isOn ? "on" : ""} />
-          </StAccountBtn>
-        </StHeaderMeun>
-        <StMenu className={isOn ? "on" : ""}>
-          <StMenuItem onClick={() => navigate("/mypage")}>
-            마이페이지
-          </StMenuItem>
-          <StMenuItem onClick={() => navigate("/bookmark")}>
-            즐겨찾기
-          </StMenuItem>
-          <StMenuItem onClick={handleClickLogOut}>
-            {accessToken ? "로그아웃" : "로그인"}
-          </StMenuItem>
-        </StMenu>
-        <StAlarm className={isAlarm ? "on" : ""}>
-          <StAlarmTop>
-            <StAlarmTitle> 알림</StAlarmTitle>
-          </StAlarmTop>
-          <StAlarmContentWrap>
-            <StAlarmcontent>
-              <StAlarmIconWrap>
-                <AlarmIcon />
-              </StAlarmIconWrap>
-              <StAlarmcontentP>
-                박정현님이 게시글 편집을 완료했습니다. [바로가기]
-              </StAlarmcontentP>
-            </StAlarmcontent>
-          </StAlarmContentWrap>
-        </StAlarm>
-      </StHeaderRightWrapper>
-      <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
-        {isDark ? <Sun /> : <Dark />}
-        {isDark ? "라이트모드로 전환" : "다크모드로 전환"}
-      </StModeToggleBtn>
-    </StContainer>
+    <>
+      <Alert />
+      <StContainer className={headerMove ? "on" : ""}>
+        <StHeaderLeftWrapper>
+          <StHeaderLogo onClick={() => navigate("/main")} />
+          <StSearchWrapper>
+            <StSearchInput
+              ref={searchInputRef}
+              onKeyDown={handleKeyDown}
+              placeholder="검색어 또는 키워드를 입력"
+            />
+            <StSearchBtn onClick={handleClickSearchBtn}>찾기</StSearchBtn>
+          </StSearchWrapper>
+        </StHeaderLeftWrapper>
+        <StHeaderRightWrapper>
+          <StHeaderMeun>
+            <StWrite onClick={() => navigate("/write")}>게시물작성</StWrite>
+            <StbellWrap onClick={isAlarmBtn}>
+              <Bell />
+            </StbellWrap>
+            <StAccountBtn onClick={handleClickAccountBtn}>
+              <Menuperson />
+              <MenuArr className={isOn ? "on" : ""} />
+            </StAccountBtn>
+          </StHeaderMeun>
+          <StMenu className={isOn ? "on" : ""}>
+            <StMenuItem onClick={() => navigate("/mypage")}>
+              마이페이지
+            </StMenuItem>
+            <StMenuItem onClick={() => navigate("/bookmark")}>
+              즐겨찾기
+            </StMenuItem>
+            <StMenuItem onClick={handleClickLogOut}>
+              {accessToken ? "로그아웃" : "로그인"}
+            </StMenuItem>
+          </StMenu>
+          <StAlarm className={isAlarm ? "on" : ""}>
+            <StAlarmTop>
+              <StAlarmTitle> 알림</StAlarmTitle>
+            </StAlarmTop>
+            <StAlarmContentWrap>
+              <StAlarmcontent>
+                <StAlarmIconWrap>
+                  <StAlarmIcon />
+                </StAlarmIconWrap>
+                <StAlarmcontentP>
+                  박정현님이 게시글 편집을 완료했습니다. [바로가기]
+                </StAlarmcontentP>
+              </StAlarmcontent>
+            </StAlarmContentWrap>
+          </StAlarm>
+        </StHeaderRightWrapper>
+        <StModeToggleBtn
+          onClick={() => {
+            setIsDark((prev) => !prev);
+            setKey(key + 1);
+          }}
+        >
+          {isDark ? <Sun /> : <Dark />}
+          {isDark ? "라이트모드로 전환" : "다크모드로 전환"}
+        </StModeToggleBtn>
+      </StContainer>
+    </>
   );
 };
 
@@ -177,7 +186,7 @@ const StContainer = styled.div`
   display: flex;
   border-bottom: 1px solid ${(props) => props.theme.borderColor};
   background: ${(props) => props.theme.bglightblack};
-  z-index: 9;
+  z-index: 99;
   transition: all 0.3s;
   &.on {
     position: fixed;

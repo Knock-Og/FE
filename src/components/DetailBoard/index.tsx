@@ -93,7 +93,7 @@ const DetailBoard = (post: PostDetail) => {
           </StRight>
         </StTop>
 
-        <ViewerWrap className={isDark ? "" : ""}>
+        <ViewerWrap className={isDark ? "dark" : "light"}>
           <Viewer initialValue={post.content} />
         </ViewerWrap>
 
@@ -188,17 +188,20 @@ const ViewerWrap = styled.div`
   border-bottom: 1px solid ${(props) => props.theme.borderColor};
 
   &.dark {
-    background-color: red;
-    /* 안에 클래스에 컬러 조정필요합니다. */
-    > .toastui-editor-contents {
-      color: white;
+    .toastui-editor-contents p {
+      color: #fff !important;
+    }
+    .toastui-editor-contents span {
+      color: #fff !important;
+    }
+    .toastui-editor-contents strong {
+      color: #fff !important;
+    }
+    .toastui-editor-contents ol > li::before {
+      color: #fff !important;
     }
   }
   &.light {
-    background-color: blue;
-    > .toastui-editor-contents {
-      color: black;
-    }
   }
 `;
 

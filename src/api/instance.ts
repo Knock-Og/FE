@@ -11,12 +11,7 @@ export const reqWithAccessToken = axios.create({
 
 baseAxios.interceptors.response.use(
   (response) => {
-    let success = response.data.statusCode;
-    if (response.data.statusCode === "202") {
-      if (success === "The sms has been sent successfully.") {
-        alert("인증번호가 발송되었습니다.");
-      }
-    }
+
     return response;
   },
   (error) => {
