@@ -27,11 +27,13 @@ import { Post } from "types";
 const Header = () => {
   const [isOn, setIsOn] = useState(false);
   const [isAlarm, setIsAlarm] = useState(false);
+  const [key, setKey] = useState(0);
+
+  const [isDark, setIsDark] = useRecoilState(isDarkState);
   const setSearchedPosts = useSetRecoilState(searchedPostsState);
   const setSearchedKeyword = useSetRecoilState(searchedKeywordState);
   const setEndPage = useSetRecoilState(endPageState);
-  const [isDark, setIsDark] = useRecoilState(isDarkState);
-  const [key, setKey] = useState(0);
+
   const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -47,6 +49,19 @@ const Header = () => {
       setEndPage(1);
     },
   });
+
+  const toggleDark = () => {
+    const editorEl = document.getElementsByClassName(
+      "toastui-editor-defaultUI"
+    )[0];
+    if (editorEl) {
+      if (editorEl.classList.contains("toastui-editor-dark")) {
+        editorEl.classList.remove("toastui-editor-dark");
+      } else {
+        editorEl.classList.add("toastui-editor-dark");
+      }
+    }
+  };
 
   const handleClickSearchBtn = () => {
     getSearchedData({
@@ -157,6 +172,7 @@ const Header = () => {
         </StHeaderRightWrapper>
         <StModeToggleBtn
           onClick={() => {
+            toggleDark();
             setIsDark((prev) => !prev);
             setKey(key + 1);
           }}
