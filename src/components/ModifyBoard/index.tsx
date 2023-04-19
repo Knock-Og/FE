@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Editor } from "@toast-ui/react-editor";
 import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
 import { createBrowserHistory } from "history";
@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { CATEGORY, POST } from "api";
 import { DelIcon, MainArr } from "assets";
 import { PostDetailTab, Alert } from "components";
-import { errorState } from "store/atoms";
+import { errorState, isDarkState } from "store/atoms";
 import { ActiveState, Category, EditPost, PostDetail } from "types";
 import { uploadImg } from "utils";
 import "@toast-ui/editor/dist/toastui-editor.css";
@@ -34,6 +34,7 @@ const ModifyBoard = (post: PostDetail) => {
     bookmark: false,
   });
 
+  const isDark = useRecoilValue(isDarkState);
   const setError = useSetRecoilState(errorState);
 
   const handleClickTab = (name: string) => {
@@ -279,6 +280,7 @@ const ModifyBoard = (post: PostDetail) => {
           plugins={[colorSyntax]}
           language="ko-KR"
           ref={editorRef}
+          theme={isDark ? "dark" : "default"}
           onChange={handleChangeEditor}
           hooks={{
             addImageBlobHook: uploadImg,

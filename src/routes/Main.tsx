@@ -78,6 +78,19 @@ const Main = () => {
     },
   });
 
+  const toggleDark = () => {
+    const editorEl = document.getElementsByClassName(
+      "toastui-editor-defaultUI"
+    )[0];
+    if (editorEl) {
+      if (editorEl.classList.contains("toastui-editor-dark")) {
+        editorEl.classList.remove("toastui-editor-dark");
+      } else {
+        editorEl.classList.add("toastui-editor-dark");
+      }
+    }
+  };
+
   const handleClickSearchBtn = () => {
     getSearchedData({
       keyword: `${searchInputRef.current?.value}`,
@@ -174,7 +187,12 @@ const Main = () => {
             ))}
           </StFolder>
         </StMainWrapper>
-        <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
+        <StModeToggleBtn
+          onClick={() => {
+            toggleDark();
+            setIsDark((prev) => !prev);
+          }}
+        >
           {isDark ? <Sun /> : <Dark />}
           {isDark ? "라이트모드로 전환" : "다크모드로 전환"}
         </StModeToggleBtn>
