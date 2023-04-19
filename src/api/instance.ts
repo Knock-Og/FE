@@ -11,12 +11,6 @@ export const reqWithAccessToken = axios.create({
 
 baseAxios.interceptors.response.use(
   (response) => {
-    let success = response.data.statusCode;
-    if (response.data.statusCode === "202") {
-      if (success === "The sms has been sent successfully.") {
-        alert("인증번호가 발송되었습니다.");
-      }
-    }
     return response;
   },
   (error) => {
@@ -70,8 +64,8 @@ baseAxios.interceptors.response.use(
 
 reqWithAccessToken.interceptors.request.use(
   (config) => {
-    const access_token = getCookie("reqWithToken");
-    config.headers["Authorization"] = `Bearer ${access_token}`;
+    const reqWithToken = getCookie("reqWithToken");
+    config.headers["Authorization"] = `Bearer ${reqWithToken}`;
     return config;
   },
   (error) => {
@@ -124,7 +118,7 @@ reqWithAccessToken.interceptors.response.use(
         }
 
       case 401:
-        removeCookie("access_token");
+        removeCookie("reqWithToken");
         window.location.pathname.includes("admin")
           ? window.location.replace("/admin/login")
           : window.location.replace("/");

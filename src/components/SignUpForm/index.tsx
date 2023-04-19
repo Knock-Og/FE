@@ -160,7 +160,7 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
           return setError(`${response}`);
         }
         queryClient.invalidateQueries("name");
-        setError("사용가능한 이름 입니다!");
+        setSuccess("사용가능한 이름 입니다!");
       }
     },
     onError: (response) => {
@@ -204,7 +204,6 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
 
     setPhoneNum("");
     setMemberName("");
-    setPosition("");
     setPassword("");
     setPasswordCheck("");
     setEmail("");
@@ -226,8 +225,14 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   return (
     <>
       <Alert />
-      <StSignWrap className={modalOpen ? "on" : "off"}>
-        <StSignBox className={modalOpen ? "on" : "off"}>
+      <StSignWrap
+        className={modalOpen ? "on" : "off"}
+        onClick={() => setIsOpen(false)}
+      >
+        <StSignBox
+          className={modalOpen ? "on" : "off"}
+          onClick={() => setIsOpen(false)}
+        >
           <StSignForm onSubmit={signupSubmit}>
             <StTop>
               <StSignTitle>계정생성</StSignTitle>
@@ -237,22 +242,26 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
               <StSignLi>
                 <StSignLeft>직급</StSignLeft>
                 <StSignRight>
-                  <StSeletLabel onClick={() => setIsOpen(!isOpen)}>
+                  <StSeletLabel
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsOpen(!isOpen);
+                    }}
+                  >
                     {position}
                     <MenuArr />
                   </StSeletLabel>
-                  {isOpen && (
-                    <StSeletUl>
-                      {positionList.map((item) => (
-                        <StSeletLi
-                          key={item.id}
-                          onClick={() => handleOptionClick(item.position)}
-                        >
-                          {item.position}
-                        </StSeletLi>
-                      ))}
-                    </StSeletUl>
-                  )}
+
+                  <StSeletUl className={isOpen ? "on" : "off"}>
+                    {positionList.map((item) => (
+                      <StSeletLi
+                        key={item.id}
+                        onClick={() => handleOptionClick(item.position)}
+                      >
+                        {item.position}
+                      </StSeletLi>
+                    ))}
+                  </StSeletUl>
                 </StSignRight>
               </StSignLi>
               <StSignLi>
@@ -464,6 +473,7 @@ const StSignInput = styled.input`
   border-radius: 5px;
   outline: 0;
   background: ${(props) => props.theme.bgwhite};
+  font-size: 0.875rem;
   &:focus {
     border: 1px solid ${(props) => props.theme.bgBlue};
   }
@@ -507,7 +517,7 @@ const StButton = styled.button`
   border: 0;
   cursor: pointer;
   background: ${(props) => props.theme.bgBlue};
-  font-size: 1.25rem;
+  font-size: 0.875rem;
   border-radius: 57px;
   margin: 45px auto 0;
   display: block;
@@ -520,6 +530,7 @@ const StSeletLabel = styled.p`
   border-radius: 5px;
   width: 100%;
   height: 57px;
+  font-size: 0.875rem;
   margin: 0 auto;
   line-height: 57px;
   font-weight: 500;
@@ -553,7 +564,7 @@ const StSeletUl = styled.ul`
 const StSeletLi = styled.li`
   line-height: 57px;
   padding: 0px 15px;
-
+  font-size: 0.875rem;
   cursor: pointer;
   &:hover {
     background: ${(props) => props.theme.bgLightBlue};

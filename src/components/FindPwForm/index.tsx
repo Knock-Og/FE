@@ -19,7 +19,7 @@ const FindPwForm = () => {
   const loginPage = () => navigate("/");
 
   useEffect(() => {
-    if (getCookie("access_token")) {
+    if (getCookie("reqWithToken")) {
       navigate("/main", { replace: true });
     }
   }, [navigate]);

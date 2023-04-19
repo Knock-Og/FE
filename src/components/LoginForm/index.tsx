@@ -33,7 +33,7 @@ const LoginForm = () => {
     e.preventDefault();
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const isValidEmail = emailRegex.test(email);
-    if (!isValidEmail) return alert("이메일형식이 올바르지 않습니다!");
+    if (!isValidEmail) return setError("이메일형식이 올바르지 않습니다!");
     if (!email.trim() || email.trim() === "")
       return setError("이메일을 입력해주세요!");
     if (password.trim() === "") return setError("비밀번호를 입력해주세요!");

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
@@ -17,7 +17,6 @@ const AdminLoginform = () => {
   const setError = useSetRecoilState(errorState);
 
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const loginMutation = useMutation(LOGIN.adminLogin, {
     onSuccess: (response) => {
@@ -25,7 +24,6 @@ const AdminLoginform = () => {
         return setError(`${response}`);
       }
       setCookie("reqWithToken", response.headers.authorization.substr(7));
-      queryClient.invalidateQueries("adminLogin");
       navigate("/admin", { replace: true });
     },
   });
@@ -44,11 +42,13 @@ const AdminLoginform = () => {
     setEmail("");
     setPassword("");
   };
+
   useEffect(() => {
     if (getCookie("reqWithToken")) {
       navigate("/admin", { replace: true });
     }
   }, [navigate]);
+
   return (
     <>
       <Alert />
