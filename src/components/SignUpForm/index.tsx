@@ -160,7 +160,7 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
           return setError(`${response}`);
         }
         queryClient.invalidateQueries("name");
-        setError("사용가능한 이름 입니다!");
+        setSuccess("사용가능한 이름 입니다!");
       }
     },
     onError: (response) => {
@@ -226,8 +226,14 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
   return (
     <>
       <Alert />
-      <StSignWrap className={modalOpen ? "on" : "off"}>
-        <StSignBox className={modalOpen ? "on" : "off"}>
+      <StSignWrap
+        className={modalOpen ? "on" : "off"}
+        onClick={() => setIsOpen(false)}
+      >
+        <StSignBox
+          className={modalOpen ? "on" : "off"}
+          onClick={() => setIsOpen(false)}
+        >
           <StSignForm onSubmit={signupSubmit}>
             <StTop>
               <StSignTitle>계정생성</StSignTitle>
@@ -237,22 +243,26 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
               <StSignLi>
                 <StSignLeft>직급</StSignLeft>
                 <StSignRight>
-                  <StSeletLabel onClick={() => setIsOpen(!isOpen)}>
+                  <StSeletLabel
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsOpen(!isOpen);
+                    }}
+                  >
                     {position}
                     <MenuArr />
                   </StSeletLabel>
-                  {isOpen && (
-                    <StSeletUl>
-                      {positionList.map((item) => (
-                        <StSeletLi
-                          key={item.id}
-                          onClick={() => handleOptionClick(item.position)}
-                        >
-                          {item.position}
-                        </StSeletLi>
-                      ))}
-                    </StSeletUl>
-                  )}
+
+                  <StSeletUl className={isOpen ? "on" : "off"}>
+                    {positionList.map((item) => (
+                      <StSeletLi
+                        key={item.id}
+                        onClick={() => handleOptionClick(item.position)}
+                      >
+                        {item.position}
+                      </StSeletLi>
+                    ))}
+                  </StSeletUl>
                 </StSignRight>
               </StSignLi>
               <StSignLi>
