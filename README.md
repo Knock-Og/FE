@@ -84,11 +84,12 @@
   <img src="https://img.shields.io/badge/styledcomponents-DB7093?style=flat-square&logo=styledcomponents&logoColor=white">
   <br>
   
+  <img src="https://img.shields.io/badge/Aws-sdk-E34F26?style=flat-square&logo=Aws-sdk&logoColor=white">
   <img src="https://img.shields.io/badge/Npm-CB3837?style=flat-square&logo=Npm&logoColor=white">
   <img src="https://img.shields.io/badge/vercel-000000?style=flat-square&logo=vercel&logoColor=white">
-  <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
-  <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
-  <img src="https://img.shields.io/badge/sourcetree-0052CC?style=for-the-badge&logo=sourcetree&logoColor=white">
+  <img src="https://img.shields.io/badge/notion-000000?style=flat-square&logo=notion&logoColor=white">
+  <img src="https://img.shields.io/badge/github-181717?style=flat-square&logo=github&logoColor=white">
+  <img src="https://img.shields.io/badge/sourcetree-0052CC?style=flat-square&logo=sourcetree&logoColor=white">
   <br>
 
 </div>
@@ -100,17 +101,6 @@
 
 <br>
 
-# ERD
-<details>
-<summary> ERD 펼쳐보기 </summary>
-<div markdown="1">  
-
-![image](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fc6spkU%2FbtsaKx8Q9jA%2FCy287vuTk2KBChVNSSckn0%2Fimg.png)
-
-</div>
-</details>
-
-<br><br>
 
 # API 명세서
 [📄 API 바로가기](https://www.notion.so/API-7576e48635ea4890a06d95cc2657a1a0)
@@ -137,34 +127,16 @@
 # Trouble Shooting
 
 <details>
-<summary> 검색 성능 개선</summary>
+<summary> Toast UI Editor / AWS SDK </summary>
 <div markdown="1">  
 <br>
- (1) 검색 성능 문제와 원인, 개선 방향 <br>
-    - 문제 : 실행환경(local과 ec2 서버 등)에 따라 속도와 성능의 차이가 많이 남. <br>
-    - 원인 : 라이브러리의 비효울적인 사용, 불필요한 쿼리 <br>
-    - 개선 방향 : 쿼리를 개선한 후, Jmeter 부하테스트를 통해 향상된 성능을 측정해 나감.<br>
-    👉 https://www.notion.so/STEP1-fad9129c662e44859f1ff7d4df0dd75f
-<br><br>
+ -Toast UI Editor는 마크다운 에디터를 구현한 오픈 소스 라이브러리로, 사용자가 텍스트를 마크다운 형식으로 작성하면 해당 마크다운을 HTML로 변환하여 보여주는 기능을 제공합니다. 또한, 다양한 플러그인을 제공하여 사용자가 편리하게 에디터를 사용할 수 있습니다.
 
-(2)  형태소 분석 라이브러리 변경<br>
-- 실행시간 측정을 위해 AOP Execution Timer 도입 <br>
-- Komoran의 설정을 light한 버전으로 해 주었다,
-- 결과 : 부하테스트 쓰레드 10배 정도 증가 가능(40 -> 450), 실행속도 1/10 (1.5초 -> 0.5초대로 개선)<br>
-  👉 https://www.notion.so/STEP2-4bd04dd85a6e4edb9b5e8dc47f6fcc27
-  <br><br>
-  (3) 키워드 검색시 쿼리 개선 (Query DSL 적용) <br>
-- 동적 쿼리와 fetch join을 통해 한 번에 키워드 조회
-- 동적 쿼리로 return 받은 타입이 List<Post>로 바뀌었으므로, for문 한 번으로 추가 가능.
-- 결과 : 부하테스트 쓰레드 700->2500d으로 증가, 실행시간은 400~500ms에서 300ms 정도로 단축됨.<br>
-  👉 https://www.notion.so/STEP3-Query-DSL-939026377148406f93c7a571b767cd42
+이 중에서 이미지 첨부 기능을 사용하기 위해서는 클라이언트에서 이미지를 서버에 업로드하고 링크를 받아와야 합니다. AWS SDK 라이브러리를 이용하면 Amazon Web Services의 다양한 서비스들을 JavaScript에서 사용할 수 있습니다. 이 중에서 S3 서비스는 클라우드 스토리지 서비스로, 이용자는 이를 이용하여 파일을 저장하고, 검색하고, 다운로드할 수 있습니다.
 
-(4) 검색 결과 정렬 시 쿼리 개선 <br>
-- 관심도, 조회수, 댓글수, 생성일자 등 검색 결과 정렬 시 동적 쿼리로 한 번에 처리하는 방식 <br>
-- 페이징 추가 <br>
-- 결과 : 수행시간 100ms대 까지 감소 <br>
-  👉 추가예정
-  <br>
+따라서, AWS SDK 라이브러리를 이용하여 Toast UI Editor에서 이미지를 업로드하는 커스텀 훅을 제작하여, 사용자가 편리하게 이미지 첨부 기능을 사용할 수 있게하였습니.
+
+이러한 방법을 사용하면, 신입 사원들이 찾기 어려운 내용도 검색하여 찾을 수 있고, 선임들은 이를 통해 빠르고 쉽게 정보를 공유할 수 있습니다. 또한, Toast UI Editor와 AWS SDK 라이브러리를 이용하여 간편하게 이미지를 업로드하고 첨부하는 기능을 구현할 수 있기 때문에, 이를 활용하여 다양한 프로젝트에서 활용할 수 있습니다.
 </div>
 </details>
 
@@ -172,52 +144,34 @@
 <summary> SSE </summary>
 <div markdown="1">
     <br>
-    (1) 편집 상태를 알고, 편집이 완료 되면 알림을 보내는 기능을 위해 API call 대신 다른 방식을 고민함. <br>
-    (2) SSE는 서버- 클라이언트의 단방향 통신으로 지속적인 연결을 통해,  서버의 데이터를 실시간으로 클라이언트로 보낸다는 점과 처음 한 번 맺은 HTTP 연결을 통해 서버는 클라이언트로 지속적으로 데이터 전송이 가능하다는 점에서 사용함. <br>
-   👉 링크 추가예정 <br>
+ -SSE(Server-Sent Events)는 웹 애플리케이션에서 서버로부터 실시간으로 데이터를 받아와 화면에 표시할 수 있는 기술입니다. 이를 사용하면 WebSocket과 같은 양방향 통신을 필요로 하지 않으므로 서버 측에서도 부담이 적습니다.
+
+하지만 SSE API call을 할 때, request에 인증 헤더를 추가해야 하는 경우가 있습니다. 이때 문제가 발생할 수 있는데, 일부 브라우저에서는 인증 헤더가 적용되지 않아 API call이 실패하는 경우가 있습니다.
+
+이러한 문제를 해결하기 위해 Event-source-polyfill 라이브러리를 사용하였습니다. 이 라이브러리는 eventSource 객체에 xhr header를 주입하는 방식으로 인증 헤더를 추가할 수 있도록 지원해줍니다.
+
+이를 사용하여 SSE API call을 수행하면 인증 헤더가 제대로 적용되어 API call이 정상적으로 수행하였 SSE API call에 대한 문제를 해결하였습니다.
 
 </div>
 </details>
 
 
 <details>
-<summary> 임시 인증코드 저장 </summary>
+<summary> editing status </summary>
 <div markdown="1">
     <br>
-    (1) 아이디와 비밀번호를 잊었을 때 확인할 수 있는 인증코드를 발급받을 경우, 일정 시간동안 임시로 인증코드를 어떻게 유지할지 고민함. <br>
-    (2) 임시 인증코드는 오래 저장할 필요가 없기도 하고, 중요하지 않은 데이터를 찾을 때 발생하는 시간과 부담을 줄이기 위해 Redis를 선택함. <br>
-        (Redis는 in-memory 형태로 운영중인 웹 서버에서 key-value 형태의 데이터 타입을 처리하고, I/O가 빈번히 발생할때 주로 사용한다는 점에서 도입함.)<br>
-    👉 https://www.notion.so/Redis-5f74e46c591d47108d4bf692b29ba3aa
+ - 게시글 수정 후 editing status가 업데이트되지 않는 이슈는 사용자 경험에 영향을 미치는 큰 문제였습니다. 따라서 이 문제를 해결하기 위해 적극적으로 접근했습니다.
+
+우선적으로, 문제가 발생한 시나리오를 이해하고 문제가 발생하는 부분을 파악했습니다. 게시글 수정시점에 페이지를 이동하는 과정에서, editing status가 업데이트되지 않았습니다.
+
+이 문제를 해결하기 위해, history 라이브러리를 이용하여 페이지 이동 이벤트를 감지하고, 해당 시점에 editing status를 변경하는 로직을 추가했습니다. 이를 통해 게시글 수정 및 삭제 시점에 페이지 이동 이벤트를 감지하고, 적절하게 editing status가 업데이트되도록 하였습니다.
+
+또한, 이 문제를 해결하는 과정에서 우리 팀은 사용자 경험을 고려한 다양한 시나리오를 고려하고, 이에 따른 다양한 테스트를 수행했습니다. 이를 통해 문제를 해결하고, 사용자에게 더 나은 경험을 제공할 수 있었습니다.
+
+이번 이슈를 통해 우리 팀은 문제 해결에 대한 전략과 문제 발생 시 빠르게 대처하는 능력을 향상시켰습니다. 이를 통해 우리 서비스의 안정성과 사용자 경험을 높일 수 있었습니다.
 </div>
 </details>
 
-
-<details>
-<summary> CI / CD </summary>
-<div markdown="1">
-    <br>
-   - 문제 상황 : Github Actions 스크립트 파일 중 EC2 서버에서 Docker Image 실행 실패 에러.<br>
-   - 원인 : SSH로 Knock EC2 서버를 연결하려 할 때 거부됨.<br>
-   - 해결 : Github-Actions의 secrets의 key 설정을 pem.key와 ec2의 password 두 방법으로 해 보고 해결됨. <br>
-    👉 https://www.notion.so/CI-CD-78da8d9f7b4f4f6bba947b7e7ffda2b1
-
-
-</div>
-</details>
-
-
-<details>
-<summary> Log </summary>
-<div markdown="1">
-    <br>
-   - 문제 상황 : <br>
-   - 원인 : <br>
-   - 해결 : <br>
-    👉 
-
-
-</div>
-</details>
 
 <br><br><br>
 
