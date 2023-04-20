@@ -46,7 +46,7 @@
 
 # 프로젝트 세부사항
 - ### 구현 영상<br>
-  - [최종 발표영상 or ppt 영상 추가예정]() <br>
+  - [최종 발표영상 📷](https://youtu.be/8PyelCFdVgQ) <br>
 - ###  구현목표
   - 검색 성능 : 형태소 분석을 통한 정확하고 빠른 검색 결과 제공
   - 편집상태 알림 : 게시글의 편집상태를 보여주고, 편집이 완료되면 알림 제공
@@ -118,8 +118,6 @@
 |:------:|:------:|
 | ![관리자](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FE4V5x%2FbtsamXGbUiJ%2F9cZBLjXNvOFt3uNlS4DUg1%2Fimg.png) | ![댓글로그](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FySs8E%2FbtsajdpKFK6%2FIi09fic5HemPuNjvb32Vs1%2Fimg.png) |
 |- 직원의 직급 및 권한 관리<br> - 사내 게시글의 카테고리 등록 및 관리<br> |- 댓글로 커뮤니티 기능 <br> - 로그를 통해 이전과 이후 게시글 비교 가능 <br> |
-
-[📷 시연영상 바로가기 - 추가 예정](https://www.notion.so/Knock-a9dbba271c2645559d9a1d965357e146)
 
 <br><br>
 
