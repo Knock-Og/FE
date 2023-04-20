@@ -474,6 +474,7 @@ const StSignInput = styled.input`
   border-radius: 5px;
   outline: 0;
   background: ${(props) => props.theme.bgwhite};
+  font-size: 0.875rem;
   &:focus {
     border: 1px solid ${(props) => props.theme.bgBlue};
   }
@@ -530,6 +531,7 @@ const StSeletLabel = styled.p`
   border-radius: 5px;
   width: 100%;
   height: 57px;
+  font-size: 0.875rem;
   margin: 0 auto;
   line-height: 57px;
   font-weight: 500;
