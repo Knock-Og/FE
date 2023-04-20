@@ -39,10 +39,8 @@
 
 |     | 이름   | Github |
 |-----|------|--------|
-| BE 팀장 | 김여원  | https://github.com/YeowonKIM |
-| BE 팀원 | 김나현  | https://github.com/hunny-A |
-| BE 팀원 | 박재용  | https://github.com/jyparkDev |
-| BE 팀원 | 정선연  | https://github.com/sunyeon-Jeong |
+| FE 팀장 | 박정현  | https://github.com/swing-park |
+| FE 팀원 | 송진환  | https://github.com/jinhwansong |
 
 <br><br>
 
@@ -55,12 +53,14 @@
   - 개인별 문서 관리 : 자신이 작성한 문서를 관리하고, 필요한 사내 문서들은 폴더로 관리
   - 게시글 공유 커뮤니티 : 댓글을 통해 소통하고, 편집 로그를 확인하여 다른 직원들의 편집 내역을 조회 가능
   - 로그 기능 : 게시글이 편집되어 왔던 기록을 과거와 현재로 모두 열람 가능
+  - 다크모드 기능 : 라이트모드와 다크모드 기능  
 - ###  구현기능
   - 검색 및 유형별 조회 기능
   - 게시물 상세페이지 기능
   - 마이페이지, 즐겨찾기 기능
   - 관리자 페이지 기능 (회사, 사원, 카테고리 등 관리)
   - 댓글, 로그 기능
+  - 다크모드 기능
 - ### 기간 :
   - 2023.03.10 ~ 2023.04.21
 
@@ -70,31 +70,25 @@
 
 <br>
 <div align=center> 
-  <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
-  <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">
-  <img src="https://img.shields.io/badge/intellij idea-000000?style=for-the-badge&logo=intellijidea&logoColor=white"> 
+  <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=white">
+  <img src="https://img.shields.io/badge/Html5-E34F26?style=flat-square&logo=Html5&logoColor=white">
+  <img src="https://img.shields.io/badge/Css3-1572B6?style=flat-square&logo=Css3&logoColor=white">
+  <img src="https://img.shields.io/badge/Javascript-F7DF1E?style=flat-square&logo=Javascript&logoColor=white"> 
+  <img src="https://img.shields.io/badge/Typescript-3178C6?style=flat-square&logo=Typescript&logoColor=white">
   <br>
-
+  
+  <img src="https://img.shields.io/badge/Axios-5A29E4?style=flat-square&logo=Axios&logoColor=white">
+  <img src="https://img.shields.io/badge/ReactQuery-FF4154?style=flat-square&logo=ReactQuery&logoColor=white">
+  <img src="https://img.shields.io/badge/Recoil-1572B6?style=flat-square&logo=Recoil&logoColor=white">
+  <img src="https://img.shields.io/badge/ReactRouter-CA4245?style=flat-square&logo=Reactrouter&logoColor=white">
+  <img src="https://img.shields.io/badge/styledcomponents-DB7093?style=flat-square&logo=styledcomponents&logoColor=white">
+  <br>
+  
+  <img src="https://img.shields.io/badge/Npm-CB3837?style=flat-square&logo=Npm&logoColor=white">
+  <img src="https://img.shields.io/badge/vercel-000000?style=flat-square&logo=vercel&logoColor=white">
   <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
   <img src="https://img.shields.io/badge/sourcetree-0052CC?style=for-the-badge&logo=sourcetree&logoColor=white">
-  <br>
-  <img src="https://img.shields.io/badge/amazon rds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"> 
-  <img src="https://img.shields.io/badge/amazon s3-E34F26?style=for-the-badge&logo=amazons3&logoColor=white">
-  <img src="https://img.shields.io/badge/redis-DD0031?style=for-the-badge&logo=redis&logoColor=white"> 
-  <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> 
-
- <br>
-  <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> 
-  <img src="https://img.shields.io/badge/spring security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"> 
-  <img src="https://img.shields.io/badge/QueryDSL-61DAFB?style=for-the-badge&logo=querydsl&logoColor=white"> 
-  <img src="https://img.shields.io/badge/Spring Data Jpa-4FC08D?style=for-the-badge&logo=jpa&logoColor=white"> 
-  <br>
-  <img src="https://img.shields.io/badge/amazon ec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"> 
-  <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
-  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white">
-  <img src="https://img.shields.io/badge/github actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white">
-  <img src="https://img.shields.io/badge/apache jmeter-D22128?style=for-the-badge&logo=apachejmeter&logoColor=white">
   <br>
 
 </div>
