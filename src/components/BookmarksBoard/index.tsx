@@ -3,8 +3,7 @@ import { useMutation } from "react-query";
 import { useState, useEffect } from "react";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { IconButton, Input } from "@mui/material";
-import { CreateNewFolder } from "@mui/icons-material";
+import {Input } from "@mui/material";
 import { Close } from "assets";
 import { Alert } from "components";
 import { successState } from "store/atoms";
@@ -107,12 +106,12 @@ const BookmarksBoard = ({ open, setOpen, postId, folders }: Props) => {
 
           <StBookmarkAddWrapper>
             <StBookmarkAddTitle>즐겨찾기 폴더 생성</StBookmarkAddTitle>
-            <Input
+            <StInput
               value={addBookmarkInput}
               onChange={handleChangeAddBookmarkInput}
               endAdornment={
                 <StAddBookMarkBtn onClick={handleClickBookMarkAddBtn}>
-                  <CreateNewFolder />
+                  폴더생성
                 </StAddBookMarkBtn>
               }
             />
@@ -212,7 +211,7 @@ const StIoClose = styled(Close)`
 const StSettingbottom = styled.div`
   padding-bottom: 50px;
   overflow: auto;
-  height: 55%;
+  height: calc(100% - 350px);
   &::-webkit-scrollbar {
     width: 5px;
     background: ${(props) => props.theme.bgToggle};
@@ -278,20 +277,36 @@ const StSettingButton = styled.button<{ active?: boolean }>`
 
 const StBookmarkAddWrapper = styled.div`
   border-top: 1px solid ${(props) => props.theme.borderColor};
-  height: 45%;
-  padding: 30px 50px;
+  height: 250px;
+  padding: 60px 50px;
   display: flex;
   flex-direction: column;
 `;
 
 const StBookmarkAddTitle = styled.h5`
   font-weight: 600;
-  font-size: 1.75rem;
-  line-height: 100px;
+  font-size: 1.55rem;
+  margin-bottom:70px;
 `;
-
-const StAddBookMarkBtn = styled(IconButton)`
+const StInput = styled(Input)`
+  height: 50px !important;
+  position: relative;
+  &:before {
+    border-bottom: 1px solid ${(props) => props.theme.bgBlue};
+  }
+  > input {
+    height: 50px;
+    color: ${(props) => props.theme.textColor};
+  }
+`;
+const StAddBookMarkBtn = styled.button`
   position: absolute;
+  width: 100px;
+  height: 50px;
+  border: 0;
+  outline: 0;
+  color: ${(props) => props.theme.textwhite};
+  background: ${(props) => props.theme.bgBlue};
   top: 50%;
   right: 0%;
   transform: translateY(-50%);
