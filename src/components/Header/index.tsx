@@ -200,7 +200,7 @@ const StContainer = styled.div`
   display: flex;
   border-bottom: 1px solid ${(props) => props.theme.borderColor};
   background: ${(props) => props.theme.bglightblack};
-  z-index: 99;
+  z-index: 90;
   transition: all 0.3s;
   &.on {
     position: fixed;

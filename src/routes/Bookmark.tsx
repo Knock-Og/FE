@@ -241,6 +241,15 @@ const StBreadCrumbWrapper = styled.div`
 
 const StBreadCrumbInput = styled(Input)`
   margin-right: 30px;
+  height: 50px !important;
+  position: relative;
+  &:before {
+    border-bottom: 1px solid ${(props) => props.theme.bgBlue};
+  }
+  > input {
+    height: 50px;
+    color: ${(props) => props.theme.textColor};
+  }
 `;
 
 const StEditBtn = styled(IconButton)``;
