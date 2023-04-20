@@ -20,7 +20,6 @@ import {
   isDarkState,
   searchedKeywordState,
   searchedPostsState,
-  successState,
 } from "store/atoms";
 import { Alert } from "components";
 import { Post } from "types";
@@ -28,12 +27,13 @@ import { Post } from "types";
 const Header = () => {
   const [isOn, setIsOn] = useState(false);
   const [isAlarm, setIsAlarm] = useState(false);
-const setSuccess = useSetRecoilState(successState);
+  const [key, setKey] = useState(0);
+
+  const [isDark, setIsDark] = useRecoilState(isDarkState);
   const setSearchedPosts = useSetRecoilState(searchedPostsState);
   const setSearchedKeyword = useSetRecoilState(searchedKeywordState);
   const setEndPage = useSetRecoilState(endPageState);
-  const [isDark, setIsDark] = useRecoilState(isDarkState);
-  const [key, setKey] = useState(0);
+
   const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -49,6 +49,19 @@ const setSuccess = useSetRecoilState(successState);
       setEndPage(1);
     },
   });
+
+  const toggleDark = () => {
+    const editorEl = document.getElementsByClassName(
+      "toastui-editor-defaultUI"
+    )[0];
+    if (editorEl) {
+      if (editorEl.classList.contains("toastui-editor-dark")) {
+        editorEl.classList.remove("toastui-editor-dark");
+      } else {
+        editorEl.classList.add("toastui-editor-dark");
+      }
+    }
+  };
 
   const handleClickSearchBtn = () => {
     getSearchedData({
@@ -77,10 +90,10 @@ const setSuccess = useSetRecoilState(successState);
   };
 
   const handleClickLogOut = () => {
-    setSuccess("로그아웃되셨습니다.");
-    navigate("/");
     removeCookie("reqWithToken");
+    setTimeout(() => navigate("/"), 500);
   };
+
   const [headerMove, setHeaderMove] = useState(false);
   const stContainerRef = useRef<HTMLDivElement>(null);
 
@@ -159,6 +172,7 @@ const setSuccess = useSetRecoilState(successState);
         </StHeaderRightWrapper>
         <StModeToggleBtn
           onClick={() => {
+            toggleDark();
             setIsDark((prev) => !prev);
             setKey(key + 1);
           }}
@@ -219,7 +233,7 @@ const StSearchInput = styled.input`
   width: 100%;
   height: 50px;
   border-radius: 65px;
-  border:0;
+  border: 0;
   background: ${(props) => props.theme.bgwhite};
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 3px 2px;
   color: ${(props) => props.theme.textColor};
@@ -344,7 +358,6 @@ const StMenuItem = styled.button`
   }
 `;
 
-
 const StbellWrap = styled.button`
   background: transparent;
   border: 0;
@@ -357,7 +370,7 @@ const StAlarm = styled.div`
   width: 350px;
   height: 600px;
   bottom: -625px;
-  right:0;
+  right: 0;
   box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.05);
   background: ${(props) => props.theme.bgwhite};
   opacity: 0;

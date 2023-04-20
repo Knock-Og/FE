@@ -19,7 +19,7 @@ const PostCard = (post: Post) => {
     //       `${process.env.REACT_APP_SERVER_URL}connect/${post.id}`,
     //       {
     //         headers: {
-    //           Authorization: `Bearer ${getCookie("access_token")}`,
+    //           Authorization: `Bearer ${getCookie("reqWithToken")}`,
     //         },
     //         withCredentials: true,
     //       }
@@ -51,24 +51,20 @@ const PostCard = (post: Post) => {
   //     }
   //   };
   // }, [eventSource]);
- 
+
   return (
     <StPostCardBox onClick={handleClickPostCard}>
       <StTitle
         dangerouslySetInnerHTML={{
-          __html:
-            post.title.length
-              ? post.title
-              : post.title,
+          __html: post.title.length ? post.title : post.title,
         }}
       />
 
       <StContent
         dangerouslySetInnerHTML={{
-          __html:
-            post.content.length
-              ? post.content.replace(/<[^>]*>?/g, "")
-              : post.content.replace(/<[^>]*>?/g, ""),
+          __html: post.content.length
+            ? post.content.replace(/<[^>]*>?/g, "")
+            : post.content.replace(/<[^>]*>?/g, ""),
         }}
       />
 
@@ -119,7 +115,7 @@ const StPostCardBox = styled.div`
   flex-direction: column;
   justify-content: space-between;
   padding: 45px 45px;
-  
+
   box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
   border-radius: 10px;
   margin-bottom: 30px;
@@ -150,14 +146,12 @@ const StContent = styled.p`
   white-space: normal;
   -webkit-line-clamp: 2;
   overflow: hidden;
-  
 `;
 
 const StPostCardFooter = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 30px;
-  
 `;
 
 const StFooterleft = styled.div`

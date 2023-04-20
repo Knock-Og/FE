@@ -15,21 +15,25 @@ import { Category as ICategory, NavItem, Post, SortItem } from "types";
 const Category = () => {
   const SORT_ITEMS: SortItem[] = [
     {
+      sort: "관심도",
       itemValue: "연관순",
       handler: () =>
         getCategoryData({ category: searchedCategory, page, sort: "관심도" }),
     },
     {
+      sort: "생성일자",
       itemValue: "최신순",
       handler: () =>
         getCategoryData({ category: searchedCategory, page, sort: "생성일자" }),
     },
     {
+      sort: "조회수",
       itemValue: "조회순",
       handler: () =>
         getCategoryData({ category: searchedCategory, page, sort: "조회수" }),
     },
     {
+      sort: "댓글수",
       itemValue: "댓글순",
       handler: () =>
         getCategoryData({ category: searchedCategory, page, sort: "댓글수" }),

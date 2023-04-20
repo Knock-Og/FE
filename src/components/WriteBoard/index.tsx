@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState, useRecoilValue } from "recoil";
@@ -17,26 +17,24 @@ import "tui-color-picker/dist/tui-color-picker.css";
 import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
 import "@toast-ui/editor/dist/i18n/ko-kr";
 
-
 const WriteBoard = () => {
-
-  
   const positionArr = ["Owner", "Manager", "Member"];
   const [newPost, setNewPost] = useState<AddPost>({
     title: "",
     content: "",
     keywords: [],
     category: "",
-    modifyPermission: "",
-    readablePosition: "",
+    modifyPermission: positionArr[2],
+    readablePosition: positionArr[2],
     editingStatus: "false",
   });
   const [keyword, setKeyword] = useState("");
   const isDark = useRecoilValue(isDarkState);
   const setError = useSetRecoilState(errorState);
-  
+
   const navigate = useNavigate();
   const editorRef = useRef<Editor>(null);
+
   const { data: categoryData } = useQuery<Category[]>(
     "getCategories",
     CATEGORY.getCategories
@@ -52,7 +50,6 @@ const WriteBoard = () => {
   });
 
   const handleChangeEditor = () => {
-    
     const data = editorRef.current?.getInstance().getHTML();
     data && setNewPost({ ...newPost, content: data });
   };
@@ -82,8 +79,8 @@ const WriteBoard = () => {
     addPost(newPost);
   };
 
-  const handleChangeSelectBox = (e: React.ChangeEvent<HTMLSelectElement>) =>
-    setNewPost({ ...newPost, [e.target.name]: e.target.value });
+  // const handleChangeSelectBox = (e: React.ChangeEvent<HTMLSelectElement>) =>
+  //   setNewPost({ ...newPost, [e.target.name]: e.target.value });
 
   const handleChangeKeywordInput = (e: React.ChangeEvent<HTMLInputElement>) =>
     setKeyword(e.target.value);
@@ -100,35 +97,44 @@ const WriteBoard = () => {
       setKeyword("");
     }
   };
+
   const delKeyword = (keywordToDelete: string) => {
     const updatedKeywords = newPost.keywords.filter(
       (keyword) => keyword !== keywordToDelete
     );
     setNewPost({ ...newPost, keywords: updatedKeywords });
   };
-  
+
   const [readOpen, setReadOpen] = useState(false);
-  const [selectedRead, setSelectedRead] = useState(positionArr?.[2]);
-  const handleSelectRead = (position: string) => {
-    setSelectedRead(position);
+  const [selectedRead, setSelectedRead] = useState(positionArr[2]);
+  const handleSelectRead = (readablePosition: string) => {
+    setSelectedRead(readablePosition);
     setReadOpen(false);
+    setNewPost({ ...newPost, readablePosition });
   };
   const [positionOpen, setPositionOpen] = useState(false);
-  const [selectedPosition, setSelectedPosition] = useState(positionArr?.[2]);
-  const handleSelectPosition = (position: string) => {
-    setSelectedPosition(position);
+  const [selectedPosition, setSelectedPosition] = useState(positionArr[2]);
+  const handleSelectPosition = (modifyPermission: string) => {
+    setSelectedPosition(modifyPermission);
     setPositionOpen(false);
+    setNewPost({ ...newPost, modifyPermission });
   };
-  
+
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(
-    categoryData?.[0]?.categoryName
-  );
-  const handleSelectCategory = (categoryName:string) => {
-    setSelectedCategory(categoryName);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const handleSelectCategory = (category: string) => {
+    setSelectedCategory(category);
     setIsOpen(false);
+    setNewPost({ ...newPost, category });
   };
-  
+
+  useEffect(() => {
+    if (categoryData) {
+      setNewPost({ ...newPost, category: categoryData[0].categoryName });
+      setSelectedCategory(categoryData[0].categoryName);
+    }
+    //eslint-disable-next-line
+  }, [categoryData]);
 
   return (
     <>
@@ -143,18 +149,16 @@ const WriteBoard = () => {
       >
         <StTitleInput placeholder="제목" onChange={handleChangeTitle} />
 
-        <StMidSelet>
+        <StMidSelect>
           <Stlabel>카테고리</Stlabel>
-          <StselectDiv>
+          <StSelectDiv>
             <StSelectp
               onClick={(e) => {
                 e.stopPropagation();
                 setIsOpen(!isOpen);
               }}
             >
-              {selectedCategory
-                ? selectedCategory
-                : categoryData?.[0]?.categoryName}
+              {selectedCategory && selectedCategory}
               <MenuArr className={isOpen ? "on" : "off"} />
             </StSelectp>
             <StSelectUl className={isOpen ? "on" : "off"}>
@@ -170,17 +174,17 @@ const WriteBoard = () => {
                 </StSelectli>
               ))}
             </StSelectUl>
-          </StselectDiv>
+          </StSelectDiv>
 
           <Stlabel>수정권한</Stlabel>
-          <StselectDiv>
+          <StSelectDiv>
             <StSelectp
               onClick={(e) => {
                 e.stopPropagation();
                 setPositionOpen(!positionOpen);
               }}
             >
-              {selectedPosition ? selectedPosition : positionArr?.[2]}
+              {selectedPosition && selectedPosition}
               <MenuArr className={positionOpen ? "on" : "off"} />
             </StSelectp>
             <StSelectUl className={positionOpen ? "on" : "off"}>
@@ -196,17 +200,17 @@ const WriteBoard = () => {
                 </StSelectli>
               ))}
             </StSelectUl>
-          </StselectDiv>
+          </StSelectDiv>
 
           <Stlabel>읽기권한</Stlabel>
-          <StselectDiv>
+          <StSelectDiv>
             <StSelectp
               onClick={(e) => {
                 e.stopPropagation();
                 setReadOpen(!readOpen);
               }}
             >
-              {selectedRead ? selectedRead : positionArr?.[2]}
+              {selectedRead && selectedRead}
               <MenuArr className={readOpen ? "on" : "off"} />
             </StSelectp>
             <StSelectUl className={readOpen ? "on" : "off"}>
@@ -222,8 +226,8 @@ const WriteBoard = () => {
                 </StSelectli>
               ))}
             </StSelectUl>
-          </StselectDiv>
-        </StMidSelet>
+          </StSelectDiv>
+        </StMidSelect>
 
         <Editor
           previewStyle="vertical"
@@ -264,7 +268,8 @@ const WriteBoard = () => {
 };
 
 export default WriteBoard;
-const StselectDiv = styled.div`
+
+const StSelectDiv = styled.div`
   position: relative;
   width: 150px;
   border: 1px solid ${(props) => props.theme.borderColor};
@@ -273,9 +278,9 @@ const StselectDiv = styled.div`
   cursor: pointer;
 `;
 const StSelectp = styled.p`
-  line-height:45px;
-  padding:0 15px;
-  position:relative;
+  line-height: 45px;
+  padding: 0 15px;
+  position: relative;
 `;
 const MenuArr = styled(MainArr)`
   stroke: ${(props) => props.theme.fillGrey};
@@ -283,9 +288,9 @@ const MenuArr = styled(MainArr)`
   transition: all 0.3s;
   position: absolute;
   right: 15px;
-  bottom:0;
-  margin:auto 0;
-  top:0;
+  bottom: 0;
+  margin: auto 0;
+  top: 0;
   &.on {
     transform: rotateZ(-180deg);
   }
@@ -302,7 +307,6 @@ const StSelectUl = styled.ul`
   overflow: hidden;
   &.on {
     height: auto;
-    
   }
 `;
 const StSelectli = styled.li`
@@ -323,7 +327,7 @@ const StContainer = styled.div`
   width: 100%;
   height: 100vh;
 `;
-const StMidSelet = styled.div`
+const StMidSelect = styled.div`
   border: 1px solid ${(props) => props.theme.borderWrite};
   border-top: 0;
   border-bottom: 0;

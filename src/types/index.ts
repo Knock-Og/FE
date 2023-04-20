@@ -161,7 +161,9 @@ export interface GetBookmarkArgs {
   page: number;
 }
 
-export interface SortItem extends NavItem {}
+export interface SortItem extends NavItem {
+  sort: string;
+}
 
 export interface Log {
   memberName: string;
@@ -234,7 +236,6 @@ export interface BookmarkNavItem {
   handler: (folderId: number, folderName: string) => void;
 }
 
-
 export interface DelComment {
   postId: number;
   commentId: number;
@@ -243,5 +244,5 @@ export interface DelComment {
 export interface PutComment {
   postId: number;
   commentId: number;
-  comment:string;
+  comment: string;
 }

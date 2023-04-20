@@ -80,10 +80,10 @@ const DetailBoard = (post: PostDetail) => {
                   .replace(/\//g, ".")}
               </StOhterLi>
               <StOhterLi>
-                <StOhterSpan>읽기권한</StOhterSpan> {post.readablePosition}
+                <StOhterSpan>수정권한</StOhterSpan> {post.modifyPermission}
               </StOhterLi>
               <StOhterLi>
-                <StOhterSpan>수정권한</StOhterSpan> {post.modifyPermission}
+                <StOhterSpan>읽기권한</StOhterSpan> {post.readablePosition}
               </StOhterLi>
             </StOhterUl>
           </StLeft>

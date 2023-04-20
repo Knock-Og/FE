@@ -21,7 +21,6 @@ import {
   isDarkState,
   searchedKeywordState,
   searchedPostsState,
-  successState,
 } from "store/atoms";
 import { Bookmark, NavItem, Post } from "types";
 import { Alert } from "components";
@@ -30,7 +29,6 @@ const Main = () => {
   const [isOn, setIsOn] = useState(false);
   const [isAlarm, setIsAlarm] = useState(false);
   const [folders, setFolders] = useState<NavItem[]>();
-const setSuccess = useSetRecoilState(successState);
   const setSearchedPosts = useSetRecoilState(searchedPostsState);
   const setSearchedKeyword = useSetRecoilState(searchedKeywordState);
   const setEndPage = useSetRecoilState(endPageState);
@@ -40,8 +38,6 @@ const setSuccess = useSetRecoilState(successState);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const accessToken = getCookie("reqWithToken");
-
- 
 
   const { mutate: getSearchedData } = useMutation(SEARCH.getSearchedData, {
     onSuccess: (res) => {
@@ -53,7 +49,7 @@ const setSuccess = useSetRecoilState(successState);
       setEndPage(1);
     },
   });
-  
+
   const { mutate: getBookmarks } = useMutation(BOOKMARK.getBookmarks, {
     onSuccess: (res) => {
       const nav = res.data.map((v: Bookmark) => {
@@ -70,7 +66,7 @@ const setSuccess = useSetRecoilState(successState);
       setFolders(nav);
     },
   });
-  
+
   const { mutate: getBookmark } = useMutation(BOOKMARK.getBookmark, {
     onSuccess: (res) => {
       setSearchedPosts(res.data.postResponseDtoList as Post[]);
@@ -81,6 +77,19 @@ const setSuccess = useSetRecoilState(successState);
       setEndPage(1);
     },
   });
+
+  const toggleDark = () => {
+    const editorEl = document.getElementsByClassName(
+      "toastui-editor-defaultUI"
+    )[0];
+    if (editorEl) {
+      if (editorEl.classList.contains("toastui-editor-dark")) {
+        editorEl.classList.remove("toastui-editor-dark");
+      } else {
+        editorEl.classList.add("toastui-editor-dark");
+      }
+    }
+  };
 
   const handleClickSearchBtn = () => {
     getSearchedData({
@@ -106,16 +115,13 @@ const setSuccess = useSetRecoilState(successState);
     setIsOn(false);
   };
   const handleClickLogOut = () => {
-    setSuccess("로그아웃되셨습니다.");
-    navigate("/");
     removeCookie("reqWithToken");
+    setTimeout(() => navigate("/"), 500);
   };
 
-  
-
-  
   useEffect(() => {
     getBookmarks();
+    //eslint-disable-next-line
   }, []);
 
   return (
@@ -181,7 +187,12 @@ const setSuccess = useSetRecoilState(successState);
             ))}
           </StFolder>
         </StMainWrapper>
-        <StModeToggleBtn onClick={() => setIsDark((prev) => !prev)}>
+        <StModeToggleBtn
+          onClick={() => {
+            toggleDark();
+            setIsDark((prev) => !prev);
+          }}
+        >
           {isDark ? <Sun /> : <Dark />}
           {isDark ? "라이트모드로 전환" : "다크모드로 전환"}
         </StModeToggleBtn>
@@ -231,7 +242,7 @@ const StSearchInput = styled.input`
   width: 100%;
   height: 65px;
   border-radius: 65px;
-  border:0;
+  border: 0;
   background: ${(props) => props.theme.bgwhite};
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 3px 2px;
   padding: 0px 55px 0px 30px;
@@ -434,7 +445,6 @@ const StAlarmcontentP = styled.p`
 const StAlarmIcon = styled(AlarmIcon)`
   fill: ${(props) => props.theme.fillblack};
 `;
-
 
 const StFolder = styled.div`
   width: 625px;

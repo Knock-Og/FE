@@ -1,15 +1,15 @@
 import { useEffect, useState, useRef } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Editor } from "@toast-ui/react-editor";
 import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
 import { createBrowserHistory } from "history";
 import styled from "styled-components";
 import { CATEGORY, POST } from "api";
-import { DelIcon } from "assets";
+import { DelIcon, MainArr } from "assets";
 import { PostDetailTab, Alert } from "components";
-import { errorState } from "store/atoms";
+import { errorState, isDarkState } from "store/atoms";
 import { ActiveState, Category, EditPost, PostDetail } from "types";
 import { uploadImg } from "utils";
 import "@toast-ui/editor/dist/toastui-editor.css";
@@ -34,6 +34,7 @@ const ModifyBoard = (post: PostDetail) => {
     bookmark: false,
   });
 
+  const isDark = useRecoilValue(isDarkState);
   const setError = useSetRecoilState(errorState);
 
   const handleClickTab = (name: string) => {
@@ -102,8 +103,8 @@ const ModifyBoard = (post: PostDetail) => {
     }
   };
 
-  const handleChangeSelectBox = (e: React.ChangeEvent<HTMLSelectElement>) =>
-    setNewPost({ ...newPost, [e.target.name]: e.target.value });
+  // const handleChangeSelectBox = (e: React.ChangeEvent<HTMLSelectElement>) =>
+  //   setNewPost({ ...newPost, [e.target.name]: e.target.value });
 
   const handleChangeKeywordInput = (e: React.ChangeEvent<HTMLInputElement>) =>
     setKeyword(e.target.value);
@@ -128,6 +129,29 @@ const ModifyBoard = (post: PostDetail) => {
     setNewPost({ ...newPost, keywords: updatedKeywords });
   };
 
+  const [readOpen, setReadOpen] = useState(false);
+  const [selectedRead, setSelectedRead] = useState("");
+  const handleSelectRead = (readablePosition: string) => {
+    setSelectedRead(readablePosition);
+    setReadOpen(false);
+    setNewPost({ ...newPost, readablePosition });
+  };
+  const [positionOpen, setPositionOpen] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState("");
+  const handleSelectPosition = (modifyPermission: string) => {
+    setSelectedPosition(modifyPermission);
+    setPositionOpen(false);
+    setNewPost({ ...newPost, modifyPermission });
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const handleSelectCategory = (category: string) => {
+    setSelectedCategory(category);
+    setIsOpen(false);
+    setNewPost({ ...newPost, category });
+  };
+
   useEffect(() => {
     updateEditingStatus(post.id);
 
@@ -139,6 +163,16 @@ const ModifyBoard = (post: PostDetail) => {
       modifyPermission: post.modifyPermission.toLowerCase(),
       readablePosition: post.readablePosition.toLowerCase(),
     });
+
+    setSelectedRead(
+      post.readablePosition.toLowerCase().charAt(0).toUpperCase() +
+        post.readablePosition.toLowerCase().slice(1)
+    );
+    setSelectedPosition(
+      post.modifyPermission.toLowerCase().charAt(0).toUpperCase() +
+        post.modifyPermission.toLowerCase().slice(1)
+    );
+    setSelectedCategory(post.category);
 
     return () => {
       if (history.action === "POP") {
@@ -157,58 +191,85 @@ const ModifyBoard = (post: PostDetail) => {
           placeholder="제목"
           onChange={handleChangeTitle}
         />
-        <StMidSelet style={{ display: "flex", gap: "10px" }}>
-          <label htmlFor="category">카테고리</label>
-          <select
-            id="category"
-            name="category"
-            value={newPost.category}
-            onChange={handleChangeSelectBox}
-          >
-            <option value="">-- 카테고리 --</option>
-            {categoryData?.map((category) => (
-              <option key={category.id} value={category.categoryName}>
-                {category.categoryName}
-              </option>
-            ))}
-          </select>
+        <StMidSelect>
+          <Stlabel>카테고리</Stlabel>
+          <StSelectDiv>
+            <StSelectp
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsOpen(!isOpen);
+              }}
+            >
+              {selectedCategory && selectedCategory}
+              <MenuArr className={isOpen ? "on" : "off"} />
+            </StSelectp>
+            <StSelectUl className={isOpen ? "on" : "off"}>
+              {categoryData?.map((category) => (
+                <StSelectli
+                  key={category.id}
+                  value={category.categoryName}
+                  onClick={() => {
+                    handleSelectCategory(category.categoryName);
+                  }}
+                >
+                  {category.categoryName}
+                </StSelectli>
+              ))}
+            </StSelectUl>
+          </StSelectDiv>
 
-          <label htmlFor="modifyPermission">수정권한</label>
-          <select
-            id="modifyPermission"
-            name="modifyPermission"
-            value={
-              newPost.modifyPermission.charAt(0).toUpperCase() +
-              newPost.modifyPermission.slice(1)
-            }
-            onChange={handleChangeSelectBox}
-          >
-            <option value="">-- 수정권한 --</option>
-            {positionArr?.map((position) => (
-              <option key={`modify-${position}`} value={position}>
-                {position}
-              </option>
-            ))}
-          </select>
+          <Stlabel>수정권한</Stlabel>
+          <StSelectDiv>
+            <StSelectp
+              onClick={(e) => {
+                e.stopPropagation();
+                setPositionOpen(!positionOpen);
+              }}
+            >
+              {selectedPosition && selectedPosition}
+              <MenuArr className={positionOpen ? "on" : "off"} />
+            </StSelectp>
+            <StSelectUl className={positionOpen ? "on" : "off"}>
+              {positionArr?.map((position) => (
+                <StSelectli
+                  key={`modify-${position}`}
+                  value={position}
+                  onClick={() => {
+                    handleSelectPosition(position);
+                  }}
+                >
+                  {position}
+                </StSelectli>
+              ))}
+            </StSelectUl>
+          </StSelectDiv>
 
-          <label htmlFor="readablePosition">읽기권한</label>
-          <select
-            id="readablePosition"
-            name="readablePosition"
-            value={
-              newPost.readablePosition.charAt(0).toUpperCase() +
-              newPost.readablePosition.slice(1)
-            }
-            onChange={handleChangeSelectBox}
-          >
-            <option value="">-- 읽기권한 --</option>
-            {positionArr?.map((position) => (
-              <option key={`readable-${position}`} value={position}>
-                {position}
-              </option>
-            ))}
-          </select>
-        </StMidSelet>
+          <Stlabel>읽기권한</Stlabel>
+          <StSelectDiv>
+            <StSelectp
+              onClick={(e) => {
+                e.stopPropagation();
+                setReadOpen(!readOpen);
+              }}
+            >
+              {selectedRead && selectedRead}
+              <MenuArr className={readOpen ? "on" : "off"} />
+            </StSelectp>
+            <StSelectUl className={readOpen ? "on" : "off"}>
+              {positionArr?.map((position) => (
+                <StSelectli
+                  key={`readable-${position}`}
+                  value={position}
+                  onClick={() => {
+                    handleSelectRead(position);
+                  }}
+                >
+                  {position}
+                </StSelectli>
+              ))}
+            </StSelectUl>
+          </StSelectDiv>
+        </StMidSelect>
         <Editor
           initialValue={post.content}
           previewStyle="vertical"
@@ -219,6 +280,7 @@ const ModifyBoard = (post: PostDetail) => {
           plugins={[colorSyntax]}
           language="ko-KR"
           ref={editorRef}
+          theme={isDark ? "dark" : "default"}
           onChange={handleChangeEditor}
           hooks={{
             addImageBlobHook: uploadImg,
@@ -259,20 +321,74 @@ const ModifyBoard = (post: PostDetail) => {
 
 export default ModifyBoard;
 
+const StSelectDiv = styled.div`
+  position: relative;
+  width: 150px;
+  border: 1px solid ${(props) => props.theme.borderColor};
+  height: 45px;
+  background: ${(props) => props.theme.bgwhite};
+  cursor: pointer;
+`;
+const StSelectp = styled.p`
+  line-height: 45px;
+  padding: 0 15px;
+`;
+const MenuArr = styled(MainArr)`
+  stroke: ${(props) => props.theme.fillGrey};
+  fill: ${(props) => props.theme.fillGrey};
+  transition: all 0.3s;
+  position: absolute;
+  right: 15px;
+  bottom: 0;
+  margin: auto 0;
+  top: 0;
+  &.on {
+    transform: rotateZ(-180deg);
+  }
+`;
+const StSelectUl = styled.ul`
+  width: calc(100% + 2px);
+  left: -1px;
+  top: 43px;
+  position: absolute;
+  border: 1px solid ${(props) => props.theme.borderColor};
+  background: ${(props) => props.theme.bgwhite};
+  border-top: 0;
+  height: 0;
+  overflow: hidden;
+  &.on {
+    height: auto;
+  }
+`;
+const StSelectli = styled.li`
+  line-height: 45px;
+  padding: 0 15px;
+  cursor: pointer;
+  &:hover {
+    background: ${(props) => props.theme.bgLightBlue};
+    color: ${(props) => props.theme.textBlue};
+  }
+`;
+
+const Stlabel = styled.label``;
+
 const StContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100vh;
 `;
-const StMidSelet = styled.div`
+const StMidSelect = styled.div`
   border: 1px solid ${(props) => props.theme.borderWrite};
   border-top: 0;
   border-bottom: 0;
   padding: 20px 20px;
   display: flex;
+  align-items: center;
   gap: 20px;
   background: ${(props) => props.theme.bgwhite};
+  position: relative;
+  z-index: 30;
 `;
 const StTitleInput = styled.input`
   background: ${(props) => props.theme.bgwhite};

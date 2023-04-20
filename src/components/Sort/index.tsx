@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SortItem } from "types";
 import styled from "styled-components";
-import {  MainArr } from "assets";
+import { MainArr } from "assets";
 interface Props {
   sortItems: SortItem[];
   sort: string;
@@ -16,7 +16,6 @@ const Sort = ({ sortItems, sort, setSort }: Props) => {
     setIsOpen(false);
   };
   return (
-    //
     <StselectDiv
       onClick={() => {
         setIsOpen(false);
@@ -37,8 +36,9 @@ const Sort = ({ sortItems, sort, setSort }: Props) => {
             key={item.itemValue}
             value={item.itemValue}
             onClick={() => {
-                handleSelectSort(item.itemValue);
-                item.handler()
+              setSort(item.sort);
+              handleSelectSort(item.itemValue);
+              item.handler();
             }}
           >
             {item.itemValue}
@@ -104,4 +104,3 @@ const StSelectli = styled.li`
     color: ${(props) => props.theme.textBlue};
   }
 `;
-

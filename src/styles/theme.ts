@@ -23,6 +23,7 @@ export const GlobalStyle = createGlobalStyle`
     /* min-width : 1440px; */
     color: ${({ theme }) => theme.textColor};
     background-color: ${({ theme }) => theme.bgColor};
+    transition : all 0.3s;
    
   }
   button{
@@ -67,7 +68,7 @@ export const defaultTheme: DefaultTheme = {
   textColor: "#121212",
   textBlue: "#007FFF",
   textRed: "#ff0000",
-  textGray:"#aeaeae",
+  textGray: "#aeaeae",
   redLightColor: "#EC1A22",
   greenColor: "#24CE57",
   textwhite: "#fff",

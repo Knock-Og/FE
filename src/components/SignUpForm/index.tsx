@@ -160,7 +160,7 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
           return setError(`${response}`);
         }
         queryClient.invalidateQueries("name");
-        setError("사용가능한 이름 입니다!");
+        setSuccess("사용가능한 이름 입니다!");
       }
     },
     onError: (response) => {
@@ -204,7 +204,6 @@ const SignUpForm = ({ modalOpen, onClose }: SignUpFormProps) => {
 
     setPhoneNum("");
     setMemberName("");
-    setPosition("");
     setPassword("");
     setPasswordCheck("");
     setEmail("");
@@ -518,7 +517,7 @@ const StButton = styled.button`
   border: 0;
   cursor: pointer;
   background: ${(props) => props.theme.bgBlue};
-  font-size: 1.25rem;
+  font-size: 0.875rem;
   border-radius: 57px;
   margin: 45px auto 0;
   display: block;
@@ -565,7 +564,7 @@ const StSeletUl = styled.ul`
 const StSeletLi = styled.li`
   line-height: 57px;
   padding: 0px 15px;
-
+  font-size: 0.875rem;
   cursor: pointer;
   &:hover {
     background: ${(props) => props.theme.bgLightBlue};
